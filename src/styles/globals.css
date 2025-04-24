@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 26, 26, 26;
+  --background-end-rgb: 26, 26, 26;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+}
+
+@layer components {
+  .card {
+    @apply bg-gray-medium border border-white-text rounded-lg p-4;
+  }
+
+  .card-hover {
+    @apply transition-all duration-200 hover:border-blue-high-tech hover:scale-[1.02];
+  }
+
+  .fade-in {
+    @apply animate-fade-in;
+  }
+
+  .glow {
+    @apply transition-all duration-200 hover:shadow-[0_0_15px_rgba(0,163,255,0.5)];
+  }
+}
+
+@layer utilities {
+  .font-inter {
+    font-family: var(--font-inter);
+  }
+
+  .font-roboto-mono {
+    font-family: var(--font-roboto-mono);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+} 
