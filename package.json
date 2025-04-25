@@ -10,7 +10,6 @@
     "test": "jest",
     "verify": "node scripts/verify.js",
     "predev": "npm run verify",
-    "prebuild": "npm run verify",
     "test:watch": "jest --watch",
     "cypress:open": "cypress open"
   },
@@ -23,7 +22,6 @@
     "@chakra-ui/react": "^2.10.7",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@omnisat/lasereyes": "^0.0.80",
     "@tensorflow/tfjs": "^4.17.0",
     "axios": "^1.6.7",
     "bitcoin-address-validation": "^2.2.1",

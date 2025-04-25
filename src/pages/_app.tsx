@@ -1,5 +1,4 @@
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
-import { LaserEyesProvider } from '@omnisat/lasereyes';
 import type { AppProps } from 'next/app';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 
@@ -61,11 +60,9 @@ const theme = extendTheme({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme} resetCSS>
-      <LaserEyesProvider config={{ network: 'mainnet' }}>
-        <ErrorBoundary>
-          <Component {...pageProps} />
-        </ErrorBoundary>
-      </LaserEyesProvider>
+      <ErrorBoundary>
+        <Component {...pageProps} />
+      </ErrorBoundary>
     </ChakraProvider>
   );
 } 
