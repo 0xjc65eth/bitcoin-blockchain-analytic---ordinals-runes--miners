@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import '@fontsource/orbitron';
+@import '@fontsource/fira-code';
+@import '@fontsource/inter';
+
+:root {
+  --neon-blue: #00D4FF;
+  --neon-pink: #FF00E5;
+  --dark-bg: #111827;
+}
+
+body {
+  background-color: var(--dark-bg);
+  color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+}
+
+.font-orbitron {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.font-firaCode {
+  font-family: 'Fira Code', monospace;
+}
+
+.glow {
+  box-shadow: 0 0 10px var(--neon-blue);
+  transition: all 0.3s ease;
+}
+
+.glow:hover {
+  box-shadow: 0 0 20px var(--neon-blue);
+  transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.5s ease-out forwards;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-slide-in,
+  .animate-pulse,
+  .glow:hover {
+    animation: none;
+    transform: none;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-darkBg text-white;
+  }
+}
+
+@layer components {
+  .glow-border {
+    @apply relative overflow-hidden;
+  }
+  
+  .glow-border::before {
+    content: '';
+    @apply absolute w-full h-full rounded-lg;
+    background: linear-gradient(45deg, #00f3ff, #FF00E5);
+    z-index: -1;
+    filter: blur(8px);
+    opacity: 0.5;
+  }
+
+  .glow-border:hover::before {
+    @apply opacity-100;
+  }
+
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-colors;
+  }
+  
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-700 hover:bg-gray-600 text-white;
+  }
+  
+  .card {
+    @apply bg-gray-800 rounded-lg p-6;
+  }
+  
+  .input {
+    @apply bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+
+  .tab {
+    @apply px-4 py-2 text-sm font-medium rounded-md;
+  }
+
+  .tab-active {
+    @apply bg-blue-600 text-white;
+  }
+
+  .tab-inactive {
+    @apply text-gray-500 hover:text-gray-700 hover:bg-gray-100;
+  }
+}
+
+@font-face {
+  font-family: 'Orbitron';
+  src: url('/fonts/Orbitron-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Fira Code';
+  src: url('/fonts/FiraCode-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+} 

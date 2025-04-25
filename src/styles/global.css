@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "@fontsource/orbitron";
+@import "@fontsource/fira-code";
+@import "@fontsource/inter";
+
+body {
+  background-color: #1A1A1A;
+  color: #FFFFFF;
+  font-family: "Inter", sans-serif;
+}
+
+.glow {
+  box-shadow: 0 0 10px #00D4FF;
+}
+
+.glow:hover {
+  box-shadow: 0 0 15px #00D4FF;
+  transform: scale(1.05);
+}
+
+@media (prefers-reduced-motion) {
+  .animate {
+    animation: none !important;
+  }
+} 
