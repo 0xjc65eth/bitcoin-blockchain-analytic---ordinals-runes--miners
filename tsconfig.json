@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -20,9 +20,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"]
-    },
-    "downlevelIteration": true
+    }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "temp-lasereyes-mono-core", "temp-lasereyes-mono", "walletconnect-monorepo"]
+  "exclude": ["node_modules"]
 }

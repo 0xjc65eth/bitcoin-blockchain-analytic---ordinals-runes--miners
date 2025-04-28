@@ -13,42 +13,89 @@ import { ConnectWalletModal } from '@/components/ConnectWalletModal'
 
 // Mock data for social metrics
 const socialMetricsData = [
-  { platform: 'Twitter', followers: 25000, engagement: 4.5, sentiment: 75 },
-  { platform: 'Telegram', members: 15000, engagement: 6.2, sentiment: 82 },
-  { platform: 'Discord', members: 20000, engagement: 5.8, sentiment: 78 },
-  { platform: 'Reddit', subscribers: 12000, engagement: 3.9, sentiment: 70 },
+  { platform: 'Twitter', followers: '1.2M', engagement: '8.5%', growth: '+12%', sentiment: 'Bullish' },
+  { platform: 'Telegram', followers: '850K', engagement: '7.2%', growth: '+15%', sentiment: 'Bullish' },
+  { platform: 'Discord', followers: '450K', engagement: '6.8%', growth: '+8%', sentiment: 'Neutral' },
+  { platform: 'Reddit', followers: '320K', engagement: '5.5%', growth: '+10%', sentiment: 'Bullish' },
+  { platform: 'YouTube', followers: '280K', engagement: '4.9%', growth: '+18%', sentiment: 'Bullish' }
 ]
 
 const sentimentTrendData = [
-  { date: '2024-01', positive: 65, neutral: 25, negative: 10 },
-  { date: '2024-02', positive: 70, neutral: 20, negative: 10 },
-  { date: '2024-03', positive: 75, neutral: 15, negative: 10 },
-  { date: '2024-04', positive: 80, neutral: 15, negative: 5 },
+  { month: 'Jan', bullish: 65, bearish: 35, neutral: 15 },
+  { month: 'Feb', bullish: 58, bearish: 42, neutral: 20 },
+  { month: 'Mar', bullish: 72, bearish: 28, neutral: 18 },
+  { month: 'Apr', bullish: 80, bearish: 20, neutral: 12 },
+  { month: 'May', bullish: 85, bearish: 15, neutral: 10 }
 ]
 
 const communityGrowthData = [
-  { month: 'Jan', total: 50000, active: 35000 },
-  { month: 'Feb', total: 55000, active: 38000 },
-  { month: 'Mar', total: 60000, active: 40000 },
-  { month: 'Apr', total: 65000, active: 42000 },
+  { month: 'Jan', total: 500000, active: 350000 },
+  { month: 'Feb', total: 750000, active: 520000 },
+  { month: 'Mar', total: 1200000, active: 850000 },
+  { month: 'Apr', total: 1800000, active: 1200000 },
+  { month: 'May', total: 2500000, active: 1800000 }
 ]
 
 const COLORS = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B']
 
 // Mock para hashtags e trends
 const hashtagsTrends = [
-  { tag: '#Bitcoin', platform: 'Twitter', volume: 12500, sentiment: 'Bullish', change: '+8%', trending: true },
-  { tag: '#Ordinals', platform: 'Reddit', volume: 3200, sentiment: 'Neutral', change: '+2%', trending: false },
-  { tag: '#Runes', platform: 'Twitter', volume: 2800, sentiment: 'Bearish', change: '-5%', trending: false },
-  { tag: '#BTC', platform: 'Telegram', volume: 4100, sentiment: 'Bullish', change: '+12%', trending: true },
-  { tag: '#Crypto', platform: 'Discord', volume: 3500, sentiment: 'Neutral', change: '+1%', trending: false },
+  { tag: '#Bitcoin', platform: 'Twitter', volume: 1250000, sentiment: 'Bullish', change: '+25%', trending: true },
+  { tag: '#Ordinals', platform: 'Twitter', volume: 850000, sentiment: 'Bullish', change: '+42%', trending: true },
+  { tag: '#BRC20', platform: 'Twitter', volume: 620000, sentiment: 'Neutral', change: '+15%', trending: true },
+  { tag: '#BTCMining', platform: 'Reddit', volume: 450000, sentiment: 'Bullish', change: '+18%', trending: false },
+  { tag: '#Runes', platform: 'Telegram', volume: 380000, sentiment: 'Bullish', change: '+55%', trending: true },
+  { tag: '#CryptoTrading', platform: 'Twitter', volume: 320000, sentiment: 'Neutral', change: '+8%', trending: false },
+  { tag: '#BTCHalving', platform: 'Twitter', volume: 280000, sentiment: 'Bullish', change: '+35%', trending: true },
+  { tag: '#BitcoinETF', platform: 'Reddit', volume: 250000, sentiment: 'Bullish', change: '+22%', trending: true }
 ]
 
 const socialFeed = [
-  { user: '@BitcoinExpert', platform: 'Twitter', content: 'BTC breaking new highs! 🚀', sentiment: 'Bullish', time: '2m', trending: true },
-  { user: '@OrdinalsPro', platform: 'Reddit', content: 'Ordinals volume surging, new collections incoming.', sentiment: 'Neutral', time: '10m', trending: false },
-  { user: '@RunesWatcher', platform: 'Twitter', content: 'Runes market correction, good entry point?', sentiment: 'Bearish', time: '20m', trending: false },
-  { user: '@CryptoAnalyst', platform: 'Telegram', content: 'Whale activity detected on BTC!', sentiment: 'Bullish', time: '30m', trending: true },
+  {
+    user: '@BTCWhale',
+    platform: 'Twitter',
+    content: 'Massive accumulation happening in #Bitcoin. Smart money is positioning for the next leg up. #BTC $35k incoming! 🚀',
+    sentiment: 'Bullish',
+    time: '2m',
+    trending: true,
+    engagement: { likes: 2500, retweets: 850, comments: 320 }
+  },
+  {
+    user: '@OrdinalsExpert',
+    platform: 'Twitter',
+    content: 'New record: Ordinal #12345 just sold for 2.5 BTC! The premium collections market is heating up. #Ordinals',
+    sentiment: 'Bullish',
+    time: '5m',
+    trending: true,
+    engagement: { likes: 1800, retweets: 620, comments: 245 }
+  },
+  {
+    user: '@RunesMaster',
+    platform: 'Telegram',
+    content: 'Technical Analysis: Runes trading volume up 85% in the last 24h. Major protocol updates coming! 📈',
+    sentiment: 'Bullish',
+    time: '8m',
+    trending: true,
+    engagement: { reactions: 1200, shares: 450 }
+  },
+  {
+    user: '@CryptoAnalyst',
+    platform: 'Reddit',
+    content: 'In-depth analysis: Why Bitcoin mining difficulty is reaching ATH and what it means for price action.',
+    sentiment: 'Neutral',
+    time: '12m',
+    trending: false,
+    engagement: { upvotes: 950, comments: 285 }
+  },
+  {
+    user: '@BTCTechPro',
+    platform: 'Twitter',
+    content: 'Lightning Network capacity just hit 5000 BTC! Network effects are exponential. ⚡️',
+    sentiment: 'Bullish',
+    time: '15m',
+    trending: true,
+    engagement: { likes: 1500, retweets: 480, comments: 180 }
+  }
 ]
 
 const PREMIUM_COLLECTIONS = [
@@ -167,12 +214,12 @@ function SentimentTrendCard({ data }: { data: any[] }) {
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-            <XAxis dataKey="date" stroke="#999" />
+            <XAxis dataKey="month" stroke="#999" />
             <YAxis stroke="#999" />
             <Tooltip contentStyle={{ backgroundColor: '#1A1A1A', border: '1px solid #333' }} />
-            <Line type="monotone" dataKey="positive" stroke="#10B981" strokeWidth={2} />
-            <Line type="monotone" dataKey="neutral" stroke="#F59E0B" strokeWidth={2} />
-            <Line type="monotone" dataKey="negative" stroke="#EF4444" strokeWidth={2} />
+            <Line type="monotone" dataKey="bullish" stroke="#10B981" strokeWidth={2} />
+            <Line type="monotone" dataKey="bearish" stroke="#F59E0B" strokeWidth={2} />
+            <Line type="monotone" dataKey="neutral" stroke="#EF4444" strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -356,19 +403,40 @@ function SocialFeedCard({ data }: { data: any[] }) {
     <DashboardCard title="Social Feed (Realtime)">
       <div className="space-y-4">
         {data.map((post, i) => (
-          <div key={i} className="flex items-start gap-3 border-b border-gray-800 pb-2">
+          <div key={i} className="flex items-start gap-3 border-b border-gray-800 pb-4">
             <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-[#8B5CF6] to-[#3B82F6] flex items-center justify-center font-bold text-lg">
               {post.user[1]}
             </div>
             <div className="flex-1">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-bold text-emerald-300">{post.user}</span>
                 <span className="text-xs text-gray-400">{post.platform}</span>
-                {post.trending && <span className="ml-2 px-2 py-1 rounded bg-emerald-600 text-xs font-bold">🔥 Trending</span>}
-                <span className={`ml-2 text-xs font-bold ${post.sentiment === 'Bullish' ? 'text-green-400' : post.sentiment === 'Bearish' ? 'text-rose-400' : 'text-yellow-400'}`}>{post.sentiment}</span>
-                <span className="ml-2 text-xs text-gray-500">{post.time} ago</span>
+                {post.trending && <span className="px-2 py-1 rounded bg-emerald-600 text-xs font-bold">🔥 Trending</span>}
+                <span className={`text-xs font-bold ${
+                  post.sentiment === 'Bullish' ? 'text-green-400' : 
+                  post.sentiment === 'Bearish' ? 'text-rose-400' : 
+                  'text-yellow-400'
+                }`}>{post.sentiment}</span>
+                <span className="text-xs text-gray-500">{post.time} ago</span>
               </div>
-              <div className="text-sm text-white mt-1">{post.content}</div>
+              <div className="text-sm text-white mt-2">{post.content}</div>
+              <div className="flex gap-4 mt-2 text-xs text-gray-400">
+                {post.engagement.likes && (
+                  <span>❤️ {post.engagement.likes.toLocaleString()}</span>
+                )}
+                {post.engagement.retweets && (
+                  <span>🔄 {post.engagement.retweets.toLocaleString()}</span>
+                )}
+                {post.engagement.comments && (
+                  <span>💬 {post.engagement.comments.toLocaleString()}</span>
+                )}
+                {post.engagement.upvotes && (
+                  <span>⬆️ {post.engagement.upvotes.toLocaleString()}</span>
+                )}
+                {post.engagement.reactions && (
+                  <span>👍 {post.engagement.reactions.toLocaleString()}</span>
+                )}
+              </div>
             </div>
           </div>
         ))}

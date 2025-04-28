@@ -28,6 +28,7 @@ import { useMarketData } from '@/hooks/useMarketData'
 import { useMempoolData } from '@/hooks/useMempoolData'
 import { useMiningData } from '@/hooks/useMiningData'
 import { RiArrowUpSLine, RiArrowDownSLine } from 'react-icons/ri'
+import Image from 'next/image'
 
 const timeframes = ['24H', '7D', '30D', 'ALL']
 
@@ -205,13 +206,26 @@ const runesMarket = {
 }
 
 export default function DashboardPage() {
-  const [timeframe, setTimeframe] = useState('24H')
-  const marketData = useMarketData()
-  const mempoolData = useMempoolData()
-  const miningData = useMiningData()
+  const [selectedTimeframe, setSelectedTimeframe] = useState('24H')
+  const { data: miningData = {
+    hashRate: 0,
+    blockTime: 0,
+    difficulty: 0
+  } } = useMiningData()
+  
+  const { data: marketData = {
+    btcPrice: 0,
+    btcChange24h: 0,
+    volume24h: 0,
+    marketCap: 0
+  } } = useMarketData()
+  
+  const { data: mempoolData = {
+    pendingTransactions: 0
+  } } = useMempoolData()
 
-  const deltaType: DeltaType = marketData.btcChange24h >= 0 ? "increase" : "decrease"
-  const DeltaIcon = marketData.btcChange24h >= 0 ? RiArrowUpSLine : RiArrowDownSLine
+  const deltaType: DeltaType = (marketData?.btcChange24h ?? 0) >= 0 ? "increase" : "decrease"
+  const DeltaIcon = (marketData?.btcChange24h ?? 0) >= 0 ? RiArrowUpSLine : RiArrowDownSLine
 
   return (
     <main className="min-h-screen bg-[#121212]">
@@ -229,7 +243,7 @@ export default function DashboardPage() {
               {timeframes.map((tf) => (
                 <Tab 
                   key={tf}
-                  onClick={() => setTimeframe(tf)}
+                  onClick={() => setSelectedTimeframe(tf)}
                   className="px-6 py-2 text-sm font-medium"
                 >
                   {tf}
@@ -245,11 +259,11 @@ export default function DashboardPage() {
               <Flex alignItems="start">
                 <div>
                   <Text className="text-gray-400">Bitcoin Price</Text>
-                  <Metric className="text-white">${marketData.btcPrice.toLocaleString()}</Metric>
+                  <Metric className="text-white">${(marketData?.btcPrice ?? 0).toLocaleString()}</Metric>
                 </div>
                 <BadgeDelta deltaType={deltaType} className="flex items-center">
                   <DeltaIcon className="w-4 h-4 mr-1" />
-                  {marketData.btcChange24h.toFixed(2)}%
+                  {(marketData?.btcChange24h ?? 0).toFixed(2)}%
                 </BadgeDelta>
               </Flex>
               <AreaChart
@@ -280,7 +294,7 @@ export default function DashboardPage() {
               <Title className="text-white">Mempool Analysis</Title>
               <Flex className="mt-4">
                 <Text className="text-gray-400">Pending Transactions</Text>
-                <Text className="text-white font-medium">{mempoolData.pendingTransactions.toLocaleString()}</Text>
+                <Text className="text-white font-medium">{(mempoolData?.pendingTransactions ?? 0).toLocaleString()}</Text>
               </Flex>
               <ProgressBar 
                 value={75} 
@@ -316,7 +330,7 @@ export default function DashboardPage() {
               <Flex className="mt-4">
                 <div>
                   <Text className="text-gray-400">Current Hash Rate</Text>
-                  <Metric className="text-white">{miningData.hashRate.toLocaleString()} EH/s</Metric>
+                  <Metric className="text-white">{(miningData?.hashRate ?? 0).toLocaleString()} EH/s</Metric>
                 </div>
                 <BadgeDelta deltaType="increase" className="self-end">
                   +5.2%
@@ -397,11 +411,11 @@ export default function DashboardPage() {
               <Grid numItems={2} className="gap-4 mt-4">
                 <Card className="bg-[#2D2D2D] border-none">
                   <Text className="text-gray-400">24h Volume</Text>
-                  <Metric className="text-white">${marketData.volume24h.toLocaleString()}</Metric>
+                  <Metric className="text-white">${(marketData?.volume24h ?? 0).toLocaleString()}</Metric>
                 </Card>
                 <Card className="bg-[#2D2D2D] border-none">
                   <Text className="text-gray-400">Market Cap</Text>
-                  <Metric className="text-white">${marketData.marketCap.toLocaleString()}</Metric>
+                  <Metric className="text-white">${(marketData?.marketCap ?? 0).toLocaleString()}</Metric>
                 </Card>
               </Grid>
               <AreaChart
@@ -431,11 +445,11 @@ export default function DashboardPage() {
               <Grid numItems={2} className="gap-4 mt-4">
                 <Card className="bg-[#2D2D2D] border-none">
                   <Text className="text-gray-400">Block Time</Text>
-                  <Metric className="text-white">{miningData.blockTime} min</Metric>
+                  <Metric className="text-white">{(miningData?.blockTime ?? 0).toLocaleString()} min</Metric>
                 </Card>
                 <Card className="bg-[#2D2D2D] border-none">
                   <Text className="text-gray-400">Difficulty</Text>
-                  <Metric className="text-white">{(miningData.difficulty / 1e12).toFixed(2)} T</Metric>
+                  <Metric className="text-white">{(miningData?.difficulty ?? 0).toLocaleString()} T</Metric>
                 </Card>
               </Grid>
               <LineChart
@@ -471,27 +485,27 @@ export default function DashboardPage() {
                   <div className="grid grid-cols-2 gap-2 mt-2">
                     <div>
                       <span className="block text-xs text-white/70">Volume</span>
-                      <span className="text-lg font-bold text-emerald-300">{ordinalsMarket.volume.toLocaleString()} BTC</span>
+                      <span className="text-lg font-bold text-emerald-300">{(ordinalsMarket.volume ?? 0).toLocaleString()} BTC</span>
                     </div>
                     <div>
                       <span className="block text-xs text-white/70">Market Cap</span>
-                      <span className="text-lg font-bold text-blue-300">${ordinalsMarket.marketCap.toLocaleString()}</span>
+                      <span className="text-lg font-bold text-blue-300">${(ordinalsMarket.marketCap ?? 0).toLocaleString()}</span>
                     </div>
                     <div>
                       <span className="block text-xs text-white/70">Holders</span>
-                      <span className="text-lg font-bold text-pink-300">{ordinalsMarket.holders}</span>
+                      <span className="text-lg font-bold text-pink-300">{(ordinalsMarket.holders ?? 0).toLocaleString()}</span>
                     </div>
                     <div>
                       <span className="block text-xs text-white/70">Liquidity</span>
-                      <span className="text-lg font-bold text-cyan-300">{ordinalsMarket.liquidity} BTC</span>
+                      <span className="text-lg font-bold text-cyan-300">{(ordinalsMarket.liquidity ?? 0).toLocaleString()} BTC</span>
                     </div>
                     <div>
                       <span className="block text-xs text-white/70">Trend</span>
-                      <span className="text-lg font-bold text-emerald-400">{ordinalsMarket.trend}</span>
+                      <span className="text-lg font-bold text-emerald-400">{(ordinalsMarket.trend ?? '')}</span>
                     </div>
                     <div>
                       <span className="block text-xs text-white/70">Top Sale</span>
-                      <span className="text-lg font-bold text-amber-300">{ordinalsMarket.topSale} BTC</span>
+                      <span className="text-lg font-bold text-amber-300">{(ordinalsMarket.topSale ?? 0).toLocaleString()} BTC</span>
                     </div>
                   </div>
                 </div>
@@ -533,11 +547,11 @@ export default function DashboardPage() {
                 <div className="flex-1 space-y-2">
                   <div className="p-3 rounded-xl bg-gradient-to-r from-[#34d399] to-[#10b981]">
                     <span className="font-bold text-lg">Neural Trade Insight:</span>
-                    <span className="ml-2 px-3 py-1 rounded-full bg-emerald-600 text-white font-bold">{ordinalsMarket.neuralSignal}</span>
-                    <span className="ml-2 px-2 py-1 rounded bg-emerald-400 text-white text-xs">{ordinalsMarket.confidence} Confidence</span>
-                    <p className="mt-2 text-white/90 text-sm">{ordinalsMarket.rationale}</p>
+                    <span className="ml-2 px-3 py-1 rounded-full bg-emerald-600 text-white font-bold">{(ordinalsMarket.neuralSignal ?? '')}</span>
+                    <span className="ml-2 px-2 py-1 rounded bg-emerald-400 text-white text-xs">{(ordinalsMarket.confidence ?? '')} Confidence</span>
+                    <p className="mt-2 text-white/90 text-sm">{(ordinalsMarket.rationale ?? '')}</p>
                     <ul className="mt-2 space-y-1 text-white/90 text-xs">
-                      {ordinalsMarket.tradeOpportunities.map((op, idx) => (
+                      {ordinalsMarket.tradeOpportunities?.map((op, idx) => (
                         <li key={idx}><b>{op.signal}</b> {op.collection} <span className="text-emerald-200">({op.confidence})</span>: {op.rationale}</li>
                       ))}
                     </ul>
@@ -558,27 +572,27 @@ export default function DashboardPage() {
                   <div className="grid grid-cols-2 gap-2 mt-2">
                     <div>
                       <span className="block text-xs text-white/70">Volume</span>
-                      <span className="text-lg font-bold text-emerald-300">{runesMarket.volume.toLocaleString()} BTC</span>
+                      <span className="text-lg font-bold text-emerald-300">{(runesMarket.volume ?? 0).toLocaleString()} BTC</span>
                     </div>
                     <div>
                       <span className="block text-xs text-white/70">Market Cap</span>
-                      <span className="text-lg font-bold text-blue-300">${runesMarket.marketCap.toLocaleString()}</span>
+                      <span className="text-lg font-bold text-blue-300">${(runesMarket.marketCap ?? 0).toLocaleString()}</span>
                     </div>
                     <div>
                       <span className="block text-xs text-white/70">Holders</span>
-                      <span className="text-lg font-bold text-pink-300">{runesMarket.holders}</span>
+                      <span className="text-lg font-bold text-pink-300">{(runesMarket.holders ?? 0).toLocaleString()}</span>
                     </div>
                     <div>
                       <span className="block text-xs text-white/70">Liquidity</span>
-                      <span className="text-lg font-bold text-cyan-300">{runesMarket.liquidity} BTC</span>
+                      <span className="text-lg font-bold text-cyan-300">{(runesMarket.liquidity ?? 0).toLocaleString()} BTC</span>
                     </div>
                     <div>
                       <span className="block text-xs text-white/70">Trend</span>
-                      <span className="text-lg font-bold text-emerald-400">{runesMarket.trend}</span>
+                      <span className="text-lg font-bold text-emerald-400">{(runesMarket.trend ?? '')}</span>
                     </div>
                     <div>
                       <span className="block text-xs text-white/70">Top Sale</span>
-                      <span className="text-lg font-bold text-amber-300">{runesMarket.topSale} BTC</span>
+                      <span className="text-lg font-bold text-amber-300">{(runesMarket.topSale ?? 0).toLocaleString()} BTC</span>
                     </div>
                   </div>
                 </div>
@@ -620,11 +634,11 @@ export default function DashboardPage() {
                 <div className="flex-1 space-y-2">
                   <div className="p-3 rounded-xl bg-gradient-to-r from-[#f43f5e] to-[#fbbf24]">
                     <span className="font-bold text-lg">Neural Trade Insight:</span>
-                    <span className="ml-2 px-3 py-1 rounded-full bg-yellow-600 text-white font-bold">{runesMarket.neuralSignal}</span>
-                    <span className="ml-2 px-2 py-1 rounded bg-yellow-400 text-white text-xs">{runesMarket.confidence} Confidence</span>
-                    <p className="mt-2 text-white/90 text-sm">{runesMarket.rationale}</p>
+                    <span className="ml-2 px-3 py-1 rounded-full bg-yellow-600 text-white font-bold">{(runesMarket.neuralSignal ?? '')}</span>
+                    <span className="ml-2 px-2 py-1 rounded bg-yellow-400 text-white text-xs">{(runesMarket.confidence ?? '')} Confidence</span>
+                    <p className="mt-2 text-white/90 text-sm">{(runesMarket.rationale ?? '')}</p>
                     <ul className="mt-2 space-y-1 text-white/90 text-xs">
-                      {runesMarket.tradeOpportunities.map((op, idx) => (
+                      {runesMarket.tradeOpportunities?.map((op, idx) => (
                         <li key={idx}><b>{op.signal}</b> {op.token} <span className="text-yellow-200">({op.confidence})</span>: {op.rationale}</li>
                       ))}
                     </ul>
@@ -638,7 +652,7 @@ export default function DashboardPage() {
               <Title className="text-white">Market Variables</Title>
               <ul className="mt-4 space-y-2 text-white/90 text-sm">
                 {marketVariables.map((v, i) => (
-                  <li key={i} className={`font-bold text-${v.color}-400`}>{v.label}: <span className={`text-${v.color}-300`}>{v.value}</span></li>
+                  <li key={i} className={`font-bold text-${v.color}-400`}>{v.label}: <span className={`text-${v.color}-300`}>{(v.value ?? '')}</span></li>
                 ))}
               </ul>
               <Text className="mt-4 text-xs text-white/70">Expanded market variables for deeper analysis and smarter decisions.</Text>
@@ -665,8 +679,8 @@ export default function DashboardPage() {
               </ul>
               <a
                 href={`bitcoin:bc1q3ghzvpp0l74q3ntu8actyt0qcvl2u273flg5rs?amount=${plan.btc}&label=Cypher%20${plan.name}%20Plan`}
-                target="_blank"
-                rel="noopener noreferrer"
+          target="_blank"
+          rel="noopener noreferrer"
                 className="w-full block py-2 rounded-lg bg-white text-black font-bold text-center hover:bg-opacity-90 transition mt-2 shadow-lg hover:shadow-xl"
               >
                 Subscribe
@@ -674,7 +688,7 @@ export default function DashboardPage() {
             </div>
           ))}
         </div>
-      </div>
+    </div>
     </main>
   )
 }

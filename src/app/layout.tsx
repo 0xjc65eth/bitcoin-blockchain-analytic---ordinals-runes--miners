@@ -1,12 +1,13 @@
 import type { Metadata } from "next"
-import { Inter, Montserrat } from "next/font/google"
+import { Inter } from "next/font/google"
 import "./globals.css"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Providers } from "@/components/providers/providers"
+import { ThemeProvider } from "@/components/providers/theme-provider"
+import { QueryProvider } from "./providers/query-provider"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
-const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-montserrat" })
 
 export const metadata: Metadata = {
   title: "CYPHER ORDI FUTURE",
@@ -19,15 +20,19 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${montserrat.variable}`}>
+    <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
       <body className="min-h-screen bg-[#0A0A0A] text-white flex flex-col">
-        <Providers>
-          <Navbar />
-          <main className="flex-grow container mx-auto px-4 py-6">
-            {children}
-          </main>
-          <Footer />
-        </Providers>
+        <QueryProvider>
+          <ThemeProvider>
+            <Providers>
+              <Navbar />
+              <main className="flex-grow container mx-auto px-4 py-6">
+                {children}
+              </main>
+              <Footer />
+            </Providers>
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   )
