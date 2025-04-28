@@ -13,7 +13,7 @@ export const useMempoolData = () => {
     const fetchMempoolData = async () => {
       try {
         // TODO: Replace with actual API call
-        const mockData: Partial<MempoolState> = {
+        const mockData: MempoolState = {
           pendingTransactions: Math.floor(Math.random() * 1000),
           averageFeeRate: Math.random() * 100,
           mempoolSize: Math.floor(Math.random() * 10000),
@@ -24,7 +24,15 @@ export const useMempoolData = () => {
             medium: Math.random() * 20,
             high: Math.random() * 30
           },
-          blocks: []
+          blocks: [
+            {
+              height: 0,
+              hash: '',
+              timestamp: Date.now(),
+              size: 0,
+              weight: 0
+            }
+          ]
         }
 
         dispatch(setMempoolData(mockData))

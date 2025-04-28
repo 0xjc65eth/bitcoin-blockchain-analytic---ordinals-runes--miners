@@ -9,6 +9,8 @@ import {
   MempoolUtxo
 } from '@omnisat/lasereyes-core'
 
+export type { ProviderType } from '@omnisat/lasereyes-core'
+
 export type LaserEyesContextType = {
   isInitializing: boolean
   connected: boolean

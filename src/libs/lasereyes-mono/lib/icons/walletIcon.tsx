@@ -7,8 +7,8 @@ import { PhantomLogo } from './phantom'
 import { UnisatLogo } from './unisat'
 import { OylLogo } from './oyl'
 import OrangeLogo from './orange'
-import OpNetIcon from './op_net.tsx'
-import SparrowLogo from './sparrow.tsx'
+import OpNetIcon from './op_net'
+import SparrowLogo from './sparrow'
 import {
   ProviderType,
   XVERSE,

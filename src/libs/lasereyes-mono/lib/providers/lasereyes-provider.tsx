@@ -22,7 +22,7 @@ export default function LaserEyesProvider({
   children,
 }: {
   config?: Config
-  children: ReactNode | ReactNode[]
+  children: ReactNode
 }) {
   const clientStores = useMemo(() => createStores(), [])
   const clientConfig = useMemo(

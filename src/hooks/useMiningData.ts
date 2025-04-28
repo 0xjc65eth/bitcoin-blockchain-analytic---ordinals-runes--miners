@@ -13,7 +13,7 @@ export const useMiningData = () => {
     const fetchMiningData = async () => {
       try {
         // TODO: Replace with actual API call
-        const mockData: Partial<MiningState> = {
+        const mockData: MiningState = {
           hashRate: Math.floor(Math.random() * 100000),
           difficulty: Math.floor(Math.random() * 1000000),
           blockTime: Math.floor(Math.random() * 600) + 300, // Between 5-15 minutes

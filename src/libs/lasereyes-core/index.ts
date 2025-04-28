@@ -1,5 +1,10 @@
 import * as lib from './src'
 
+declare global {
+  var lasereyes: typeof lib | undefined;
+  var lasereyesClient: any;
+}
+
 globalThis.lasereyes = lib
 ;(window as any).lasereyes = lib
 

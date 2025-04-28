@@ -1,3 +1,5 @@
+'use client'
+
 import { Header } from '@/components/header'
 import { DashboardCard } from '@/components/dashboard-card'
 import { useOrdiscanData } from '@/hooks/useOrdiscanData'

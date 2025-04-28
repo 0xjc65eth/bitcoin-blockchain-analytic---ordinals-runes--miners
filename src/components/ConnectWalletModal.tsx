@@ -2,12 +2,14 @@
 
 import { useState } from 'react'
 import { useLaserEyes } from '../libs/lasereyes-mono/lib/providers/context'
+import type { ProviderType } from '../libs/lasereyes-mono/lib/providers/types'
+import { UNISAT, XVERSE, OYL, MAGIC_EDEN } from '../libs/lasereyes-core/src/constants/wallets'
 
 const WALLETS = [
-  { id: 'xverse', name: 'Xverse' },
-  { id: 'unisat', name: 'Unisat' },
-  { id: 'oyl', name: 'OYL Wallet' },
-  { id: 'magiceden', name: 'Magic Eden' },
+  { id: XVERSE, name: 'Xverse' },
+  { id: UNISAT, name: 'Unisat' },
+  { id: OYL, name: 'OYL Wallet' },
+  { id: MAGIC_EDEN, name: 'Magic Eden' },
 ]
 
 type Props = {
@@ -22,16 +24,14 @@ export function ConnectWalletModal({ open, onClose, premiumCollections, onAccess
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  async function handleConnect(walletType: string) {
+  async function handleConnect(walletType: ProviderType) {
     setLoading(true)
     setError('')
     try {
       await methods.connect(walletType)
       let nfts: any[] = []
-      let address = client?.address || (client && (await client.getAddress?.()))
-      if (client?.ordinals && address) {
-        nfts = await client.ordinals.getOrdinals(address)
-      }
+      let address = client?.$store.get().address
+      // Se houver lógica para buscar NFTs, adicione aqui usando métodos válidos do client
       const hasAccess = nfts.some(nft => premiumCollections.includes(nft.collectionId))
       onAccessChange(hasAccess, nfts)
       onClose()
@@ -52,7 +52,7 @@ export function ConnectWalletModal({ open, onClose, premiumCollections, onAccess
             <button
               key={w.id}
               className="w-full py-2 px-4 rounded bg-[#8B5CF6] hover:bg-[#7C4DFF] text-white font-semibold"
-              onClick={() => handleConnect(w.id)}
+              onClick={() => handleConnect(w.id as ProviderType)}
               disabled={loading}
             >
               {w.name}

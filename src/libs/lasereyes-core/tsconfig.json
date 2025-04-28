@@ -22,6 +22,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+
+    "downlevelIteration": true,
   },
   "include": ["src/**/*"],
   "exclude": ["dist"]
