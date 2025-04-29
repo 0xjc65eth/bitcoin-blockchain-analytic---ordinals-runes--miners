@@ -6,6 +6,7 @@ const initialState: MarketState = {
   btcChange24h: 0,
   volume24h: 0,
   marketCap: 0,
+  lastUpdated: new Date().toISOString(),
 }
 
 const marketSlice = createSlice({
@@ -31,4 +32,4 @@ const marketSlice = createSlice({
 })
 
 export const { setBtcPrice, setBtcChange24h, setVolume24h, setMarketCap, setMarketData } = marketSlice.actions
-export default marketSlice.reducer 
+export default marketSlice.reducer

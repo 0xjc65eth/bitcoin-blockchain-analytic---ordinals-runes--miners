@@ -8,6 +8,7 @@ export function useTopRunes() {
       if (!res.ok) throw new Error('Erro ao buscar Runes')
       return res.json()
     },
-    refetchInterval: 60000, // 1 minuto
+    refetchInterval: 600000, // 10 minutos
+    staleTime: 300000, // 5 minutos
   })
-} 
+}

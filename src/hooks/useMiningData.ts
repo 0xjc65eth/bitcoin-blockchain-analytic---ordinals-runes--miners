@@ -30,11 +30,11 @@ export const useMiningData = () => {
     fetchMiningData()
 
     // Set up interval for periodic updates
-    const interval = setInterval(fetchMiningData, 60000) // Update every minute
+    const interval = setInterval(fetchMiningData, 600000) // Atualizar a cada 10 minutos
 
     // Cleanup interval on unmount
     return () => clearInterval(interval)
   }, [dispatch])
 
   return miningData
-} 
+}

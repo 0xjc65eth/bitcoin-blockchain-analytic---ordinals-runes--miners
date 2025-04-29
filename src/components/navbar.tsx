@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { WalletConnect } from "./wallet-connect"
+import { WalletConnectButton } from "./wallet-connect-button-new"
 import { CardID } from "./card-id"
 import { useAppSelector } from "@/store"
 import {
@@ -43,8 +43,8 @@ export function Navbar() {
         {navItems.map((item) => {
           const Icon = item.icon
           return (
-            <Link 
-              key={item.name} 
+            <Link
+              key={item.name}
               href={item.href}
               className={cn(
                 "flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-[#3D3D3D] hover:text-[#8B5CF6]",
@@ -59,10 +59,10 @@ export function Navbar() {
       </div>
       <div className="flex items-center gap-4">
         {nftData && <CardID />}
-        <WalletConnect />
+        <WalletConnectButton />
       </div>
     </nav>
   )
 }
 
-export default Navbar 
+export default Navbar

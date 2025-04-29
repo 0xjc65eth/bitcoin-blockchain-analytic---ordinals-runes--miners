@@ -13,6 +13,8 @@
     "@floating-ui/react-dom": "^2.0.4",
     "@headlessui/react": "^2.2.2",
     "@heroicons/react": "^2.2.0",
+    "@omnisat/lasereyes-core": "^0.0.70",
+    "@omnisat/lasereyes-react": "^0.0.65",
     "@radix-ui/react-slot": "^1.0.2",
     "@reduxjs/toolkit": "^2.0.0",
     "@tanstack/react-query": "^5.74.7",

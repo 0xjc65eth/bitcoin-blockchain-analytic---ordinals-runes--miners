@@ -5,13 +5,9 @@ import { Header } from '@/components/header'
 import { NeuralInsightsCard } from '@/components/neural-insights-card'
 import { SmcAnalysisCard } from '@/components/smc-analysis-card'
 import { MarketInsightsCard } from '@/components/market-insights-card'
-import { BitcoinPriceCard } from '@/components/bitcoin-price-card'
-import { OrdinalsViewer } from '@/components/ordinals-viewer'
-import { MempoolAnalysisCard } from '@/components/mempool-analysis-card'
-import { NetworkHashRateCard } from '@/components/network-hash-rate-card'
-import {
-  AreaChart,
-  BarChart,
+import { 
+  AreaChart, 
+  BarChart, 
   LineChart,
   Card,
   Title,
@@ -219,14 +215,14 @@ export default function DashboardPage() {
     blockTime: 0,
     difficulty: 0
   } } = useMiningData()
-
+  
   const { data: marketData = {
     btcPrice: 0,
     btcChange24h: 0,
     volume24h: 0,
     marketCap: 0
   } } = useMarketData()
-
+  
   const { data: mempoolData = {
     pendingTransactions: 0
   } } = useMempoolData()
@@ -248,7 +244,7 @@ export default function DashboardPage() {
           <TabGroup>
             <TabList variant="solid" className="bg-[#2D2D2D] p-1 rounded-xl">
               {timeframes.map((tf) => (
-                <Tab
+                <Tab 
                   key={tf}
                   onClick={() => setSelectedTimeframe(tf)}
                   className="px-6 py-2 text-sm font-medium"
@@ -262,30 +258,122 @@ export default function DashboardPage() {
 
         <Grid numItems={1} numItemsSm={2} numItemsLg={3} className="gap-6 mb-6">
           <Col>
-            <BitcoinPriceCard />
+            <Card className="bg-[#1D1D1D] border border-[#3D3D3D] shadow-xl">
+              <Flex alignItems="start">
+                <div>
+                  <Text className="text-gray-400">Bitcoin Price</Text>
+                  <Metric className="text-white">${(marketData?.btcPrice ?? 0).toLocaleString()}</Metric>
+                </div>
+                <BadgeDelta deltaType={deltaType} className="flex items-center">
+                  <DeltaIcon className="w-4 h-4 mr-1" />
+                  {(marketData?.btcChange24h ?? 0).toFixed(2)}%
+                </BadgeDelta>
+              </Flex>
+              <AreaChart
+                className="h-48 mt-6"
+                data={[
+                  { date: '2024-01', value: 42000 },
+                  { date: '2024-02', value: 45000 },
+                  { date: '2024-03', value: 68000 },
+                  { date: '2024-04', value: 65000 },
+                ]}
+                index="date"
+                categories={['value']}
+                colors={[colors.primary]}
+                showAnimation
+                showLegend={false}
+                showGridLines={false}
+                showXAxis={true}
+                showYAxis={true}
+                yAxisWidth={65}
+                curveType="natural"
+                valueFormatter={(value) => `$${value.toLocaleString()}`}
+              />
+            </Card>
           </Col>
 
           <Col>
-            <MempoolAnalysisCard />
+            <Card className="bg-[#1D1D1D] border border-[#3D3D3D] shadow-xl">
+              <Title className="text-white">Mempool Analysis</Title>
+              <Flex className="mt-4">
+                <Text className="text-gray-400">Pending Transactions</Text>
+                <Text className="text-white font-medium">{(mempoolData?.pendingTransactions ?? 0).toLocaleString()}</Text>
+              </Flex>
+              <ProgressBar 
+                value={75} 
+                color={colors.secondary}
+                className="mt-2" 
+              />
+              <DonutChart
+                className="h-48 mt-6"
+                data={[
+                  { name: '1-2 sat/vB', value: 150 },
+                  { name: '2-5 sat/vB', value: 300 },
+                  { name: '5-10 sat/vB', value: 200 },
+                  { name: '10+ sat/vB', value: 100 },
+                ]}
+                category="value"
+                index="name"
+                colors={[colors.primary, colors.secondary, colors.accent, colors.neutral]}
+                showAnimation
+                showTooltip
+                valueFormatter={(value) => `${value} txs`}
+              />
+              <Legend 
+                className="mt-3"
+                categories={['1-2 sat/vB', '2-5 sat/vB', '5-10 sat/vB', '10+ sat/vB']}
+                colors={[colors.primary, colors.secondary, colors.accent, colors.neutral]}
+              />
+            </Card>
           </Col>
 
           <Col>
-            <NetworkHashRateCard />
+            <Card className="bg-[#1D1D1D] border border-[#3D3D3D] shadow-xl">
+              <Title className="text-white">Network Hash Rate</Title>
+              <Flex className="mt-4">
+                <div>
+                  <Text className="text-gray-400">Current Hash Rate</Text>
+                  <Metric className="text-white">{(miningData?.hashRate ?? 0).toLocaleString()} EH/s</Metric>
+                </div>
+                <BadgeDelta deltaType="increase" className="self-end">
+                  +5.2%
+                </BadgeDelta>
+              </Flex>
+              <LineChart
+                className="h-48 mt-6"
+                data={[
+                  { date: '2024-01', hashrate: 400 },
+                  { date: '2024-02', hashrate: 420 },
+                  { date: '2024-03', hashrate: 450 },
+                  { date: '2024-04', hashrate: 470 },
+                ]}
+                index="date"
+                categories={['hashrate']}
+                colors={[colors.primary]}
+                showAnimation
+                showLegend={false}
+                showGridLines={false}
+                curveType="monotone"
+                valueFormatter={(value) => `${value} EH/s`}
+              />
+            </Card>
           </Col>
         </Grid>
 
         <Grid numItems={1} numItemsSm={2} className="gap-6 mt-6">
           <Col>
-            <NeuralInsightsCard />
+            <Card className="bg-[#181F3A] border-none shadow-xl">
+              <Title className="text-white">Neural Network Insights</Title>
+              <BarList data={neuralInsights} className="mt-4" />
+              <Text className="mt-4 text-sm text-white/80">Our neural engine currently detects a <b>bullish</b> bias. Signals are updated in real time based on on-chain and market data.</Text>
+            </Card>
           </Col>
           <Col>
-            <SmcAnalysisCard />
-          </Col>
-          <Col>
-            <MarketInsightsCard />
-          </Col>
-          <Col>
-            <OrdinalsViewer />
+            <Card className="bg-[#1A2A2F] border-none shadow-xl">
+              <Title className="text-white">SMC Analysis</Title>
+              <BarList data={smcAnalysis} className="mt-4" />
+              <Text className="mt-4 text-sm text-white/80">Key support, resistance, and pivot levels for strategic trading decisions.</Text>
+            </Card>
           </Col>
           <Col>
             <Card className="bg-[#1F2937] border-none shadow-xl">
@@ -293,7 +381,8 @@ export default function DashboardPage() {
               <BarChart
                 className="h-48 mt-4"
                 data={inflowOutflow}
-                index="date"                categories={["inflow", "outflow"]}
+                index="date"
+                categories={["inflow", "outflow"]}
                 colors={["emerald", "rose"]}
                 showAnimation
                 showLegend
@@ -326,12 +415,10 @@ export default function DashboardPage() {
                 <Card className="bg-[#2D2D2D] border-none">
                   <Text className="text-gray-400">24h Volume</Text>
                   <Metric className="text-white">${(marketData?.volume24h ?? 0).toLocaleString()}</Metric>
-                  <Text className="text-xs text-emerald-400 mt-1">CoinMarketCap API</Text>
                 </Card>
                 <Card className="bg-[#2D2D2D] border-none">
                   <Text className="text-gray-400">Market Cap</Text>
                   <Metric className="text-white">${(marketData?.marketCap ?? 0).toLocaleString()}</Metric>
-                  <Text className="text-xs text-emerald-400 mt-1">CoinMarketCap API</Text>
                 </Card>
               </Grid>
               <AreaChart
@@ -348,7 +435,7 @@ export default function DashboardPage() {
                 showAnimation
                 showLegend={false}
                 showGridLines={false}
-                valueFormatter={(number) =>
+                valueFormatter={(number) => 
                   `$${Intl.NumberFormat('us').format(number).toString()}B`
                 }
               />

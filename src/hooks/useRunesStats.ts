@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 
-export function useTopOrdinals() {
+export function useRunesStats() {
   return useQuery({
-    queryKey: ['top-ordinals'],
+    queryKey: ['runes-stats'],
     queryFn: async () => {
-      const res = await fetch('/api/ordinals-top')
-      if (!res.ok) throw new Error('Erro ao buscar Ordinals')
+      const res = await fetch('/api/runes-stats')
+      if (!res.ok) throw new Error('Erro ao buscar estatísticas de Runes')
       return res.json()
     },
     refetchInterval: 600000, // 10 minutos

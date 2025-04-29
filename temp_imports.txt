@@ -1,0 +1,7 @@
+'use client'
+
+import { useState } from 'react'
+import { Header } from '@/components/header'
+import { NeuralInsightsCard } from '@/components/neural-insights-card'
+import { SmcAnalysisCard } from '@/components/smc-analysis-card'
+import { MarketInsightsCard } from '@/components/market-insights-card'

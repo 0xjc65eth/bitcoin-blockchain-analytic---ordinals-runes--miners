@@ -1,0 +1,15 @@
+            <NeuralInsightsCard />
+          </Col>
+          <Col>
+            <SmcAnalysisCard />
+          </Col>
+          <Col>
+            <MarketInsightsCard />
+          </Col>
+          <Col>
+            <Card className="bg-[#1F2937] border-none shadow-xl">
+              <Title className="text-white">Inflow / Outflow</Title>
+              <BarChart
+                className="h-48 mt-4"
+                data={inflowOutflow}
+                index="date"

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ThemeToggle } from './theme-toggle'
 import { CardID } from './card-id'
+import { WalletConnectButton } from './wallet-connect-button-new'
 
 const navigation = [
   { name: 'Dashboard', href: '/' },
@@ -56,7 +57,8 @@ export function Header({ title, description }: HeaderProps) {
           <div className="w-full flex-1 md:w-auto md:flex-none">
             <CardID />
           </div>
-          <nav className="flex items-center">
+          <nav className="flex items-center space-x-4">
+            <WalletConnectButton />
             <ThemeToggle />
           </nav>
         </div>
@@ -69,4 +71,4 @@ export function Header({ title, description }: HeaderProps) {
       )}
     </header>
   )
-} 
+}
