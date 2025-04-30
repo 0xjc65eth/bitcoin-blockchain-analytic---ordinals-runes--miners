@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Header } from '@/components/header'
 import { NeuralInsightsCard } from '@/components/neural-insights-card'
 import { SmcAnalysisCard } from '@/components/smc-analysis-card'
-import { MarketInsightsCard } from '@/components/market-insights-card'
+import { MarketInsightsFallback } from '@/components/market-insights-fallback'
 import { BitcoinPriceCard } from '@/components/bitcoin-price-card'
 import { OrdinalsViewer } from '@/components/ordinals-viewer'
 import { MempoolAnalysisCard } from '@/components/mempool-analysis-card'
@@ -282,7 +282,7 @@ export default function DashboardPage() {
             <SmcAnalysisCard />
           </Col>
           <Col>
-            <MarketInsightsCard />
+            <MarketInsightsFallback />
           </Col>
           <Col>
             <OrdinalsViewer />

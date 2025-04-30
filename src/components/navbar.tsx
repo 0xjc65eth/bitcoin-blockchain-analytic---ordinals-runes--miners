@@ -24,6 +24,7 @@ const navItems = [
   { name: "Trading", href: "/trading", icon: RiExchangeLine },
   { name: "Ordinals", href: "/ordinals", icon: RiPulseLine },
   { name: "Runes", href: "/runes", icon: RiSignalTowerLine },
+  { name: "Arbitrage", href: "/arbitrage", icon: RiExchangeLine },
   { name: "Social", href: "/social", icon: RiGroupLine },
   { name: "Alerts", href: "/alerts", icon: RiNotification3Line },
   { name: "Portfolio", href: "/portfolio", icon: RiWalletLine },

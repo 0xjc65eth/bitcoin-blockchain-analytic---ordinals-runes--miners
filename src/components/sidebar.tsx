@@ -11,6 +11,7 @@ const navItems = [
   { name: 'Miners', href: '/miners' },
   { name: 'Ordinals', href: '/ordinals' },
   { name: 'Runes', href: '/runes' },
+  { name: 'Arbitrage', href: '/arbitrage' },
   { name: 'Signals', href: '/signals' },
   { name: 'Social', href: '/social' },
   { name: 'Alerts', href: '/alerts' },
@@ -78,4 +79,4 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       </div>
     </>
   )
-} 
+}

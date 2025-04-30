@@ -3,12 +3,30 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['ordinals.com', 'magiceden.io'],
+    domains: ['ordinals.com', 'magiceden.io', 'api.coinmarketcap.com', 'api.ordiscan.com'],
     unoptimized: true,
   },
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ['@tremor/react', 'recharts'],
+    // Isso ajuda a evitar erros 500 em produção
+    serverComponentsExternalPackages: ['axios'],
+  },
+  // Configuração para lidar com erros
+  onDemandEntries: {
+    // Período em ms em que uma página deve permanecer no buffer
+    maxInactiveAge: 25 * 1000,
+    // Número de páginas que devem ser mantidas em buffer
+    pagesBufferLength: 4,
+  },
+  // Configuração para lidar com timeouts
+  serverRuntimeConfig: {
+    // Configurações disponíveis apenas no servidor
+    apiTimeout: 10000, // 10 segundos
+  },
+  publicRuntimeConfig: {
+    // Configurações disponíveis no cliente e no servidor
+    apiBaseUrl: process.env.API_BASE_URL || 'https://api.example.com',
   },
   webpack: (config) => {
     config.resolve.fallback = {
@@ -73,4 +91,4 @@ const nextConfig = {
   }
 }
 
-module.exports = nextConfig 
+module.exports = nextConfig
