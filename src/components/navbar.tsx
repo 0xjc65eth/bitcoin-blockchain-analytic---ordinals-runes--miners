@@ -3,7 +3,6 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { WalletConnectButton } from "./wallet-connect-button-new"
 import { CardID } from "./card-id"
 import { useAppSelector } from "@/store"
 import {
@@ -21,7 +20,7 @@ import {
 const navItems = [
   { name: "Dashboard", href: "/", icon: RiDashboardLine },
   { name: "Miners", href: "/miners", icon: RiBarChartLine },
-  { name: "Trading", href: "/trading", icon: RiExchangeLine },
+  { name: "Network", href: "/network", icon: RiPulseLine },
   { name: "Ordinals", href: "/ordinals", icon: RiPulseLine },
   { name: "Runes", href: "/runes", icon: RiSignalTowerLine },
   { name: "Arbitrage", href: "/arbitrage", icon: RiExchangeLine },
@@ -60,7 +59,7 @@ export function Navbar() {
       </div>
       <div className="flex items-center gap-4">
         {nftData && <CardID />}
-        <WalletConnectButton />
+        {/* WalletConnectButton removido para evitar duplicação */}
       </div>
     </nav>
   )

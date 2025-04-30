@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 const navItems = [
   { name: 'Dashboard', href: '/' },
   { name: 'Miners', href: '/miners' },
+  { name: 'Network', href: '/network' },
   { name: 'Ordinals', href: '/ordinals' },
   { name: 'Runes', href: '/runes' },
   { name: 'Arbitrage', href: '/arbitrage' },

@@ -5,9 +5,9 @@ import { Header } from '@/components/header'
 import { NeuralInsightsCard } from '@/components/neural-insights-card'
 import { SmcAnalysisCard } from '@/components/smc-analysis-card'
 import { MarketInsightsCard } from '@/components/market-insights-card'
-import { 
-  AreaChart, 
-  BarChart, 
+import {
+  AreaChart,
+  BarChart,
   LineChart,
   Card,
   Title,
@@ -215,14 +215,14 @@ export default function DashboardPage() {
     blockTime: 0,
     difficulty: 0
   } } = useMiningData()
-  
+
   const { data: marketData = {
     btcPrice: 0,
     btcChange24h: 0,
     volume24h: 0,
     marketCap: 0
   } } = useMarketData()
-  
+
   const { data: mempoolData = {
     pendingTransactions: 0
   } } = useMempoolData()
@@ -231,20 +231,20 @@ export default function DashboardPage() {
   const DeltaIcon = (marketData?.btcChange24h ?? 0) >= 0 ? RiArrowUpSLine : RiArrowDownSLine
 
   return (
-    <main className="min-h-screen bg-[#121212]">
+    <main className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950">
       <Header />
       <div className="container mx-auto py-8 px-4">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#8B5CF6] via-[#6366F1] to-[#8B5CF6] text-transparent bg-clip-text">
+            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 text-transparent bg-clip-text">
               DASHBOARD
             </h1>
-            <h2 className="text-lg text-gray-400">Real-time Market Analysis</h2>
+            <h2 className="text-lg text-gray-300">Real-time Market Analysis</h2>
           </div>
           <TabGroup>
-            <TabList variant="solid" className="bg-[#2D2D2D] p-1 rounded-xl">
+            <TabList variant="solid" className="bg-slate-800/80 p-1 rounded-xl border border-slate-700/50">
               {timeframes.map((tf) => (
-                <Tab 
+                <Tab
                   key={tf}
                   onClick={() => setSelectedTimeframe(tf)}
                   className="px-6 py-2 text-sm font-medium"
@@ -258,219 +258,482 @@ export default function DashboardPage() {
 
         <Grid numItems={1} numItemsSm={2} numItemsLg={3} className="gap-6 mb-6">
           <Col>
-            <Card className="bg-[#1D1D1D] border border-[#3D3D3D] shadow-xl">
+            <Card className="bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border border-blue-500/30 shadow-xl">
               <Flex alignItems="start">
                 <div>
-                  <Text className="text-gray-400">Bitcoin Price</Text>
-                  <Metric className="text-white">${(marketData?.btcPrice ?? 0).toLocaleString()}</Metric>
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-indigo-500/20 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <Text className="text-blue-300 font-medium">Bitcoin Price</Text>
+                  </div>
+                  <Metric className="text-white bg-gradient-to-r from-blue-400 to-indigo-400 text-transparent bg-clip-text">${(marketData?.btcPrice ?? 0).toLocaleString()}</Metric>
                 </div>
-                <BadgeDelta deltaType={deltaType} className="flex items-center">
+                <BadgeDelta deltaType={deltaType} className="flex items-center px-3 py-1.5 rounded-lg bg-gradient-to-r from-blue-500/20 to-indigo-500/20 border border-blue-500/30">
                   <DeltaIcon className="w-4 h-4 mr-1" />
                   {(marketData?.btcChange24h ?? 0).toFixed(2)}%
                 </BadgeDelta>
               </Flex>
-              <AreaChart
-                className="h-48 mt-6"
-                data={[
-                  { date: '2024-01', value: 42000 },
-                  { date: '2024-02', value: 45000 },
-                  { date: '2024-03', value: 68000 },
-                  { date: '2024-04', value: 65000 },
-                ]}
-                index="date"
-                categories={['value']}
-                colors={[colors.primary]}
-                showAnimation
-                showLegend={false}
-                showGridLines={false}
-                showXAxis={true}
-                showYAxis={true}
-                yAxisWidth={65}
-                curveType="natural"
-                valueFormatter={(value) => `$${value.toLocaleString()}`}
-              />
+              <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/30 mt-6">
+                <AreaChart
+                  className="h-48"
+                  data={[
+                    { date: '2024-01', value: 42000 },
+                    { date: '2024-02', value: 45000 },
+                    { date: '2024-03', value: 68000 },
+                    { date: '2024-04', value: 65000 },
+                  ]}
+                  index="date"
+                  categories={['value']}
+                  colors={["blue"]}
+                  showAnimation
+                  showLegend={false}
+                  showGridLines={false}
+                  showXAxis={true}
+                  showYAxis={true}
+                  yAxisWidth={65}
+                  curveType="natural"
+                  valueFormatter={(value) => `$${value.toLocaleString()}`}
+                />
+              </div>
+              <div className="mt-4 pt-3 border-t border-slate-700/30 text-xs text-gray-300 flex justify-between items-center">
+                <span className="flex items-center gap-1.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                  CoinMarketCap API
+                </span>
+              </div>
             </Card>
           </Col>
 
           <Col>
-            <Card className="bg-[#1D1D1D] border border-[#3D3D3D] shadow-xl">
-              <Title className="text-white">Mempool Analysis</Title>
-              <Flex className="mt-4">
-                <Text className="text-gray-400">Pending Transactions</Text>
-                <Text className="text-white font-medium">{(mempoolData?.pendingTransactions ?? 0).toLocaleString()}</Text>
-              </Flex>
-              <ProgressBar 
-                value={75} 
-                color={colors.secondary}
-                className="mt-2" 
-              />
-              <DonutChart
-                className="h-48 mt-6"
-                data={[
-                  { name: '1-2 sat/vB', value: 150 },
-                  { name: '2-5 sat/vB', value: 300 },
-                  { name: '5-10 sat/vB', value: 200 },
-                  { name: '10+ sat/vB', value: 100 },
-                ]}
-                category="value"
-                index="name"
-                colors={[colors.primary, colors.secondary, colors.accent, colors.neutral]}
-                showAnimation
-                showTooltip
-                valueFormatter={(value) => `${value} txs`}
-              />
-              <Legend 
-                className="mt-3"
-                categories={['1-2 sat/vB', '2-5 sat/vB', '5-10 sat/vB', '10+ sat/vB']}
-                colors={[colors.primary, colors.secondary, colors.accent, colors.neutral]}
-              />
-            </Card>
-          </Col>
-
-          <Col>
-            <Card className="bg-[#1D1D1D] border border-[#3D3D3D] shadow-xl">
-              <Title className="text-white">Network Hash Rate</Title>
-              <Flex className="mt-4">
-                <div>
-                  <Text className="text-gray-400">Current Hash Rate</Text>
-                  <Metric className="text-white">{(miningData?.hashRate ?? 0).toLocaleString()} EH/s</Metric>
+            <Card className="bg-gradient-to-br from-purple-500/10 to-indigo-500/10 border border-purple-500/30 shadow-xl">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-indigo-500/20 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                  </div>
+                  <Title className="text-white font-bold">Mempool Analysis</Title>
                 </div>
-                <BadgeDelta deltaType="increase" className="self-end">
-                  +5.2%
-                </BadgeDelta>
-              </Flex>
-              <LineChart
-                className="h-48 mt-6"
-                data={[
-                  { date: '2024-01', hashrate: 400 },
-                  { date: '2024-02', hashrate: 420 },
-                  { date: '2024-03', hashrate: 450 },
-                  { date: '2024-04', hashrate: 470 },
-                ]}
-                index="date"
-                categories={['hashrate']}
-                colors={[colors.primary]}
-                showAnimation
-                showLegend={false}
-                showGridLines={false}
-                curveType="monotone"
-                valueFormatter={(value) => `${value} EH/s`}
-              />
+                <div className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-purple-500/20 to-indigo-500/20 border border-purple-500/30 text-xs font-bold text-purple-400 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
+                  Live Data
+                </div>
+              </div>
+              <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/30">
+                <Flex className="mb-2">
+                  <Text className="text-purple-300 font-medium">Pending Transactions</Text>
+                  <Text className="text-white font-bold">{(mempoolData?.pendingTransactions ?? 0).toLocaleString()}</Text>
+                </Flex>
+                <ProgressBar
+                  value={75}
+                  color="purple"
+                  className="mt-2 h-2.5 rounded-full"
+                />
+              </div>
+              <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/30 mt-4">
+                <DonutChart
+                  className="h-48"
+                  data={[
+                    { name: '1-2 sat/vB', value: 150 },
+                    { name: '2-5 sat/vB', value: 300 },
+                    { name: '5-10 sat/vB', value: 200 },
+                    { name: '10+ sat/vB', value: 100 },
+                  ]}
+                  category="value"
+                  index="name"
+                  colors={["purple", "indigo", "violet", "slate"]}
+                  showAnimation
+                  showTooltip
+                  valueFormatter={(value) => `${value} txs`}
+                />
+                <Legend
+                  className="mt-3"
+                  categories={['1-2 sat/vB', '2-5 sat/vB', '5-10 sat/vB', '10+ sat/vB']}
+                  colors={["purple", "indigo", "violet", "slate"]}
+                />
+              </div>
+              <div className="mt-4 pt-3 border-t border-slate-700/30 text-xs text-gray-300 flex justify-between items-center">
+                <span className="flex items-center gap-1.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                  mempool.space API
+                </span>
+              </div>
+            </Card>
+          </Col>
+
+          <Col>
+            <Card className="bg-gradient-to-br from-emerald-500/10 to-green-500/10 border border-emerald-500/30 shadow-xl">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500/20 to-green-500/20 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                  </div>
+                  <Title className="text-white font-bold">Network Hash Rate</Title>
+                </div>
+                <div className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500/20 to-green-500/20 border border-emerald-500/30 text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  Real-time
+                </div>
+              </div>
+              <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/30 mb-4">
+                <Flex className="mb-2">
+                  <div>
+                    <Text className="text-emerald-300 font-medium">Current Hash Rate</Text>
+                    <Metric className="text-white bg-gradient-to-r from-emerald-400 to-green-400 text-transparent bg-clip-text">{(miningData?.hashRate ?? 0).toLocaleString()} EH/s</Metric>
+                  </div>
+                  <BadgeDelta deltaType="increase" className="self-end px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500/20 to-green-500/20 border border-emerald-500/30">
+                    +5.2%
+                  </BadgeDelta>
+                </Flex>
+              </div>
+              <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/30">
+                <LineChart
+                  className="h-48"
+                  data={[
+                    { date: '2024-01', hashrate: 400 },
+                    { date: '2024-02', hashrate: 420 },
+                    { date: '2024-03', hashrate: 450 },
+                    { date: '2024-04', hashrate: 470 },
+                  ]}
+                  index="date"
+                  categories={['hashrate']}
+                  colors={["emerald"]}
+                  showAnimation
+                  showLegend={false}
+                  showGridLines={false}
+                  curveType="monotone"
+                  valueFormatter={(value) => `${value} EH/s`}
+                />
+              </div>
+              <div className="mt-4 pt-3 border-t border-slate-700/30 text-xs text-gray-300 flex justify-between items-center">
+                <span className="flex items-center gap-1.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                  Updated: {new Date().toLocaleTimeString()}
+                </span>
+              </div>
             </Card>
           </Col>
         </Grid>
 
         <Grid numItems={1} numItemsSm={2} className="gap-6 mt-6">
           <Col>
-            <Card className="bg-[#181F3A] border-none shadow-xl">
-              <Title className="text-white">Neural Network Insights</Title>
-              <BarList data={neuralInsights} className="mt-4" />
-              <Text className="mt-4 text-sm text-white/80">Our neural engine currently detects a <b>bullish</b> bias. Signals are updated in real time based on on-chain and market data.</Text>
+            <Card className="bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border border-blue-500/30 shadow-xl p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-indigo-500/20 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <Title className="text-white font-bold">Neural Network Insights</Title>
+              </div>
+              <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/30">
+                <BarList data={neuralInsights} valueFormatter={(number) => `${(number * 100).toFixed(0)}%`} />
+              </div>
+              <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                <Text className="text-sm text-white/90">Our neural engine currently detects a <b className="text-emerald-400">bullish</b> bias. Signals are updated in real time based on on-chain and market data.</Text>
+              </div>
             </Card>
           </Col>
           <Col>
-            <Card className="bg-[#1A2A2F] border-none shadow-xl">
-              <Title className="text-white">SMC Analysis</Title>
-              <BarList data={smcAnalysis} className="mt-4" />
-              <Text className="mt-4 text-sm text-white/80">Key support, resistance, and pivot levels for strategic trading decisions.</Text>
+            <Card className="bg-gradient-to-br from-emerald-500/10 to-green-500/10 border border-emerald-500/30 shadow-xl p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500/20 to-green-500/20 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                  </svg>
+                </div>
+                <Title className="text-white font-bold">SMC Analysis</Title>
+              </div>
+              <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/30">
+                <BarList data={smcAnalysis} valueFormatter={(number) => `$${number.toLocaleString()}`} />
+              </div>
+              <div className="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
+                <Text className="text-sm text-white/90">Key support, resistance, and pivot levels for strategic trading decisions.</Text>
+              </div>
             </Card>
           </Col>
           <Col>
-            <Card className="bg-[#1F2937] border-none shadow-xl">
-              <Title className="text-white">Inflow / Outflow</Title>
-              <BarChart
-                className="h-48 mt-4"
-                data={inflowOutflow}
-                index="date"
-                categories={["inflow", "outflow"]}
-                colors={["emerald", "rose"]}
-                showAnimation
-                showLegend
-                showGridLines={false}
-              />
-              <Text className="mt-4 text-sm text-white/80">Track exchange inflows and outflows to anticipate market moves.</Text>
+            <Card className="bg-gradient-to-br from-purple-500/10 to-indigo-500/10 border border-purple-500/30 shadow-xl p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-indigo-500/20 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                  </svg>
+                </div>
+                <Title className="text-white font-bold">Inflow / Outflow</Title>
+              </div>
+              <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/30">
+                <BarChart
+                  className="h-48"
+                  data={inflowOutflow}
+                  index="date"
+                  categories={["inflow", "outflow"]}
+                  colors={["emerald", "rose"]}
+                  showAnimation
+                  showLegend
+                  showGridLines={false}
+                />
+              </div>
+              <div className="mt-4 p-3 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                <Text className="text-sm text-white/90">Track exchange inflows and outflows to anticipate market moves.</Text>
+              </div>
             </Card>
           </Col>
           <Col>
-            <Card className="bg-[#23272F] border-none shadow-xl">
-              <Title className="text-white">Decision Variables & Insights</Title>
-              <ul className="mt-4 space-y-2 text-white/90 text-sm">
-                <li>Funding Rate: <span className="text-emerald-400">+0.012%</span></li>
-                <li>Open Interest: <span className="text-emerald-400">$1.2B</span></li>
-                <li>Long/Short Ratio: <span className="text-rose-400">1.8</span></li>
-                <li>Volatility Index: <span className="text-violet-400">3.2%</span></li>
-                <li>Social Sentiment: <span className="text-emerald-400">Positive</span></li>
-                <li>Network Health: <span className="text-emerald-400">Strong</span></li>
-              </ul>
-              <Text className="mt-4 text-xs text-white/70">These variables help you make smarter, data-driven trading decisions.</Text>
+            <Card className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/30 shadow-xl p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                </div>
+                <Title className="text-white font-bold">Decision Variables & Insights</Title>
+              </div>
+              <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/30">
+                <ul className="space-y-2 text-white/90 text-sm">
+                  <li className="flex items-center justify-between p-2 bg-slate-800/50 rounded-lg border border-slate-700/30">
+                    <span>Funding Rate:</span>
+                    <span className="px-2 py-1 bg-emerald-500/20 border border-emerald-500/30 rounded-lg text-emerald-400 font-medium">+0.012%</span>
+                  </li>
+                  <li className="flex items-center justify-between p-2 bg-slate-800/50 rounded-lg border border-slate-700/30">
+                    <span>Open Interest:</span>
+                    <span className="px-2 py-1 bg-emerald-500/20 border border-emerald-500/30 rounded-lg text-emerald-400 font-medium">$1.2B</span>
+                  </li>
+                  <li className="flex items-center justify-between p-2 bg-slate-800/50 rounded-lg border border-slate-700/30">
+                    <span>Long/Short Ratio:</span>
+                    <span className="px-2 py-1 bg-rose-500/20 border border-rose-500/30 rounded-lg text-rose-400 font-medium">1.8</span>
+                  </li>
+                  <li className="flex items-center justify-between p-2 bg-slate-800/50 rounded-lg border border-slate-700/30">
+                    <span>Volatility Index:</span>
+                    <span className="px-2 py-1 bg-violet-500/20 border border-violet-500/30 rounded-lg text-violet-400 font-medium">3.2%</span>
+                  </li>
+                  <li className="flex items-center justify-between p-2 bg-slate-800/50 rounded-lg border border-slate-700/30">
+                    <span>Social Sentiment:</span>
+                    <span className="px-2 py-1 bg-emerald-500/20 border border-emerald-500/30 rounded-lg text-emerald-400 font-medium">Positive</span>
+                  </li>
+                  <li className="flex items-center justify-between p-2 bg-slate-800/50 rounded-lg border border-slate-700/30">
+                    <span>Network Health:</span>
+                    <span className="px-2 py-1 bg-emerald-500/20 border border-emerald-500/30 rounded-lg text-emerald-400 font-medium">Strong</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                <Text className="text-sm text-white/90">These variables help you make smarter, data-driven trading decisions.</Text>
+              </div>
             </Card>
           </Col>
         </Grid>
 
         <Grid numItems={1} numItemsSm={2} className="gap-6">
           <Col>
-            <Card className="bg-[#1D1D1D] border border-[#3D3D3D] shadow-xl">
-              <Title className="text-white">Market Analysis</Title>
+            <Card className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/30 shadow-xl">
+              <div className="flex justify-between items-center mb-4">
+                <Title className="text-white font-bold">Market Analysis</Title>
+                <div className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                  CoinMarketCap API
+                </div>
+              </div>
               <Grid numItems={2} className="gap-4 mt-4">
-                <Card className="bg-[#2D2D2D] border-none">
-                  <Text className="text-gray-400">24h Volume</Text>
+                <Card className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/30 p-4 rounded-xl shadow-md hover:shadow-lg transition-all">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </div>
+                    <Text className="text-amber-300 font-medium">24h Volume</Text>
+                  </div>
                   <Metric className="text-white">${(marketData?.volume24h ?? 0).toLocaleString()}</Metric>
+                  <div className="w-full bg-slate-800/50 h-2.5 mt-2 rounded-full p-0.5">
+                    <div className="h-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500" style={{ width: '65%' }}>
+                      <div className="w-full h-full bg-white/30 rounded-full"></div>
+                    </div>
+                  </div>
                 </Card>
-                <Card className="bg-[#2D2D2D] border-none">
-                  <Text className="text-gray-400">Market Cap</Text>
+                <Card className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/30 p-4 rounded-xl shadow-md hover:shadow-lg transition-all">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </div>
+                    <Text className="text-amber-300 font-medium">Market Cap</Text>
+                  </div>
                   <Metric className="text-white">${(marketData?.marketCap ?? 0).toLocaleString()}</Metric>
+                  <div className="w-full bg-slate-800/50 h-2.5 mt-2 rounded-full p-0.5">
+                    <div className="h-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500" style={{ width: '80%' }}>
+                      <div className="w-full h-full bg-white/30 rounded-full"></div>
+                    </div>
+                  </div>
                 </Card>
               </Grid>
-              <AreaChart
-                className="h-64 mt-6"
-                data={[
-                  { date: '2024-01', volume: 30000000000 },
-                  { date: '2024-02', volume: 35000000000 },
-                  { date: '2024-03', volume: 40000000000 },
-                  { date: '2024-04', volume: 38000000000 },
-                ]}
-                index="date"
-                categories={['volume']}
-                colors={[colors.primary]}
-                showAnimation
-                showLegend={false}
-                showGridLines={false}
-                valueFormatter={(number) => 
-                  `$${Intl.NumberFormat('us').format(number).toString()}B`
-                }
-              />
+              <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/30 mt-6">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-sm text-amber-300 font-medium flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                    </svg>
+                    Market Trends
+                  </p>
+                </div>
+                <AreaChart
+                  className="h-64"
+                  data={[
+                    { date: '2024-01', volume: 30000000000 },
+                    { date: '2024-02', volume: 35000000000 },
+                    { date: '2024-03', volume: 40000000000 },
+                    { date: '2024-04', volume: 38000000000 },
+                  ]}
+                  index="date"
+                  categories={['volume']}
+                  colors={["amber"]}
+                  showAnimation
+                  showLegend={false}
+                  showGridLines={false}
+                  valueFormatter={(number) =>
+                    `$${Intl.NumberFormat('us').format(number).toString()}B`
+                  }
+                />
+              </div>
+              <div className="mt-4 pt-3 border-t border-slate-700/30 text-xs text-gray-300 flex justify-between items-center">
+                <span className="flex items-center gap-1.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                  Data from CoinMarketCap API
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Updated: {new Date().toLocaleTimeString()}
+                </span>
+              </div>
             </Card>
           </Col>
 
           <Col>
-            <Card className="bg-[#1D1D1D] border border-[#3D3D3D] shadow-xl">
-              <Title className="text-white">Network Health</Title>
+            <Card className="bg-gradient-to-br from-purple-500/10 to-indigo-500/10 border border-purple-500/30 shadow-xl">
+              <div className="flex justify-between items-center mb-4">
+                <Title className="text-white font-bold">Network Health</Title>
+                <div className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-purple-500/20 to-indigo-500/20 border border-purple-500/30 text-xs font-bold text-purple-400 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
+                  mempool.space API
+                </div>
+              </div>
               <Grid numItems={2} className="gap-4 mt-4">
-                <Card className="bg-[#2D2D2D] border-none">
-                  <Text className="text-gray-400">Block Time</Text>
+                <Card className="bg-gradient-to-br from-purple-500/10 to-indigo-500/10 border border-purple-500/30 p-4 rounded-xl shadow-md hover:shadow-lg transition-all">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-indigo-500/20 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <Text className="text-purple-300 font-medium">Block Time</Text>
+                  </div>
                   <Metric className="text-white">{(miningData?.blockTime ?? 0).toLocaleString()} min</Metric>
+                  <div className="flex items-center mt-2">
+                    <div className="flex items-center px-2 py-1 bg-emerald-500/20 border border-emerald-500/30 rounded-lg">
+                      <span className="text-xs font-medium text-emerald-400">
+                        Healthy
+                      </span>
+                    </div>
+                  </div>
                 </Card>
-                <Card className="bg-[#2D2D2D] border-none">
-                  <Text className="text-gray-400">Difficulty</Text>
+                <Card className="bg-gradient-to-br from-purple-500/10 to-indigo-500/10 border border-purple-500/30 p-4 rounded-xl shadow-md hover:shadow-lg transition-all">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-indigo-500/20 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </div>
+                    <Text className="text-purple-300 font-medium">Difficulty</Text>
+                  </div>
                   <Metric className="text-white">{(miningData?.difficulty ?? 0).toLocaleString()} T</Metric>
+                  <div className="w-full bg-slate-800/50 h-2.5 mt-2 rounded-full p-0.5">
+                    <div className="h-1.5 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500" style={{ width: '78%' }}>
+                      <div className="w-full h-full bg-white/30 rounded-full"></div>
+                    </div>
+                  </div>
                 </Card>
               </Grid>
-              <LineChart
-                className="h-64 mt-6"
-                data={[
-                  { date: '2024-01', difficulty: 55 },
-                  { date: '2024-02', difficulty: 58 },
-                  { date: '2024-03', difficulty: 62 },
-                  { date: '2024-04', difficulty: 65 },
-                ]}
-                index="date"
-                categories={['difficulty']}
-                colors={[colors.primary]}
-                showAnimation
-                showLegend={false}
-                showGridLines={false}
-                valueFormatter={(number) => `${number}T`}
-              />
+              <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/30 mt-6">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-sm text-purple-300 font-medium flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                    </svg>
+                    Difficulty Trend
+                  </p>
+                </div>
+                <LineChart
+                  className="h-64"
+                  data={[
+                    { date: '2024-01', difficulty: 55 },
+                    { date: '2024-02', difficulty: 58 },
+                    { date: '2024-03', difficulty: 62 },
+                    { date: '2024-04', difficulty: 65 },
+                  ]}
+                  index="date"
+                  categories={['difficulty']}
+                  colors={["purple"]}
+                  showAnimation
+                  showLegend={false}
+                  showGridLines={false}
+                  valueFormatter={(number) => `${number}T`}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 p-4 rounded-xl shadow-md hover:shadow-lg transition-all">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                      </svg>
+                    </div>
+                    <Text className="text-blue-300 font-medium">Current Block</Text>
+                  </div>
+                  <Metric className="text-white">842,567</Metric>
+                </Card>
+                <Card className="bg-gradient-to-br from-emerald-500/10 to-green-500/10 border border-emerald-500/30 p-4 rounded-xl shadow-md hover:shadow-lg transition-all">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500/20 to-green-500/20 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                    </div>
+                    <Text className="text-emerald-300 font-medium">Mempool</Text>
+                  </div>
+                  <Metric className="text-white">12,345 txs</Metric>
+                </Card>
+              </div>
+              <div className="mt-4 pt-3 border-t border-slate-700/30 text-xs text-gray-300 flex justify-between items-center">
+                <span className="flex items-center gap-1.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                  Data from mempool.space API
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Updated: {new Date().toLocaleTimeString()}
+                </span>
+              </div>
             </Card>
           </Col>
         </Grid>

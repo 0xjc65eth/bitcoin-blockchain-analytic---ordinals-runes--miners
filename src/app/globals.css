@@ -105,12 +105,79 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  animation: fadeIn 0.3s ease-in-out;
 }
 
 .wallet-modal-content {
   position: relative !important;
   z-index: 100000 !important;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9) !important;
+  animation: scaleIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Garantir que o botão de wallet connect só apareça no header */
+footer .wallet-connect-button,
+main .wallet-connect-button,
+.wallet-connect-button:not(header .wallet-connect-button):not(nav .wallet-connect-button) {
+  display: none !important;
+}
+
+
+
+@keyframes slideInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.3s ease-out forwards;
+}
+
+.animate-slideInUp {
+  animation: slideInUp 0.4s ease-out forwards;
+}
+
+/* Scrollbar personalizada */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.5);
+  border-radius: 10px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(75, 85, 99, 0.8);
+  border-radius: 10px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(107, 114, 128, 0.8);
 }
 
 @theme inline {

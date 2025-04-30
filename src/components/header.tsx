@@ -13,6 +13,7 @@ const navigation = [
   { name: 'Ordinals', href: '/ordinals' },
   { name: 'Runes', href: '/runes' },
   { name: 'Miners', href: '/miners' },
+  { name: 'Social', href: '/social' },
   { name: 'Analytics', href: '/analytics' },
   { name: 'Portfolio', href: '/portfolio' },
   { name: 'Settings', href: '/settings' },
@@ -58,7 +59,9 @@ export function Header({ title, description }: HeaderProps) {
             <CardID />
           </div>
           <nav className="flex items-center space-x-4">
-            <WalletConnectButton />
+            <div className="mr-2">
+              <WalletConnectButton />
+            </div>
             <ThemeToggle />
           </nav>
         </div>

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { Header } from '@/components/header'
 import { NeuralInsightsCard } from '@/components/neural-insights-card'
 import { SmcAnalysisCard } from '@/components/smc-analysis-card'
 import { MarketInsightsFallback } from '@/components/market-insights-fallback'
@@ -236,7 +235,6 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-screen bg-[#121212]">
-      <Header />
       <div className="container mx-auto py-8 px-4">
         <div className="flex justify-between items-center mb-8">
           <div>
