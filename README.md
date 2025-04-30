@@ -1,8 +1,20 @@
-# CYPHER ORDI FUTURE
+# CYPHER ORDI FUTURE - VERSION 2.2.1.1
 
 ![Bitcoin Analytics Dashboard](https://raw.githubusercontent.com/0xjc65eth/bitcoin-blockchain-analytic---ordinals-runes--miners/main/public/dashboard-preview.png)
 
 Uma plataforma avançada de análise da blockchain Bitcoin, focada em Ordinals, Runes e mineração, com recursos de arbitragem em tempo real e análise de descentralização da rede.
+
+## 🆕 Novidades da Versão 2.2.1.1
+
+Esta versão traz melhorias significativas nas abas de Mineradores e Arbitragem:
+
+- ✅ Layout completamente redesenhado para maior atratividade visual
+- ✅ Dados da OMB Pool corrigidos e apresentação aprimorada
+- ✅ Tratamento robusto para APIs com dados de fallback
+- ✅ Mais informações na aba de arbitragem com detalhes específicos de compra/venda
+- ✅ Design geral melhorado com gradientes, sombras e elementos visuais
+- ✅ Informações detalhadas sobre risco de centralização da rede Bitcoin
+- ✅ Tratamento de erros para APIs externas
 
 ## ✨ Principais Recursos
 
