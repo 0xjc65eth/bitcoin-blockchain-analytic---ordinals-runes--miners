@@ -28,7 +28,7 @@ export function WalletConnectDirect() {
   return (
     <div className="bg-gradient-to-br from-[#181F3A] to-[#2A3A5A] border-none shadow-xl p-6 rounded-lg">
       <h2 className="text-xl font-bold text-white mb-4">Wallet Connect Direct</h2>
-      
+
       {!isConnected ? (
         <button
           onClick={connectWallet}
@@ -42,7 +42,7 @@ export function WalletConnectDirect() {
             <span className="text-gray-300">Connected Wallet:</span>
             <span className="text-white font-medium">{walletAddress}</span>
           </div>
-          
+
           <button
             onClick={disconnectWallet}
             className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors w-full"
@@ -52,6 +52,85 @@ export function WalletConnectDirect() {
         </div>
       )}
     </div>
+  )
+}`
+  },
+  {
+    page: 'mock-demo',
+    component: 'wallet-connect-mock',
+    content: `'use client'
+
+import React, { useState } from 'react'
+
+export function WalletConnectMock() {
+  const [isConnected, setIsConnected] = useState(false)
+  const [walletAddress, setWalletAddress] = useState('')
+
+  const connectWallet = () => {
+    // Simulação de conexão de carteira
+    setIsConnected(true)
+    setWalletAddress('bc1q...xyz')
+  }
+
+  const disconnectWallet = () => {
+    setIsConnected(false)
+    setWalletAddress('')
+  }
+
+  return (
+    <div className="bg-gradient-to-br from-[#181F3A] to-[#2A3A5A] border-none shadow-xl p-6 rounded-lg">
+      <h2 className="text-xl font-bold text-white mb-4">Wallet Connect Mock</h2>
+
+      {!isConnected ? (
+        <button
+          onClick={connectWallet}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Connect Wallet (Mock)
+        </button>
+      ) : (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Connected Wallet:</span>
+            <span className="text-white font-medium">{walletAddress}</span>
+          </div>
+
+          <button
+            onClick={disconnectWallet}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors w-full"
+          >
+            Disconnect
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}`
+  },
+  {
+    page: 'mock-demo',
+    component: 'premium-content-mock',
+    content: `'use client'
+
+import React from 'react'
+import { Card, Title, Text } from '@tremor/react'
+
+export function PremiumContentMock() {
+  return (
+    <Card className="bg-gradient-to-br from-[#181F3A] to-[#2A3A5A] border-none shadow-xl p-6">
+      <Title className="text-white text-xl mb-4">Premium Content (Mock)</Title>
+      <div className="space-y-4">
+        <Text className="text-gray-400">
+          This is a mock of premium content that would be shown to users who have connected their wallet and own specific NFTs.
+        </Text>
+        <div className="bg-[#F7931A]/10 p-4 rounded-lg border border-[#F7931A]/20">
+          <Text className="text-white font-medium">Premium Analysis</Text>
+          <Text className="text-gray-400 text-sm mt-2">
+            This section would contain premium analysis and insights.
+          </Text>
+        </div>
+      </div>
+    </Card>
   )
 }`
   },
@@ -181,40 +260,40 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <ul className="flex space-x-6 overflow-x-auto pb-2">
           <li>
-            <a 
-              href="/" 
+            <a
+              href="/"
               className="text-gray-300 hover:text-white whitespace-nowrap"
             >
               Dashboard
             </a>
           </li>
           <li>
-            <a 
-              href="/miners" 
+            <a
+              href="/miners"
               className="text-blue-400 border-b-2 border-blue-400 pb-1 whitespace-nowrap"
             >
               Miners
             </a>
           </li>
           <li>
-            <a 
-              href="/network" 
+            <a
+              href="/network"
               className="text-gray-300 hover:text-white whitespace-nowrap"
             >
               Network
             </a>
           </li>
           <li>
-            <a 
-              href="/ordinals" 
+            <a
+              href="/ordinals"
               className="text-gray-300 hover:text-white whitespace-nowrap"
             >
               Ordinals
             </a>
           </li>
           <li>
-            <a 
-              href="/runes" 
+            <a
+              href="/runes"
               className="text-gray-300 hover:text-white whitespace-nowrap"
             >
               Runes
@@ -264,6 +343,96 @@ export function EnhancedMiningCard() {
     </Card>
   )
 }`
+  },
+  {
+    page: 'network',
+    component: 'header',
+    content: `'use client'
+
+import React from 'react'
+
+export function Header() {
+  return (
+    <header className="bg-[#0F172A] border-b border-gray-800 py-4">
+      <div className="container mx-auto px-4 flex justify-between items-center">
+        <div className="flex items-center">
+          <h1 className="text-xl font-bold text-white">Bitcoin Analytics</h1>
+        </div>
+        <nav className="hidden md:flex space-x-6">
+          <a href="/" className="text-gray-300 hover:text-white">Dashboard</a>
+          <a href="/network" className="text-gray-300 hover:text-white">Network</a>
+          <a href="/ordinals" className="text-gray-300 hover:text-white">Ordinals</a>
+        </nav>
+      </div>
+    </header>
+  )
+}`
+  },
+  {
+    page: 'network',
+    component: 'enhanced-market-analysis-card',
+    content: `'use client'
+
+import React from 'react'
+import { Card, Title, Text } from '@tremor/react'
+
+export function EnhancedMarketAnalysisCard() {
+  return (
+    <Card className="bg-gradient-to-br from-[#181F3A] to-[#2A3A5A] border-none shadow-xl p-6">
+      <Title className="text-white text-xl mb-4">Market Analysis</Title>
+      <div className="space-y-4">
+        <Text className="text-gray-400">
+          Market analysis will be displayed here. This is a placeholder component.
+        </Text>
+        <div className="bg-[#F7931A]/10 p-4 rounded-lg border border-[#F7931A]/20">
+          <Text className="text-white font-medium">Price Analysis</Text>
+          <Text className="text-gray-400 text-sm mt-2">
+            This section will show price analysis and trends.
+          </Text>
+        </div>
+        <div className="bg-[#F7931A]/10 p-4 rounded-lg border border-[#F7931A]/20">
+          <Text className="text-white font-medium">Volume Analysis</Text>
+          <Text className="text-gray-400 text-sm mt-2">
+            This section will show volume analysis and trends.
+          </Text>
+        </div>
+      </div>
+    </Card>
+  )
+}`
+  },
+  {
+    page: 'network',
+    component: 'enhanced-network-health-card',
+    content: `'use client'
+
+import React from 'react'
+import { Card, Title, Text } from '@tremor/react'
+
+export function EnhancedNetworkHealthCard() {
+  return (
+    <Card className="bg-gradient-to-br from-[#181F3A] to-[#2A3A5A] border-none shadow-xl p-6">
+      <Title className="text-white text-xl mb-4">Network Health</Title>
+      <div className="space-y-4">
+        <Text className="text-gray-400">
+          Network health metrics will be displayed here. This is a placeholder component.
+        </Text>
+        <div className="bg-[#F7931A]/10 p-4 rounded-lg border border-[#F7931A]/20">
+          <Text className="text-white font-medium">Node Distribution</Text>
+          <Text className="text-gray-400 text-sm mt-2">
+            This section will show the distribution of nodes across the network.
+          </Text>
+        </div>
+        <div className="bg-[#F7931A]/10 p-4 rounded-lg border border-[#F7931A]/20">
+          <Text className="text-white font-medium">Transaction Throughput</Text>
+          <Text className="text-gray-400 text-sm mt-2">
+            This section will show transaction throughput metrics.
+          </Text>
+        </div>
+      </div>
+    </Card>
+  )
+}`
   }
 ];
 
@@ -271,7 +440,7 @@ export function EnhancedMiningCard() {
 function createDirectoryIfNotExists(dirPath) {
   const parts = dirPath.split(path.sep);
   let currentPath = '';
-  
+
   for (const part of parts) {
     currentPath = path.join(currentPath, part);
     if (!fs.existsSync(currentPath)) {
@@ -286,7 +455,7 @@ function createComponent(page, component, content) {
   const basePath = path.join('src', 'app');
   let componentDir;
   let componentPath;
-  
+
   if (page === 'app') {
     // Componentes globais para o app
     componentDir = path.join(basePath, 'components');
@@ -296,9 +465,9 @@ function createComponent(page, component, content) {
     componentDir = path.join(basePath, page, 'components', path.dirname(component));
     componentPath = path.join(basePath, page, 'components', `${component}.tsx`);
   }
-  
+
   createDirectoryIfNotExists(componentDir);
-  
+
   if (!fs.existsSync(componentPath)) {
     fs.writeFileSync(componentPath, content);
     console.log(`Created component: ${componentPath}`);
@@ -315,17 +484,17 @@ function updateImports(filePath, componentName, newPath) {
     console.log(`File not found: ${filePath}`);
     return false;
   }
-  
+
   let content = fs.readFileSync(filePath, 'utf8');
-  
+
   // Padrão para encontrar importações com @/components
   const importPattern = new RegExp(`import\\s+\\{\\s*([^}]*${componentName}[^}]*)\\}\\s+from\\s+['"]@/components.*['"]`, 'g');
-  
+
   // Substituir importações
   const newContent = content.replace(importPattern, (match, importedComponents) => {
     return `import { ${importedComponents} } from '${newPath}'`;
   });
-  
+
   if (content !== newContent) {
     fs.writeFileSync(filePath, newContent);
     console.log(`Updated imports in: ${filePath}`);
@@ -339,12 +508,12 @@ function updateImports(filePath, componentName, newPath) {
 // Criar componentes e atualizar importações
 for (const { page, component, content } of componentsToCreate) {
   const created = createComponent(page, component, content);
-  
+
   if (created) {
     // Atualizar importações na página correspondente
     let pagePath;
     let importPath;
-    
+
     if (page === 'app') {
       // Para componentes globais
       pagePath = path.join('src', 'app', 'error.tsx');
@@ -354,7 +523,7 @@ for (const { page, component, content } of componentsToCreate) {
       pagePath = path.join('src', 'app', page, 'page.tsx');
       importPath = './components/' + component;
     }
-    
+
     updateImports(pagePath, component.split('/').pop(), importPath);
   }
 }
