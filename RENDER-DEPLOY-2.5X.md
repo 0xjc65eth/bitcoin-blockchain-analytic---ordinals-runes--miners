@@ -1,28 +1,10 @@
 # Instruções para Deploy no Render - Versão 2.5X
 
-Este guia explica como fazer o deploy da versão 2.5X diretamente no Render.com, substituindo a versão atual em produção.
+Este guia explica como fazer o deploy da versão 2.5X diretamente no Render.com.
 
-## Método 1: Deploy Automático (Recomendado)
+## Método Recomendado: Criar um Novo Serviço (Mais Simples)
 
-### Pré-requisitos
-- Acesso à conta do Render.com
-- Acesso ao repositório GitHub
-
-### Passos para Deploy Automático
-
-1. Acesse o [Dashboard do Render](https://dashboard.render.com/)
-2. Localize o serviço atual "cypher-ordi-future"
-3. Clique em "Settings" e depois em "Build & Deploy"
-4. Em "Branch", altere a branch para `upgrade-2.5X`
-5. Clique em "Save Changes"
-6. Volte para a página principal do serviço e clique em "Manual Deploy" > "Deploy latest commit"
-7. Aguarde o processo de build e deploy ser concluído
-
-O Render irá automaticamente fazer o build e deploy da nova versão, substituindo a versão atual em produção.
-
-## Método 2: Criar um Novo Serviço
-
-Se preferir criar um novo serviço e depois substituir o atual:
+Este método é o mais simples e evita problemas com o deploy atual:
 
 1. Acesse o [Dashboard do Render](https://dashboard.render.com/)
 2. Clique em "New +" e selecione "Web Service"
@@ -41,13 +23,28 @@ Se preferir criar um novo serviço e depois substituir o atual:
    NODE_VERSION=18.17.0
    NEXT_PUBLIC_COINMARKETCAP_API_KEY=c045d2a9-6f2d-44e9-8297-a88ab83b463b
    NEXT_PUBLIC_ORDISCAN_API_KEY=e227a764-b31b-43cf-a60c-be5daa50cd2c
-   NEXT_PUBLIC_SUPABASE_URL=https://your-supabase-project.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   NEXT_PUBLIC_RAPIDAPI_KEY=0ec6b2cbf9mshb7aea8fe9276945p16d2e2jsne40eb8c57dae
+   NEXT_PUBLIC_DISABLE_NEURAL_LEARNING=true
    ```
-
-   **IMPORTANTE**: Substitua os valores de `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` pelos valores corretos do seu projeto Supabase. Sem essas variáveis, a página Neural Learning não será gerada corretamente.
 8. Clique em "Create Web Service"
 9. Após o deploy bem-sucedido, você pode redirecionar o domínio para este novo serviço
+
+## Método Alternativo: Atualizar o Serviço Existente
+
+Se preferir atualizar o serviço existente:
+
+1. Acesse o [Dashboard do Render](https://dashboard.render.com/)
+2. Localize o serviço atual "cypher-ordi-future"
+3. Clique em "Settings" e depois em "Environment"
+4. Adicione a variável de ambiente:
+   ```
+   NEXT_PUBLIC_DISABLE_NEURAL_LEARNING=true
+   ```
+5. Clique em "Save Changes"
+6. Vá para "Settings" > "Build & Deploy"
+7. Em "Branch", altere a branch para `upgrade-2.5X`
+8. Clique em "Save Changes"
+9. Volte para a página principal do serviço e clique em "Manual Deploy" > "Deploy latest commit"
 
 ## Verificação do Deploy
 
