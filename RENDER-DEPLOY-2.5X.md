@@ -76,19 +76,28 @@ Se estiver usando um domínio personalizado:
 
 ## Solução de Problemas Comuns
 
-### Configuração Atualizada para App Router
+### Solução para Módulos Não Encontrados
 
-Atualizamos a configuração do Next.js para ser compatível com o App Router. As principais alterações foram:
+Implementamos uma solução para os erros de módulos não encontrados nas páginas `/arbitrage` e `/brc20`. A solução consiste em:
 
-1. Removemos a configuração `exportPathMap` que não é compatível com o App Router
-2. Adicionamos a configuração `output: 'standalone'` para otimizar o build
-3. Configuramos o TypeScript e ESLint para ignorar erros durante o build
-4. Adicionamos outras configurações para melhorar a compatibilidade
+1. **Componentes Locais**: Criamos versões locais dos componentes necessários dentro de cada diretório de página:
+   - `/arbitrage/components/header.tsx`
+   - `/arbitrage/components/enhanced-arbitrage-card.tsx`
+   - `/brc20/components/header.tsx`
+   - `/brc20/components/dashboard-card.tsx`
 
-Essas alterações permitem que o projeto seja construído e implantado corretamente no Render, mesmo com páginas problemáticas como:
-- `/neural-learning` (problema com Supabase)
-- `/arbitrage` (problema com importações)
-- `/brc20` (problema com importações)
+2. **Hooks Locais**: Criamos versões locais dos hooks necessários:
+   - `/brc20/hooks/useOrdiscanData.ts`
+
+3. **Importações Relativas**: Atualizamos as importações para usar caminhos relativos em vez de aliases `@/`:
+   - `import { Header } from './components/header'` em vez de `import { Header } from '@/components/header'`
+
+4. **Configuração do Next.js**: Simplificamos a configuração do Next.js para evitar opções inválidas:
+   - Removemos opções experimentais não suportadas
+   - Configuramos `output: 'standalone'` para otimizar o build
+   - Configuramos o TypeScript e ESLint para ignorar erros durante o build
+
+Essas alterações permitem que o projeto seja construído e implantado corretamente no Render, mesmo com as páginas que anteriormente apresentavam problemas.
 
 ### Configuração Manual de Variáveis de Ambiente
 
