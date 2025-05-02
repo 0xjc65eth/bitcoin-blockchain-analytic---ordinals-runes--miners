@@ -8,10 +8,10 @@ export function useTradingData(refreshInterval: number = 60000) {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   useEffect(() => {
-    const fetchData = () => {
+    const fetchData = async () => {
       try {
         setIsLoading(true);
-        const tradingData = getTradingData();
+        const tradingData = await getTradingData();
         setData(tradingData);
         setLastUpdated(new Date());
         setError(null);
@@ -26,9 +26,9 @@ export function useTradingData(refreshInterval: number = 60000) {
     fetchData();
 
     // Set up interval for refreshing data
-    const intervalId = setInterval(() => {
+    const intervalId = setInterval(async () => {
       try {
-        const refreshedData = refreshTradingData();
+        const refreshedData = await refreshTradingData();
         setData(refreshedData);
         setLastUpdated(new Date());
       } catch (err) {
@@ -41,10 +41,10 @@ export function useTradingData(refreshInterval: number = 60000) {
   }, [refreshInterval]);
 
   // Function to manually refresh data
-  const refresh = () => {
+  const refresh = async () => {
     try {
       setIsLoading(true);
-      const refreshedData = refreshTradingData();
+      const refreshedData = await refreshTradingData();
       setData(refreshedData);
       setLastUpdated(new Date());
       setError(null);

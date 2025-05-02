@@ -82,68 +82,83 @@ export interface TradingData {
   lastUpdated: string;
 }
 
-// Função para gerar oportunidades de arbitragem com foco em Ordinals e Runes
-function generateArbitrageOpportunities(count: number = 10): ArbitrageOpportunity[] {
-  const exchanges = ['Magic Eden', 'Gamma.io', 'Ordinals Market', 'Ordswap', 'Unisat', 'Ordinals Wallet', 'OrdinalHub', 'Xverse'];
-  const assets = [
-    'Ordinal Punks', 'Bitcoin Puppets', 'Ordinal Maxi', 'Rune20/PEPE', 'Rune20/MEME', 'Rune20/TRAC',
-    'BTC/USDT', 'Ordinal Satoshi', 'OCM Genesis', 'Taproot Wizards', 'Rune20/ORDI', 'Rune20/SATS'
-  ];
-  const statuses = ['New', 'Active', 'Closing', 'Expired'];
-  const risks = ['Low', 'Medium', 'High'];
+// Função para obter oportunidades de arbitragem reais com foco em Ordinals e Runes
+async function fetchArbitrageOpportunities(): Promise<ArbitrageOpportunity[]> {
+  try {
+    // Obter dados de preços de diferentes exchanges
+    const magicEdenData = await fetch('https://api.magiceden.io/v2/collections/bitcoin-puppets/stats').then(res => res.json());
+    const gammaData = await fetch('https://gamma.io/api/v1/collections/bitcoin-puppets').then(res => res.json());
+    const ordinalswapData = await fetch('https://api.ordinalswap.io/collections/bitcoin-puppets').then(res => res.json()).catch(() => null);
 
-  return Array.from({ length: count }, (_, index) => {
-    const sourceExchange = exchanges[Math.floor(Math.random() * exchanges.length)];
-    let targetExchange = sourceExchange;
-    while (targetExchange === sourceExchange) {
-      targetExchange = exchanges[Math.floor(Math.random() * exchanges.length)];
+    // Obter dados de preços de BTC de diferentes exchanges
+    const binanceBTC = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT').then(res => res.json());
+    const coinbaseBTC = await fetch('https://api.coinbase.com/v2/prices/BTC-USD/spot').then(res => res.json());
+
+    // Criar oportunidades de arbitragem baseadas em dados reais
+    const opportunities: ArbitrageOpportunity[] = [];
+
+    // Bitcoin Puppets arbitragem entre Magic Eden e Gamma
+    if (magicEdenData && gammaData) {
+      const meFloorPrice = magicEdenData.floorPrice / 1e8; // Converter de sats para BTC
+      const gammaFloorPrice = gammaData.floor_price / 1e8; // Converter de sats para BTC
+
+      if (meFloorPrice !== gammaFloorPrice) {
+        const percentageDifference = Math.abs((meFloorPrice - gammaFloorPrice) / Math.min(meFloorPrice, gammaFloorPrice) * 100);
+        const volume24h = magicEdenData.volumeAll;
+        const estimatedProfit = (percentageDifference * volume24h) / 100 * 0.1; // 10% da diferença como lucro estimado
+
+        opportunities.push({
+          id: `ARB-1`,
+          sourceExchange: meFloorPrice < gammaFloorPrice ? 'Magic Eden' : 'Gamma.io',
+          targetExchange: meFloorPrice < gammaFloorPrice ? 'Gamma.io' : 'Magic Eden',
+          asset: 'Bitcoin Puppets',
+          priceDifference: Math.abs(meFloorPrice - gammaFloorPrice),
+          percentageDifference,
+          volume24h,
+          estimatedProfit,
+          risk: percentageDifference > 10 ? 'High' : percentageDifference > 5 ? 'Medium' : 'Low',
+          timeToExecute: '10m',
+          confidence: 85,
+          status: 'Active',
+          timestamp: new Date().toISOString()
+        });
+      }
     }
 
-    const asset = assets[Math.floor(Math.random() * assets.length)];
+    // BTC arbitragem entre Binance e Coinbase
+    if (binanceBTC && coinbaseBTC) {
+      const binancePrice = parseFloat(binanceBTC.price);
+      const coinbasePrice = parseFloat(coinbaseBTC.data.amount);
 
-    // Higher spreads for Ordinals and Runes due to market inefficiency
-    const percentageDifference = asset.includes('Ordinal') || asset.includes('Rune')
-      ? Math.random() * 12 + 2 // 2% to 14% for Ordinals/Runes
-      : Math.random() * 3 + 0.3; // 0.3% to 3.3% for BTC
+      if (binancePrice !== coinbasePrice) {
+        const percentageDifference = Math.abs((binancePrice - coinbasePrice) / Math.min(binancePrice, coinbasePrice) * 100);
+        const volume24h = 1000000; // Volume estimado
+        const estimatedProfit = (percentageDifference * volume24h) / 100 * 0.05; // 5% da diferença como lucro estimado
 
-    const volume24h = Math.floor(Math.random() * 5000000) + 100000; // $100K to $5.1M
-    const estimatedProfit = (percentageDifference * volume24h) / 100 * (Math.random() * 0.15 + 0.05); // Higher profit margin
-
-    // Higher risk for higher percentage differences
-    let risk: 'Low' | 'Medium' | 'High';
-    if (percentageDifference > 10) {
-      risk = 'High';
-    } else if (percentageDifference > 5) {
-      risk = 'Medium';
-    } else {
-      risk = 'Low';
+        opportunities.push({
+          id: `ARB-2`,
+          sourceExchange: binancePrice < coinbasePrice ? 'Binance' : 'Coinbase',
+          targetExchange: binancePrice < coinbasePrice ? 'Coinbase' : 'Binance',
+          asset: 'BTC/USDT',
+          priceDifference: Math.abs(binancePrice - coinbasePrice),
+          percentageDifference,
+          volume24h,
+          estimatedProfit,
+          risk: percentageDifference > 1 ? 'High' : percentageDifference > 0.5 ? 'Medium' : 'Low',
+          timeToExecute: '5m',
+          confidence: 90,
+          status: 'Active',
+          timestamp: new Date().toISOString()
+        });
+      }
     }
 
-    const timeToExecute = `${Math.floor(Math.random() * 15) + 5}m`; // 5m to 20m
-    const confidence = Math.floor(Math.random() * 25) + 70; // 70% to 94%
-    const status = statuses[Math.floor(Math.random() * statuses.length)] as 'New' | 'Active' | 'Closing' | 'Expired';
-
-    // More recent timestamps for better relevance
-    const timestamp = new Date(Date.now() - Math.floor(Math.random() * 1800000)).toISOString(); // Within the last 30 minutes
-
-    return {
-      id: `ARB-${index + 1}`,
-      sourceExchange,
-      targetExchange,
-      asset,
-      priceDifference: asset.includes('BTC')
-        ? Math.random() * 500 + 10 // $10 to $510 for BTC
-        : Math.random() * 0.5 + 0.05, // $0.05 to $0.55 for Ordinals/Runes
-      percentageDifference,
-      volume24h,
-      estimatedProfit,
-      risk,
-      timeToExecute,
-      confidence,
-      status,
-      timestamp
-    };
-  });
+    // Se não conseguirmos obter dados reais, retornamos um array vazio
+    return opportunities;
+  } catch (error) {
+    console.error('Error fetching arbitrage opportunities:', error);
+    return [];
+  }
 }
 
 // Função para gerar setups de trade SMC
@@ -273,110 +288,127 @@ function generateSmcTradeSetups(count: number = 8): SmcTradeSetup[] {
   }).sort((a, b) => b.confidence - a.confidence);
 }
 
-// Função para gerar métricas neurais com foco em Bitcoin, Ordinals e Runes
-function generateNeuralMetrics(): NeuralMetric[] {
-  const metricNames = [
-    'Bitcoin On-Chain Activity',
-    'Ordinals Inscription Rate',
-    'Runes Adoption Metric',
-    'BTC Institutional Flow',
-    'Bitcoin Whale Activity',
-    'Ordinals Market Liquidity',
-    'Runes Trading Volume',
-    'Bitcoin Hash Rate Impact',
-    'BTC UTXO Age Distribution',
-    'Ordinals & Runes Correlation'
-  ];
+// Função para obter métricas neurais reais com foco em Bitcoin, Ordinals e Runes
+async function fetchNeuralMetrics(): Promise<NeuralMetric[]> {
+  try {
+    // Obter dados reais de APIs
+    const btcPriceData = await fetch('https://api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=BTC&CMC_PRO_API_KEY=' + process.env.NEXT_PUBLIC_COINMARKETCAP_API_KEY).then(res => res.json()).catch(() => null);
 
-  const timeframes = ['1h', '4h', '1D', '1W'];
+    const ordinalsData = await fetch('https://api.ordiscan.com/v1/stats?key=' + process.env.NEXT_PUBLIC_ORDISCAN_API_KEY).then(res => res.json()).catch(() => null);
 
-  return metricNames.map(name => {
-    // Adjust value ranges based on metric type
-    let value: number;
-    if (name.includes('Ordinals')) {
-      value = Math.random() * 30 + 60; // 60-90 range for Ordinals (bullish bias)
-    } else if (name.includes('Runes')) {
-      value = Math.random() * 40 + 50; // 50-90 range for Runes (bullish bias)
-    } else if (name.includes('Bitcoin') || name.includes('BTC')) {
-      value = Math.random() * 50 + 40; // 40-90 range for Bitcoin (moderate bullish bias)
-    } else {
-      value = Math.random() * 100; // 0-100 range for other metrics
+    const mempoolData = await fetch('https://mempool.space/api/v1/fees/recommended').then(res => res.json()).catch(() => null);
+
+    const hashrateData = await fetch('https://mempool.space/api/v1/mining/hashrate/1m').then(res => res.json()).catch(() => null);
+
+    // Criar métricas neurais baseadas em dados reais
+    const metrics: NeuralMetric[] = [];
+
+    // Bitcoin Price Momentum
+    if (btcPriceData && btcPriceData.data && btcPriceData.data.BTC) {
+      const btcData = btcPriceData.data.BTC;
+      const priceChange24h = btcData.quote.USD.percent_change_24h;
+      const priceChange7d = btcData.quote.USD.percent_change_7d;
+
+      // Calcular valor baseado nas mudanças de preço
+      const value = 50 + (priceChange24h * 0.3) + (priceChange7d * 0.7);
+      const trend = priceChange24h > 0 ? 'Up' : priceChange24h < 0 ? 'Down' : 'Neutral';
+
+      let interpretation = '';
+      if (value > 70) {
+        interpretation = `Strong bullish momentum with positive price action across multiple timeframes.`;
+      } else if (value > 50) {
+        interpretation = `Moderate bullish bias with positive long-term trend.`;
+      } else if (value > 40) {
+        interpretation = `Neutral price action, market in consolidation phase.`;
+      } else if (value > 20) {
+        interpretation = `Bearish short-term momentum, caution advised.`;
+      } else {
+        interpretation = `Strong bearish trend across multiple timeframes.`;
+      }
+
+      metrics.push({
+        name: 'Bitcoin Price Momentum',
+        value,
+        interpretation,
+        trend,
+        confidence: 90,
+        timeframe: '1D'
+      });
     }
 
-    let interpretation = '';
-    let trend: 'Up' | 'Down' | 'Neutral' = 'Neutral';
+    // Ordinals Inscription Rate
+    if (ordinalsData) {
+      // Calcular valor baseado na taxa de inscrição
+      const inscriptionRate = ordinalsData.inscription_rate || 0;
+      const normalizedRate = Math.min(100, Math.max(0, (inscriptionRate / 1000) * 100));
+      const trend = normalizedRate > 50 ? 'Up' : normalizedRate < 40 ? 'Down' : 'Neutral';
 
-    if (value > 70) {
-      if (name.includes('Ordinals')) {
+      let interpretation = '';
+      if (normalizedRate > 70) {
         interpretation = `Strong inscription activity and growing collector interest in Ordinals.`;
-      } else if (name.includes('Runes')) {
-        interpretation = `Significant adoption growth and positive sentiment for Runes tokens.`;
-      } else if (name.includes('Bitcoin') || name.includes('BTC')) {
-        interpretation = `Strong on-chain fundamentals and institutional interest in Bitcoin.`;
-      } else {
-        interpretation = `Strong positive reading, indicating bullish momentum.`;
-      }
-      trend = 'Up';
-    } else if (value > 50) {
-      if (name.includes('Ordinals')) {
+      } else if (normalizedRate > 50) {
         interpretation = `Moderate inscription growth with stable collector interest.`;
-      } else if (name.includes('Runes')) {
-        interpretation = `Steady adoption metrics with positive development activity.`;
-      } else if (name.includes('Bitcoin') || name.includes('BTC')) {
-        interpretation = `Healthy on-chain metrics with balanced accumulation patterns.`;
-      } else {
-        interpretation = `Moderately positive, suggesting cautious optimism.`;
-      }
-      trend = 'Up';
-    } else if (value > 40) {
-      if (name.includes('Ordinals')) {
+      } else if (normalizedRate > 40) {
         interpretation = `Neutral inscription rate, market in consolidation phase.`;
-      } else if (name.includes('Runes')) {
-        interpretation = `Balanced token flows, neither bullish nor bearish signals.`;
-      } else if (name.includes('Bitcoin') || name.includes('BTC')) {
-        interpretation = `Neutral on-chain activity, awaiting catalyst for direction.`;
-      } else {
-        interpretation = `Neutral reading, market in equilibrium.`;
-      }
-      trend = 'Neutral';
-    } else if (value > 20) {
-      if (name.includes('Ordinals')) {
+      } else if (normalizedRate > 20) {
         interpretation = `Declining inscription rate, potential market saturation.`;
-      } else if (name.includes('Runes')) {
-        interpretation = `Slowing adoption metrics, cautious outlook advised.`;
-      } else if (name.includes('Bitcoin') || name.includes('BTC')) {
-        interpretation = `Weakening on-chain fundamentals, distribution patterns observed.`;
       } else {
-        interpretation = `Moderately negative, suggesting caution.`;
-      }
-      trend = 'Down';
-    } else {
-      if (name.includes('Ordinals')) {
         interpretation = `Significant drop in inscription activity, bearish market conditions.`;
-      } else if (name.includes('Runes')) {
-        interpretation = `Negative adoption trends, declining interest in Runes ecosystem.`;
-      } else if (name.includes('Bitcoin') || name.includes('BTC')) {
-        interpretation = `Concerning on-chain metrics, potential for further downside.`;
-      } else {
-        interpretation = `Strong negative reading, indicating bearish pressure.`;
       }
-      trend = 'Down';
+
+      metrics.push({
+        name: 'Ordinals Inscription Rate',
+        value: normalizedRate,
+        interpretation,
+        trend,
+        confidence: 85,
+        timeframe: '1D'
+      });
     }
 
-    // Higher confidence for Bitcoin metrics
-    const confidence = name.includes('Bitcoin') || name.includes('BTC')
-      ? Math.floor(Math.random() * 15) + 80 // 80-94% for Bitcoin
-      : Math.floor(Math.random() * 25) + 70; // 70-94% for others
+    // Bitcoin Network Health
+    if (mempoolData && hashrateData) {
+      // Calcular valor baseado na taxa de transação e hashrate
+      const feeRate = mempoolData.fastestFee || 0;
+      const hashrate = hashrateData.currentHashrate || 0;
 
-    return {
-      name,
-      value,
-      interpretation,
-      trend,
-      confidence,
-      timeframe: timeframes[Math.floor(Math.random() * timeframes.length)]
-    };
-  });
+      // Normalizar valores
+      const normalizedFee = Math.min(100, Math.max(0, 100 - (feeRate / 100) * 100)); // Menor taxa = melhor saúde
+      const normalizedHashrate = Math.min(100, Math.max(0, (hashrate / 300000000000000) * 100)); // Maior hashrate = melhor saúde
+
+      const value = (normalizedFee * 0.3) + (normalizedHashrate * 0.7);
+      const trend = value > 60 ? 'Up' : value < 40 ? 'Down' : 'Neutral';
+
+      let interpretation = '';
+      if (value > 70) {
+        interpretation = `Excellent network health with strong hashrate and reasonable fees.`;
+      } else if (value > 50) {
+        interpretation = `Good network conditions with balanced fee market.`;
+      } else if (value > 40) {
+        interpretation = `Neutral network health, monitoring congestion levels.`;
+      } else if (value > 20) {
+        interpretation = `Network congestion with elevated fees, potential delays.`;
+      } else {
+        interpretation = `Poor network conditions with high fees and potential security concerns.`;
+      }
+
+      metrics.push({
+        name: 'Bitcoin Network Health',
+        value,
+        interpretation,
+        trend,
+        confidence: 88,
+        timeframe: '1D'
+      });
+    }
+
+    // Adicionar mais métricas conforme necessário
+
+    return metrics;
+  } catch (error) {
+    console.error('Error fetching neural metrics:', error);
+    return [];
+  }
 }
 
 // Função para gerar insights de mercado com foco em Bitcoin, Ordinals e Runes
@@ -461,116 +493,81 @@ function generateMarketInsights(): MarketInsight[] {
   }));
 }
 
-// Função principal para gerar todos os dados
-export function generateTradingData(): TradingData {
-  return {
-    arbitrageOpportunities: generateArbitrageOpportunities(),
-    smcTradeSetups: generateSmcTradeSetups(),
-    neuralMetrics: generateNeuralMetrics(),
-    marketInsights: generateMarketInsights(),
-    lastUpdated: new Date().toISOString()
-  };
+// Função principal para obter todos os dados reais
+export async function fetchTradingData(): Promise<TradingData> {
+  try {
+    // Obter dados reais de diferentes fontes
+    const [arbitrageOpportunities, neuralMetrics] = await Promise.all([
+      fetchArbitrageOpportunities(),
+      fetchNeuralMetrics()
+    ]);
+
+    // Para SMC e insights, ainda usamos dados simulados temporariamente
+    // até implementarmos APIs reais para esses dados
+    const smcTradeSetups = generateSmcTradeSetups();
+    const marketInsights = generateMarketInsights();
+
+    return {
+      arbitrageOpportunities,
+      smcTradeSetups,
+      neuralMetrics,
+      marketInsights,
+      lastUpdated: new Date().toISOString()
+    };
+  } catch (error) {
+    console.error('Error fetching trading data:', error);
+    // Em caso de erro, retornamos dados vazios
+    return {
+      arbitrageOpportunities: [],
+      smcTradeSetups: [],
+      neuralMetrics: [],
+      marketInsights: [],
+      lastUpdated: new Date().toISOString()
+    };
+  }
 }
 
 // Singleton para manter os dados consistentes entre chamadas
 let tradingDataInstance: TradingData | null = null;
 
-export function getTradingData(): TradingData {
+// Função para obter dados de trading
+export async function getTradingData(): Promise<TradingData> {
   if (!tradingDataInstance) {
-    tradingDataInstance = generateTradingData();
+    try {
+      tradingDataInstance = await fetchTradingData();
+    } catch (error) {
+      console.error('Error getting trading data:', error);
+      // Em caso de erro, retornamos dados vazios
+      tradingDataInstance = {
+        arbitrageOpportunities: [],
+        smcTradeSetups: [],
+        neuralMetrics: [],
+        marketInsights: [],
+        lastUpdated: new Date().toISOString()
+      };
+    }
   }
   return tradingDataInstance;
 }
 
-// Função para atualizar os dados (simula uma atualização real)
-export function refreshTradingData(): TradingData {
-  // Atualiza apenas alguns dados aleatoriamente para simular mudanças parciais
-  if (tradingDataInstance) {
-    // Atualiza algumas oportunidades de arbitragem
-    const updatedArbitrageOpportunities = [...tradingDataInstance.arbitrageOpportunities];
-    for (let i = 0; i < Math.min(3, updatedArbitrageOpportunities.length); i++) {
-      const randomIndex = Math.floor(Math.random() * updatedArbitrageOpportunities.length);
-      const opportunity = updatedArbitrageOpportunities[randomIndex];
-
-      // Atualiza alguns campos
-      updatedArbitrageOpportunities[randomIndex] = {
-        ...opportunity,
-        percentageDifference: opportunity.percentageDifference * (1 + (Math.random() * 0.2 - 0.1)),
-        estimatedProfit: opportunity.estimatedProfit * (1 + (Math.random() * 0.2 - 0.1)),
-        confidence: Math.min(99, Math.max(70, opportunity.confidence + (Math.random() * 10 - 5))),
-        status: Math.random() > 0.7 ?
-          (opportunity.status === 'New' ? 'Active' :
-           opportunity.status === 'Active' ? 'Closing' :
-           opportunity.status === 'Closing' ? 'Expired' : 'New') :
-          opportunity.status,
-        timestamp: new Date().toISOString()
+// Função para atualizar os dados com dados reais
+export async function refreshTradingData(): Promise<TradingData> {
+  try {
+    // Obter dados reais atualizados
+    tradingDataInstance = await fetchTradingData();
+    return tradingDataInstance;
+  } catch (error) {
+    console.error('Error refreshing trading data:', error);
+    // Em caso de erro, mantemos os dados existentes ou retornamos dados vazios
+    if (!tradingDataInstance) {
+      tradingDataInstance = {
+        arbitrageOpportunities: [],
+        smcTradeSetups: [],
+        neuralMetrics: [],
+        marketInsights: [],
+        lastUpdated: new Date().toISOString()
       };
     }
-
-    // Atualiza alguns setups SMC
-    const updatedSmcTradeSetups = [...tradingDataInstance.smcTradeSetups];
-    for (let i = 0; i < Math.min(2, updatedSmcTradeSetups.length); i++) {
-      const randomIndex = Math.floor(Math.random() * updatedSmcTradeSetups.length);
-      const setup = updatedSmcTradeSetups[randomIndex];
-
-      // Atualiza alguns campos
-      updatedSmcTradeSetups[randomIndex] = {
-        ...setup,
-        confidence: Math.min(99, Math.max(70, setup.confidence + (Math.random() * 10 - 5))),
-        status: Math.random() > 0.7 ?
-          (setup.status === 'Pending' ? 'Active' :
-           setup.status === 'Active' ? 'Triggered' :
-           setup.status === 'Triggered' ? 'Completed' :
-           setup.status === 'Completed' ? 'Invalidated' : 'Pending') :
-          setup.status,
-        timestamp: new Date().toISOString()
-      };
-    }
-
-    // Atualiza algumas métricas neurais
-    const updatedNeuralMetrics = tradingDataInstance.neuralMetrics.map(metric => {
-      const newValue = Math.max(0, Math.min(100, metric.value + (Math.random() * 10 - 5)));
-      let interpretation = '';
-      let trend: 'Up' | 'Down' | 'Neutral' = 'Neutral';
-
-      if (newValue > 70) {
-        interpretation = `Strong positive reading, indicating bullish momentum.`;
-        trend = 'Up';
-      } else if (newValue > 50) {
-        interpretation = `Moderately positive, suggesting cautious optimism.`;
-        trend = 'Up';
-      } else if (newValue > 40) {
-        interpretation = `Neutral reading, market in equilibrium.`;
-        trend = 'Neutral';
-      } else if (newValue > 20) {
-        interpretation = `Moderately negative, suggesting caution.`;
-        trend = 'Down';
-      } else {
-        interpretation = `Strong negative reading, indicating bearish pressure.`;
-        trend = 'Down';
-      }
-
-      return {
-        ...metric,
-        value: newValue,
-        interpretation,
-        trend,
-        confidence: Math.min(99, Math.max(70, metric.confidence + (Math.random() * 10 - 5)))
-      };
-    });
-
-    // Atualiza o tradingDataInstance
-    tradingDataInstance = {
-      arbitrageOpportunities: updatedArbitrageOpportunities,
-      smcTradeSetups: updatedSmcTradeSetups,
-      neuralMetrics: updatedNeuralMetrics,
-      marketInsights: tradingDataInstance.marketInsights, // Mantém os insights inalterados
-      lastUpdated: new Date().toISOString()
-    };
-  } else {
-    // Se não existir, cria uma nova instância
-    tradingDataInstance = generateTradingData();
+    return tradingDataInstance;
   }
-
-  return tradingDataInstance;
 }
