@@ -10,12 +10,10 @@ const nextConfig = {
     optimizeCss: true,
     optimizePackageImports: ['@tremor/react', 'recharts'],
     // Isso ajuda a evitar erros 500 em produção
-    serverComponentsExternalPackages: ['axios'],
+    serverComponentsExternalPackages: ['axios', '@supabase/supabase-js'],
   },
   // Configuração para o App Router
   output: 'standalone',
-  // Desabilitar geração estática para páginas problemáticas
-  distDir: 'build',
   // Ignorar erros durante o build
   typescript: {
     ignoreBuildErrors: true,

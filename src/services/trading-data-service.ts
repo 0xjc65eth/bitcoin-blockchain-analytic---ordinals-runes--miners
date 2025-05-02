@@ -292,22 +292,44 @@ function generateSmcTradeSetups(count: number = 8): SmcTradeSetup[] {
 async function fetchNeuralMetrics(): Promise<NeuralMetric[]> {
   try {
     // Obter dados reais de APIs
-    const btcPriceData = await fetch('https://api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=BTC&CMC_PRO_API_KEY=' + process.env.NEXT_PUBLIC_COINMARKETCAP_API_KEY).then(res => res.json()).catch(() => null);
+    const btcPriceData = await fetch('https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?symbol=BTC', {
+      headers: {
+        'X-CMC_PRO_API_KEY': process.env.NEXT_PUBLIC_COINMARKETCAP_API_KEY || ''
+      }
+    }).then(res => res.json()).catch((error) => {
+      console.error('Error fetching BTC price data:', error);
+      return null;
+    });
 
-    const ordinalsData = await fetch('https://api.ordiscan.com/v1/stats?key=' + process.env.NEXT_PUBLIC_ORDISCAN_API_KEY).then(res => res.json()).catch(() => null);
+    const ordinalsData = await fetch('https://api.ordiscan.com/v1/stats?key=' + process.env.NEXT_PUBLIC_ORDISCAN_API_KEY)
+      .then(res => res.json())
+      .catch((error) => {
+        console.error('Error fetching Ordinals data:', error);
+        return null;
+      });
 
-    const mempoolData = await fetch('https://mempool.space/api/v1/fees/recommended').then(res => res.json()).catch(() => null);
+    const mempoolData = await fetch('https://mempool.space/api/v1/fees/recommended')
+      .then(res => res.json())
+      .catch((error) => {
+        console.error('Error fetching mempool data:', error);
+        return null;
+      });
 
-    const hashrateData = await fetch('https://mempool.space/api/v1/mining/hashrate/1m').then(res => res.json()).catch(() => null);
+    const hashrateData = await fetch('https://mempool.space/api/v1/mining/hashrate/1m')
+      .then(res => res.json())
+      .catch((error) => {
+        console.error('Error fetching hashrate data:', error);
+        return null;
+      });
 
     // Criar métricas neurais baseadas em dados reais
     const metrics: NeuralMetric[] = [];
 
     // Bitcoin Price Momentum
-    if (btcPriceData && btcPriceData.data && btcPriceData.data.BTC) {
-      const btcData = btcPriceData.data.BTC;
-      const priceChange24h = btcData.quote.USD.percent_change_24h;
-      const priceChange7d = btcData.quote.USD.percent_change_7d;
+    if (btcPriceData && btcPriceData.data && btcPriceData.data.BTC && btcPriceData.data.BTC[0]) {
+      const btcData = btcPriceData.data.BTC[0];
+      const priceChange24h = btcData.quote?.USD?.percent_change_24h || 0;
+      const priceChange7d = btcData.quote?.USD?.percent_change_7d || 0;
 
       // Calcular valor baseado nas mudanças de preço
       const value = 50 + (priceChange24h * 0.3) + (priceChange7d * 0.7);
@@ -338,10 +360,11 @@ async function fetchNeuralMetrics(): Promise<NeuralMetric[]> {
 
     // Ordinals Inscription Rate
     if (ordinalsData) {
-      // Calcular valor baseado na taxa de inscrição
-      const inscriptionRate = ordinalsData.inscription_rate || 0;
-      const normalizedRate = Math.min(100, Math.max(0, (inscriptionRate / 1000) * 100));
-      const trend = normalizedRate > 50 ? 'Up' : normalizedRate < 40 ? 'Down' : 'Neutral';
+      try {
+        // Calcular valor baseado na taxa de inscrição
+        const inscriptionRate = ordinalsData.inscription_rate || 0;
+        const normalizedRate = Math.min(100, Math.max(0, (inscriptionRate / 1000) * 100));
+        const trend = normalizedRate > 50 ? 'Up' : normalizedRate < 40 ? 'Down' : 'Neutral';
 
       let interpretation = '';
       if (normalizedRate > 70) {
@@ -364,13 +387,17 @@ async function fetchNeuralMetrics(): Promise<NeuralMetric[]> {
         confidence: 85,
         timeframe: '1D'
       });
+      } catch (error) {
+        console.error('Error processing Ordinals data:', error);
+      }
     }
 
     // Bitcoin Network Health
     if (mempoolData && hashrateData) {
-      // Calcular valor baseado na taxa de transação e hashrate
-      const feeRate = mempoolData.fastestFee || 0;
-      const hashrate = hashrateData.currentHashrate || 0;
+      try {
+        // Calcular valor baseado na taxa de transação e hashrate
+        const feeRate = mempoolData.fastestFee || 0;
+        const hashrate = hashrateData.currentHashrate || 0;
 
       // Normalizar valores
       const normalizedFee = Math.min(100, Math.max(0, 100 - (feeRate / 100) * 100)); // Menor taxa = melhor saúde
@@ -400,6 +427,9 @@ async function fetchNeuralMetrics(): Promise<NeuralMetric[]> {
         confidence: 88,
         timeframe: '1D'
       });
+      } catch (error) {
+        console.error('Error processing Network Health data:', error);
+      }
     }
 
     // Adicionar mais métricas conforme necessário
