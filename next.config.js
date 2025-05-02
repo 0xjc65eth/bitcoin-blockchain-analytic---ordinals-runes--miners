@@ -11,8 +11,15 @@ const nextConfig = {
     optimizePackageImports: ['@tremor/react', 'recharts'],
     // Isso ajuda a evitar erros 500 em produção
     serverComponentsExternalPackages: ['axios'],
-    // Excluir a página Neural Learning da geração estática para evitar erros com Supabase
-    excludePages: ['/neural-learning/**'],
+  },
+  // Excluir páginas com problemas da geração estática
+  exportPathMap: async function (defaultPathMap) {
+    // Remover páginas com problemas do mapa de exportação
+    const pathMap = { ...defaultPathMap };
+    delete pathMap['/neural-learning'];
+    delete pathMap['/arbitrage'];
+    delete pathMap['/brc20'];
+    return pathMap;
   },
   // Configuração para lidar com erros
   onDemandEntries: {
@@ -54,6 +61,7 @@ const nextConfig = {
   },
   typescript: {
     ignoreBuildErrors: true,
+    tsconfigPath: './tsconfig.json',
   },
   poweredByHeader: false,
   compress: true,
