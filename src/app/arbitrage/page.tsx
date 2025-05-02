@@ -2,6 +2,7 @@
 
 import { Header } from './components/header'
 import { EnhancedArbitrageCard } from './components/enhanced-arbitrage-card'
+import { NeuralArbitrageInsights } from '@/components/neural-arbitrage-insights'
 import { Grid, Col } from '@tremor/react'
 
 export default function ArbitragePage() {
@@ -20,18 +21,29 @@ export default function ArbitragePage() {
           </h1>
           <div className="w-24 h-1 bg-gradient-to-r from-[#10B981] via-[#34D399] to-[#10B981] rounded-full mb-4"></div>
           <h2 className="text-lg text-gray-300 max-w-2xl text-center">
-            Oportunidades de arbitragem entre marketplaces com cálculos precisos de lucro e links diretos para compra e venda
+            Oportunidades de arbitragem entre marketplaces com cálculos precisos de lucro e insights neurais avançados
           </h2>
         </div>
 
         <div className="max-w-7xl mx-auto">
-          <EnhancedArbitrageCard />
+          <Grid numItemsMd={1} numItemsLg={1} className="gap-6 mb-6">
+            <Col>
+              <EnhancedArbitrageCard />
+            </Col>
+          </Grid>
+
+          <Grid numItemsMd={1} numItemsLg={1} className="gap-6 mb-6">
+            <Col>
+              <NeuralArbitrageInsights />
+            </Col>
+          </Grid>
         </div>
 
         <div className="mt-10 text-center">
           <p className="text-gray-400 text-sm max-w-2xl mx-auto">
-            Os dados são atualizados a cada 30 segundos a partir das APIs do CoinMarketCap e Ordiscan.
+            Os dados são atualizados em tempo real a partir das APIs do CoinMarketCap, Ordiscan e outras fontes.
             As oportunidades de arbitragem são calculadas considerando as taxas dos marketplaces para mostrar o lucro líquido real.
+            O sistema neural analisa continuamente padrões de mercado para identificar as melhores oportunidades.
           </p>
           <div className="flex justify-center mt-4 space-x-4">
             <a
@@ -49,6 +61,14 @@ export default function ArbitragePage() {
               className="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg border border-blue-500/30 hover:bg-blue-500/30 transition-all text-sm font-medium"
             >
               Volumes de Trading
+            </a>
+            <a
+              href="https://mempool.space/runes"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg border border-purple-500/30 hover:bg-purple-500/30 transition-all text-sm font-medium"
+            >
+              Dados de Runas
             </a>
           </div>
         </div>
