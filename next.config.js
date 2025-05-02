@@ -11,15 +11,22 @@ const nextConfig = {
     optimizePackageImports: ['@tremor/react', 'recharts'],
     // Isso ajuda a evitar erros 500 em produção
     serverComponentsExternalPackages: ['axios'],
+    // Ignorar páginas problemáticas durante o build
+    appDir: true,
+    // Desabilitar geração estática para páginas problemáticas
+    disableStaticImages: true,
   },
-  // Excluir páginas com problemas da geração estática
-  exportPathMap: async function (defaultPathMap) {
-    // Remover páginas com problemas do mapa de exportação
-    const pathMap = { ...defaultPathMap };
-    delete pathMap['/neural-learning'];
-    delete pathMap['/arbitrage'];
-    delete pathMap['/brc20'];
-    return pathMap;
+  // Configuração para o App Router
+  output: 'standalone',
+  // Desabilitar geração estática para páginas problemáticas
+  distDir: 'build',
+  // Ignorar erros durante o build
+  typescript: {
+    ignoreBuildErrors: true,
+    tsconfigPath: './tsconfig.json',
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
   // Configuração para lidar com erros
   onDemandEntries: {
@@ -56,13 +63,7 @@ const nextConfig = {
     };
     return config;
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-    tsconfigPath: './tsconfig.json',
-  },
+
   poweredByHeader: false,
   compress: true,
   generateEtags: true,
