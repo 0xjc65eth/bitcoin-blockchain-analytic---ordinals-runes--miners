@@ -11,6 +11,8 @@ const nextConfig = {
     optimizePackageImports: ['@tremor/react', 'recharts'],
     // Isso ajuda a evitar erros 500 em produção
     serverComponentsExternalPackages: ['axios'],
+    // Excluir a página Neural Learning da geração estática para evitar erros com Supabase
+    excludePages: ['/neural-learning/**'],
   },
   // Configuração para lidar com erros
   onDemandEntries: {

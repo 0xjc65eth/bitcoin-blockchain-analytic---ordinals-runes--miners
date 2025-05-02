@@ -19,6 +19,10 @@ services:
         value: c045d2a9-6f2d-44e9-8297-a88ab83b463b
       - key: NEXT_PUBLIC_ORDISCAN_API_KEY
         value: e227a764-b31b-43cf-a60c-be5daa50cd2c
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        value: https://your-supabase-project.supabase.co
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        value: your-supabase-anon-key
     autoDeploy: true
     branch: upgrade-2.5X
     disk:

@@ -41,7 +41,11 @@ Se preferir criar um novo serviço e depois substituir o atual:
    NODE_VERSION=18.17.0
    NEXT_PUBLIC_COINMARKETCAP_API_KEY=c045d2a9-6f2d-44e9-8297-a88ab83b463b
    NEXT_PUBLIC_ORDISCAN_API_KEY=e227a764-b31b-43cf-a60c-be5daa50cd2c
+   NEXT_PUBLIC_SUPABASE_URL=https://your-supabase-project.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
    ```
+
+   **IMPORTANTE**: Substitua os valores de `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` pelos valores corretos do seu projeto Supabase. Sem essas variáveis, a página Neural Learning não será gerada corretamente.
 8. Clique em "Create Web Service"
 9. Após o deploy bem-sucedido, você pode redirecionar o domínio para este novo serviço
 
@@ -72,6 +76,40 @@ Se estiver usando um domínio personalizado:
 2. Localize o serviço "cypher-ordi-future"
 3. Clique em "Settings" e depois em "Custom Domain"
 4. Siga as instruções para configurar seu domínio personalizado
+
+## Solução de Problemas Comuns
+
+### Erro: "supabaseUrl is required"
+
+Se você encontrar o erro `Error: supabaseUrl is required` durante o build, isso significa que as variáveis de ambiente do Supabase não estão configuradas corretamente. Para resolver:
+
+1. Acesse o Dashboard do Render
+2. Vá para o serviço > Settings > Environment
+3. Adicione as seguintes variáveis:
+   - `NEXT_PUBLIC_SUPABASE_URL`: URL do seu projeto Supabase
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Chave anônima do seu projeto Supabase
+4. Salve as alterações e faça um novo deploy
+
+### Alternativa: Desabilitar a Página Neural Learning
+
+Se você não tiver acesso às credenciais do Supabase, uma alternativa é desabilitar a geração estática da página Neural Learning:
+
+1. Crie um arquivo `.env.local` na raiz do projeto com o seguinte conteúdo:
+   ```
+   SKIP_NEURAL_LEARNING_BUILD=true
+   ```
+2. Faça o commit e push deste arquivo
+3. No arquivo `next.config.js`, adicione a seguinte configuração:
+   ```js
+   const nextConfig = {
+     // Configurações existentes...
+
+     // Adicione esta parte:
+     experimental: {
+       excludePages: process.env.SKIP_NEURAL_LEARNING_BUILD === 'true' ? ['/neural-learning/**'] : []
+     }
+   };
+   ```
 
 ## Suporte
 
