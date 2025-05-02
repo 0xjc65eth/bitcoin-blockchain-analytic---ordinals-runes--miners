@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { WalletConnectDirect } from '@/components/wallet-connect-direct'
+import { WalletConnectDirect } from './components/wallet-connect-direct'
 import { RiLockLine, RiShieldCheckLine } from 'react-icons/ri'
 
 export default function DirectDemoPage() {
@@ -31,7 +31,7 @@ export default function DirectDemoPage() {
     if (typeof window !== 'undefined') {
       window.addEventListener('walletConnected', handleWalletConnected as EventListener)
       window.addEventListener('walletDisconnected', handleWalletDisconnected as EventListener)
-      
+
       // Check after a short delay to allow for any existing connection to be processed
       setTimeout(checkExistingConnection, 500)
     }
@@ -48,11 +48,11 @@ export default function DirectDemoPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Wallet Connection & Premium Access Demo</h1>
-      
+
       <div className="flex justify-end mb-6">
         <WalletConnectDirect />
       </div>
-      
+
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-4">How It Works</h2>
         <div className="p-6 border border-[#3D3D3D] rounded-lg bg-[#121212]">
@@ -72,7 +72,7 @@ export default function DirectDemoPage() {
           </ol>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
         <div>
           <h2 className="text-xl font-bold mb-4">Standard Content</h2>
@@ -174,7 +174,7 @@ export default function DirectDemoPage() {
           )}
         </div>
       </div>
-      
+
       <div className="mt-12 p-6 border border-[#3D3D3D] rounded-lg bg-[#121212]">
         <h2 className="text-xl font-bold mb-4">Technical Implementation</h2>
         <p className="text-gray-400 mb-4">

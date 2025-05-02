@@ -1,8 +1,8 @@
 'use client'
 
-import { Header } from '@/components/header'
-import { Navbar } from '@/components/navbar'
-import { EnhancedMiningCard } from '@/components/enhanced-mining-card'
+import { Header } from './components/header'
+import { Navbar } from './components/navbar'
+import { EnhancedMiningCard } from './components/enhanced-mining-card'
 import { Grid, Col } from '@tremor/react'
 
 export default function MinersPage() {

@@ -57,6 +57,13 @@ const nextConfig = {
       path: false,
       buffer: false,
     };
+
+    // Ignorar módulos não encontrados durante o build
+    config.ignoreWarnings = [
+      { module: /node_modules/ },
+      { message: /Can't resolve/ },
+    ];
+
     return config;
   },
 

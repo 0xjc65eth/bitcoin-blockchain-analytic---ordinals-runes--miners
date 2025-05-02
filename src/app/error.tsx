@@ -1,6 +1,6 @@
 "use client"
 
-import { ErrorFallback } from '@/components/error-fallback'
+import { ErrorFallback } from './components/error-fallback'
 
 interface ErrorPageProps {
   error: Error;

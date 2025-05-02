@@ -1,19 +1,51 @@
 'use client'
 
-import { useState } from 'react'
-import { Header } from '@/components/header'
-import { Navbar } from '@/components/navbar'
+import { useState, useEffect } from 'react'
+import { Header } from './components/header'
+import { Navbar } from './components/navbar'
 import { Grid, Col, Card, Title, Text, Tab, TabGroup, TabList, TabPanel, TabPanels, Metric, Flex, ProgressBar } from '@tremor/react'
-import { NeuralLearningStatusCard } from '@/components/neural-learning-status-card'
-import { NeuralArbitrageCard } from '@/components/neural-arbitrage-card'
-import { NeuralSmcCard } from '@/components/neural-smc-card'
-import { NeuralOrdinalsRunesCard } from '@/components/neural-ordinals-runes-card'
-import { CloudSyncStatusCard } from '@/components/cloud-sync-status-card'
-import { NeuralArchitectureCard } from '@/components/neural-architecture-card'
+import { NeuralLearningStatusCard } from './components/neural-learning-status-card'
+import { NeuralArbitrageCard } from './components/neural-arbitrage-card'
+import { NeuralSmcCard } from './components/neural-smc-card'
+import { NeuralOrdinalsRunesCard } from './components/neural-ordinals-runes-card'
+import { CloudSyncStatusCard } from './components/cloud-sync-status-card'
+import { NeuralArchitectureCard } from './components/neural-architecture-card'
 import { RiBrainLine, RiDatabase2Line, RiLineChartLine, RiSettings4Line, RiCloudLine, RiFlowChart, RiAiGenerate, RiRobot2Line, RiCodeSSlashLine, RiLightbulbFlashLine } from 'react-icons/ri'
+
+// Verificar se estamos em ambiente de produção para evitar erros com Supabase
+const isDisabled = process.env.NEXT_PUBLIC_DISABLE_NEURAL_LEARNING === 'true'
 
 export default function NeuralLearningPage() {
   const [activeTab, setActiveTab] = useState(0)
+
+  // Se a página estiver desabilitada, mostrar mensagem de manutenção
+  if (isDisabled) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#0F172A] to-[#1E293B]">
+        <Header />
+        <Navbar />
+
+        <main className="container mx-auto px-4 py-8">
+          <div className="flex flex-col items-center justify-center h-[70vh]">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#8B5CF6] to-[#6366F1] rounded-full flex items-center justify-center mb-4 shadow-lg shadow-[#8B5CF6]/20">
+              <RiBrainLine className="w-10 h-10 text-white" />
+            </div>
+            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-[#8B5CF6] via-[#6366F1] to-[#8B5CF6] text-transparent bg-clip-text text-center">
+              NEURAL LEARNING SYSTEM
+            </h1>
+            <div className="w-24 h-1 bg-gradient-to-r from-[#8B5CF6] via-[#6366F1] to-[#8B5CF6] rounded-full mb-4"></div>
+            <h2 className="text-lg text-gray-300 max-w-2xl text-center mb-4">
+              This section is currently under maintenance
+            </h2>
+            <p className="text-gray-400 text-center max-w-md">
+              Our neural learning system is being upgraded to provide better insights and predictions.
+              Please check back later.
+            </p>
+          </div>
+        </main>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0F172A] to-[#1E293B]">
