@@ -7,6 +7,7 @@ import { mainnet } from 'wagmi/chains'
 import { injected } from 'wagmi/connectors'
 import { store } from '@/store'
 import { WalletProvider } from '@/providers/WalletProvider'
+import { PremiumProvider } from '@/contexts/PremiumContext'
 
 const config = createConfig({
   chains: [mainnet],
@@ -25,9 +26,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <Provider store={store}>
-          <WalletProvider>
-            {children}
-          </WalletProvider>
+          <PremiumProvider>
+            <WalletProvider>
+              {children}
+            </WalletProvider>
+          </PremiumProvider>
         </Provider>
       </QueryClientProvider>
     </WagmiProvider>

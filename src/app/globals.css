@@ -189,7 +189,132 @@ main .wallet-connect-button,
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #000000;
     --foreground: #ededed;
   }
+}
+
+/* Dashboard theme overrides */
+.dashboard-theme {
+  --card-bg: #0F1525;
+  --card-border: rgba(59, 130, 246, 0.2);
+  --card-header-bg: #111936;
+  --card-header-border: rgba(59, 130, 246, 0.2);
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent-blue: #3b82f6;
+  --accent-indigo: #6366f1;
+  --accent-purple: #8b5cf6;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --accent-yellow: #f59e0b;
+  --accent-orange: #f97316;
+  --accent-pink: #ec4899;
+  --accent-teal: #14b8a6;
+  --accent-cyan: #06b6d4;
+  --accent-lime: #84cc16;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+  --accent-fuchsia: #d946ef;
+  --accent-violet: #8b5cf6;
+}
+
+/* Progress bar colors */
+.progress-bar-positive {
+  background: linear-gradient(to right, #10b981, #34d399);
+}
+
+.progress-bar-neutral {
+  background: linear-gradient(to right, #f59e0b, #fbbf24);
+}
+
+.progress-bar-negative {
+  background: linear-gradient(to right, #ef4444, #f87171);
+}
+
+/* Card styles for dark theme */
+.dashboard-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.dashboard-card-header {
+  background-color: var(--card-header-bg);
+  border-bottom: 1px solid var(--card-header-border);
+  padding: 0.75rem 1rem;
+}
+
+/* Specific component styles */
+.neural-insights-bar {
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.smc-analysis-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.inflow-outflow-chart .inflow {
+  fill: var(--accent-green);
+}
+
+.inflow-outflow-chart .outflow {
+  fill: var(--accent-red);
+}
+
+/* Bitcoin price styles */
+.price-up {
+  color: var(--accent-green);
+}
+
+.price-down {
+  color: var(--accent-red);
+}
+
+/* Badge styles */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-blue {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+}
+
+.badge-green {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+}
+
+.badge-red {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+.badge-yellow {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+}
+
+.badge-purple {
+  background-color: rgba(139, 92, 246, 0.2);
+  color: #a78bfa;
+}
+
+.badge-pink {
+  background-color: rgba(236, 72, 153, 0.2);
+  color: #f472b6;
 }

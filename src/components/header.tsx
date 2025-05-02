@@ -15,6 +15,7 @@ const navigation = [
   { name: 'Miners', href: '/miners' },
   { name: 'Social', href: '/social' },
   { name: 'Analytics', href: '/analytics' },
+  { name: 'Neural Learning', href: '/neural-learning' },
   { name: 'Portfolio', href: '/portfolio' },
   { name: 'Settings', href: '/settings' },
   { name: 'Resources', href: '/resources' },

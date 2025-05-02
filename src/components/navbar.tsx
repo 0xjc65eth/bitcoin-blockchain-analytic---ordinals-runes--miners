@@ -15,6 +15,7 @@ import {
   RiNotification3Line,
   RiWalletLine,
   RiSettings4Line,
+  RiBrainLine,
 } from 'react-icons/ri'
 
 const navItems = [
@@ -25,6 +26,7 @@ const navItems = [
   { name: "Runes", href: "/runes", icon: RiSignalTowerLine },
   { name: "Arbitrage", href: "/arbitrage", icon: RiExchangeLine },
   { name: "Social", href: "/social", icon: RiGroupLine },
+  { name: "Neural Learning", href: "/neural-learning", icon: RiBrainLine },
   { name: "Alerts", href: "/alerts", icon: RiNotification3Line },
   { name: "Portfolio", href: "/portfolio", icon: RiWalletLine },
   { name: "Settings", href: "/settings", icon: RiSettings4Line },
@@ -59,7 +61,6 @@ export function Navbar() {
       </div>
       <div className="flex items-center gap-4">
         {nftData && <CardID />}
-        {/* WalletConnectButton removido para evitar duplicação */}
       </div>
     </nav>
   )

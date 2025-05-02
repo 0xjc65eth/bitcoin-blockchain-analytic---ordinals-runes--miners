@@ -15,6 +15,7 @@ const navItems = [
   { name: 'Arbitrage', href: '/arbitrage' },
   { name: 'Signals', href: '/signals' },
   { name: 'Social', href: '/social' },
+  { name: 'Neural Learning', href: '/neural-learning' },
   { name: 'Alerts', href: '/alerts' },
   { name: 'Backtesting', href: '/backtesting' },
   { name: 'Portfolio', href: '/portfolio' },

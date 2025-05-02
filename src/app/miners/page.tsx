@@ -1,6 +1,7 @@
 'use client'
 
 import { Header } from '@/components/header'
+import { Navbar } from '@/components/navbar'
 import { EnhancedMiningCard } from '@/components/enhanced-mining-card'
 import { Grid, Col } from '@tremor/react'
 
@@ -8,6 +9,7 @@ export default function MinersPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#0F172A] to-[#1E293B]">
       <Header />
+      <Navbar />
       <div className="container mx-auto py-8 px-4">
         <div className="flex flex-col items-center mb-8">
           <div className="w-16 h-16 bg-[#F7931A] rounded-full flex items-center justify-center mb-4 shadow-lg shadow-[#F7931A]/20">
@@ -20,7 +22,7 @@ export default function MinersPage() {
           </h1>
           <div className="w-24 h-1 bg-gradient-to-r from-[#F7931A] via-[#F9A826] to-[#F7931A] rounded-full mb-4"></div>
           <h2 className="text-lg text-gray-300 max-w-2xl text-center">
-            Análise em tempo real da mineração Bitcoin, descentralização da rede e estatísticas dos pools
+            Real-time analysis of Bitcoin mining, network decentralization, and mining pool statistics
           </h2>
         </div>
 
@@ -30,8 +32,8 @@ export default function MinersPage() {
 
         <div className="mt-10 text-center">
           <p className="text-gray-400 text-sm max-w-2xl mx-auto">
-            Os dados são atualizados em tempo real a partir da API do mempool.space.
-            Apoie a descentralização da rede Bitcoin minerando com pools menores ou configurando seu próprio nó.
+            Data is updated in real-time from the mempool.space API.
+            Support Bitcoin network decentralization by mining with smaller pools or setting up your own node.
           </p>
           <div className="flex justify-center mt-4 space-x-4">
             <a
@@ -40,7 +42,7 @@ export default function MinersPage() {
               rel="noopener noreferrer"
               className="px-4 py-2 bg-[#F7931A]/20 text-[#F7931A] rounded-lg border border-[#F7931A]/30 hover:bg-[#F7931A]/30 transition-all text-sm font-medium"
             >
-              Estatísticas de Mineração
+              Mining Statistics
             </a>
             <a
               href="https://braiins.com/pool"
@@ -48,7 +50,7 @@ export default function MinersPage() {
               rel="noopener noreferrer"
               className="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg border border-blue-500/30 hover:bg-blue-500/30 transition-all text-sm font-medium"
             >
-              Pools Descentralizados
+              Decentralized Pools
             </a>
           </div>
         </div>

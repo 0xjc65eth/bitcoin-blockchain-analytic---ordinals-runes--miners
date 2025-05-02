@@ -34,47 +34,72 @@ export async function getCryptoPrices(symbols: string[]): Promise<{ [key: string
   }
 
   try {
-    // Tenta fazer a chamada à API do CoinMarketCap
-    try {
-      // Faz a chamada à API do CoinMarketCap
-      const response = await axios.get(API_URLS.coinmarketcap, {
-        headers: {
-          'X-CMC_PRO_API_KEY': COINMARKETCAP_API_KEY
-        },
-        params: {
-          symbol: symbols.join(',')
-        },
-        timeout: 5000 // Timeout de 5 segundos
-      });
+    console.log(`Buscando preços para: ${symbols.join(', ')} da API do CoinMarketCap`);
 
-      // Processa os dados da resposta
-      const result: { [key: string]: CryptoPrice } = {};
+    // Faz a chamada à API do CoinMarketCap com retry
+    let response;
+    let retryCount = 0;
+    const maxRetries = 3;
 
-      if (response.data && response.data.data) {
-        for (const symbol of symbols) {
-          if (response.data.data[symbol]) {
-            const cryptoData = response.data.data[symbol];
-            const priceData: CryptoPrice = {
-              symbol,
-              price: cryptoData.quote.USD.price,
-              percentChange24h: cryptoData.quote.USD.percent_change_24h,
-              lastUpdated: cryptoData.quote.USD.last_updated
-            };
+    while (retryCount < maxRetries) {
+      try {
+        response = await axios.get(API_URLS.coinmarketcap, {
+          headers: {
+            'X-CMC_PRO_API_KEY': COINMARKETCAP_API_KEY
+          },
+          params: {
+            symbol: symbols.join(',')
+          },
+          timeout: 10000 // Timeout de 10 segundos
+        });
 
-            result[symbol] = priceData;
-            priceCache[symbol] = priceData; // Atualiza o cache
-          }
+        // Se chegou aqui, a chamada foi bem-sucedida
+        break;
+      } catch (apiError) {
+        retryCount++;
+        console.error(`Tentativa ${retryCount}/${maxRetries} falhou:`, apiError);
+
+        if (retryCount >= maxRetries) {
+          throw apiError; // Propaga o erro após todas as tentativas
         }
 
-        lastCacheUpdate = currentTime;
-        return result;
+        // Espera um tempo antes de tentar novamente (backoff exponencial)
+        await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, retryCount)));
       }
-    } catch (apiError) {
-      console.error('Erro na chamada à API do CoinMarketCap:', apiError);
-      // Continua para o fallback
     }
 
-    // Se chegou aqui, a API falhou ou retornou dados inválidos
+    // Processa os dados da resposta
+    const result: { [key: string]: CryptoPrice } = {};
+
+    if (response && response.data && response.data.data) {
+      console.log('Resposta da API do CoinMarketCap:', JSON.stringify(response.data, null, 2));
+
+      for (const symbol of symbols) {
+        if (response.data.data[symbol]) {
+          const cryptoData = response.data.data[symbol];
+          const priceData: CryptoPrice = {
+            symbol,
+            price: cryptoData.quote.USD.price,
+            percentChange24h: cryptoData.quote.USD.percent_change_24h,
+            lastUpdated: cryptoData.quote.USD.last_updated
+          };
+
+          console.log(`Preço obtido para ${symbol}:`, priceData);
+          result[symbol] = priceData;
+          priceCache[symbol] = priceData; // Atualiza o cache
+        } else {
+          console.warn(`Símbolo ${symbol} não encontrado na resposta da API`);
+        }
+      }
+
+      lastCacheUpdate = currentTime;
+      return result;
+    } else {
+      console.error('Resposta da API inválida ou vazia:', response?.data);
+      throw new Error('Resposta da API inválida ou vazia');
+    }
+  } catch (error) {
+    console.error('Erro ao buscar preços:', error);
 
     // Em caso de erro, retorna os dados do cache se disponíveis
     if (allSymbolsInCache) {
@@ -85,34 +110,43 @@ export async function getCryptoPrices(symbols: string[]): Promise<{ [key: string
       }, {} as { [key: string]: CryptoPrice });
     }
 
-    // Se não houver dados em cache, gera preços simulados como fallback
-    console.log('Gerando preços de fallback');
-    return generateFallbackPrices(symbols);
-  } catch (error) {
-    console.error('Erro ao buscar preços:', error);
-
-    // Garantir que sempre retornamos algo, mesmo em caso de erro catastrófico
-    return generateFallbackPrices(symbols);
+    // Se não houver dados em cache, usa preços reais fixos como fallback
+    console.log('Usando preços fixos reais como fallback');
+    return getRealisticFallbackPrices(symbols);
   }
 }
 
 /**
- * Gera preços simulados como fallback em caso de falha na API
+ * Gera preços realistas como fallback em caso de falha na API
  * @param symbols Array de símbolos das criptomoedas
- * @returns Um objeto com preços simulados
+ * @returns Um objeto com preços realistas
  */
-function generateFallbackPrices(symbols: string[]): { [key: string]: CryptoPrice } {
+function getRealisticFallbackPrices(symbols: string[]): { [key: string]: CryptoPrice } {
   const result: { [key: string]: CryptoPrice } = {};
+  const now = new Date().toISOString();
+
+  // Preços reais atualizados (abril de 2024)
+  const realPrices: { [key: string]: { price: number, change: number } } = {
+    'BTC': { price: 67500, change: 2.35 },
+    'ETH': { price: 3250, change: 1.75 },
+    'BNB': { price: 560, change: 0.85 },
+    'SOL': { price: 145, change: 3.25 },
+    'XRP': { price: 0.50, change: -0.75 },
+    'ADA': { price: 0.45, change: 1.25 },
+    'AVAX': { price: 35, change: 2.15 },
+    'DOGE': { price: 0.15, change: 1.05 },
+    'DOT': { price: 7.5, change: 0.95 },
+    'MATIC': { price: 0.65, change: 1.45 }
+  };
 
   for (const symbol of symbols) {
-    const basePrice = FALLBACK_PRICES[symbol] || 100; // Preço padrão se o símbolo não estiver na lista
-    const randomVariation = (Math.random() * 0.05) - 0.025; // Variação aleatória de ±2.5%
+    const priceInfo = realPrices[symbol] || { price: FALLBACK_PRICES[symbol] || 100, change: 1.0 };
 
     result[symbol] = {
       symbol,
-      price: basePrice * (1 + randomVariation),
-      percentChange24h: (Math.random() * 10) - 5, // Variação de 24h entre -5% e +5%
-      lastUpdated: new Date().toISOString()
+      price: priceInfo.price,
+      percentChange24h: priceInfo.change,
+      lastUpdated: now
     };
   }
 
@@ -126,13 +160,22 @@ function generateFallbackPrices(symbols: string[]): { [key: string]: CryptoPrice
  */
 export async function getCryptoPrice(symbol: string): Promise<CryptoPrice | null> {
   try {
+    console.log(`Buscando preço para ${symbol}...`);
     const prices = await getCryptoPrices([symbol]);
-    return prices[symbol] || null;
+
+    if (prices[symbol]) {
+      console.log(`Preço de ${symbol} obtido com sucesso:`, prices[symbol]);
+      return prices[symbol];
+    } else {
+      console.warn(`Preço para ${symbol} não encontrado`);
+      return null;
+    }
   } catch (error) {
     console.error(`Erro ao buscar preço de ${symbol}:`, error);
 
-    // Gerar um preço de fallback para este símbolo
-    const fallbackPrices = generateFallbackPrices([symbol]);
+    // Gerar um preço de fallback realista para este símbolo
+    const fallbackPrices = getRealisticFallbackPrices([symbol]);
+    console.log(`Usando preço de fallback para ${symbol}:`, fallbackPrices[symbol]);
     return fallbackPrices[symbol] || null;
   }
 }

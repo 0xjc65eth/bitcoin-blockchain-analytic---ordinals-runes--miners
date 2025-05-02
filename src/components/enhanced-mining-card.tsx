@@ -88,17 +88,17 @@ export function EnhancedMiningCard() {
     try {
       setIsLoading(true)
 
-      // Tentar buscar dados da API do Mempool através de um proxy ou diretamente
+      // Try to fetch data from Mempool API directly or through a proxy
       let hashrateData, difficultyData, poolsData, diffAdjData, blockHeight;
 
       try {
-        // Primeiro, tentar usar a API diretamente
+        // First, try to use the API directly
         const hashrateRes = await fetch('https://mempool.space/api/v1/mining/hashrate/3d', {
           mode: 'cors',
           headers: { 'Accept': 'application/json' }
         })
 
-        if (!hashrateRes.ok) throw new Error(`Erro ao buscar hashrate: ${hashrateRes.status}`)
+        if (!hashrateRes.ok) throw new Error(`Error fetching hashrate: ${hashrateRes.status}`)
         hashrateData = await hashrateRes.json()
 
         const difficultyRes = await fetch('https://mempool.space/api/v1/mining/difficulty', {
@@ -106,7 +106,7 @@ export function EnhancedMiningCard() {
           headers: { 'Accept': 'application/json' }
         })
 
-        if (!difficultyRes.ok) throw new Error(`Erro ao buscar dificuldade: ${difficultyRes.status}`)
+        if (!difficultyRes.ok) throw new Error(`Error fetching difficulty: ${difficultyRes.status}`)
         difficultyData = await difficultyRes.json()
 
         const poolsRes = await fetch('https://mempool.space/api/v1/mining/pools/1w', {
@@ -114,7 +114,7 @@ export function EnhancedMiningCard() {
           headers: { 'Accept': 'application/json' }
         })
 
-        if (!poolsRes.ok) throw new Error(`Erro ao buscar pools: ${poolsRes.status}`)
+        if (!poolsRes.ok) throw new Error(`Error fetching pools: ${poolsRes.status}`)
         poolsData = await poolsRes.json()
 
         const diffAdjRes = await fetch('https://mempool.space/api/v1/difficulty-adjustment', {
@@ -122,7 +122,7 @@ export function EnhancedMiningCard() {
           headers: { 'Accept': 'application/json' }
         })
 
-        if (!diffAdjRes.ok) throw new Error(`Erro ao buscar ajuste de dificuldade: ${diffAdjRes.status}`)
+        if (!diffAdjRes.ok) throw new Error(`Error fetching difficulty adjustment: ${diffAdjRes.status}`)
         diffAdjData = await diffAdjRes.json()
 
         const blocksRes = await fetch('https://mempool.space/api/v1/blocks/tip/height', {
@@ -130,14 +130,14 @@ export function EnhancedMiningCard() {
           headers: { 'Accept': 'application/json' }
         })
 
-        if (!blocksRes.ok) throw new Error(`Erro ao buscar altura do bloco: ${blocksRes.status}`)
+        if (!blocksRes.ok) throw new Error(`Error fetching block height: ${blocksRes.status}`)
         blockHeight = await blocksRes.json()
 
       } catch (apiError) {
-        console.error('Erro ao acessar API do Mempool diretamente:', apiError)
-        console.log('Usando dados de fallback devido a erro na API')
+        console.error('Error accessing Mempool API directly:', apiError)
+        console.log('Using fallback data due to API error')
 
-        // Se falhar, usar dados de fallback
+        // If it fails, use fallback data
         const fallbackData = generateFallbackData()
         setData(fallbackData)
         setLastUpdated(new Date())
@@ -146,9 +146,9 @@ export function EnhancedMiningCard() {
         return
       }
 
-      // Se chegou aqui, conseguiu obter os dados da API
+      // If we got here, we successfully obtained data from the API
 
-      // Processar dados de pools
+      // Process pool data
       const pools: MiningPool[] = Object.entries(poolsData.pools || {})
         .map(([name, data]: [string, any]) => {
           const isCentralized = ['Foundry USA', 'AntPool', 'Binance Pool', 'F2Pool', 'ViaBTC'].includes(name)
@@ -164,22 +164,22 @@ export function EnhancedMiningCard() {
         .sort((a, b) => b.share - a.share)
         .slice(0, 10) // Top 10 pools
 
-      // Calcular risco de centralização (% dos 4 maiores pools)
+      // Calculate centralization risk (% of the 4 largest pools)
       const top4Share = pools.slice(0, 4).reduce((sum, pool) => sum + pool.share, 0)
       const centralizationRisk = top4Share
 
-      // Calcular quantos mineradores solo são necessários para descentralizar
-      // Assumindo que cada minerador solo tem em média 100 PH/s
-      const soloHashratePH = 100 // 100 PH/s por minerador solo
-      const soloHashrateEH = soloHashratePH / 1000 // Converter para EH/s
-      const totalHashrateEH = hashrateData.currentHashrate || 320 // Valor de fallback se não tiver dados
+      // Calculate how many solo miners are needed for decentralization
+      // Assuming each solo miner has an average of 100 PH/s
+      const soloHashratePH = 100 // 100 PH/s per solo miner
+      const soloHashrateEH = soloHashratePH / 1000 // Convert to EH/s
+      const totalHashrateEH = hashrateData.currentHashrate || 320 // Fallback value if no data
 
-      // Quantos mineradores solo seriam necessários para ter 10% da rede
-      const targetNetworkShare = 0.10 // 10% da rede
+      // How many solo miners would be needed to have 10% of the network
+      const targetNetworkShare = 0.10 // 10% of the network
       const targetHashrate = totalHashrateEH * targetNetworkShare
       const soloMinersNeeded = Math.ceil(targetHashrate / soloHashrateEH)
 
-      // Montar objeto de dados
+      // Build data object
       const miningData: MiningData = {
         totalHashrate: totalHashrateEH,
         difficulty: difficultyData.difficulty || 73.35e12,
@@ -188,7 +188,7 @@ export function EnhancedMiningCard() {
           : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
         nextDifficultyChangePercent: diffAdjData?.difficultyChange || 3.25,
         blockHeight: blockHeight || 842500,
-        blockTime: (diffAdjData?.timeAvg || 588) / 60, // Converter de segundos para minutos
+        blockTime: (diffAdjData?.timeAvg || 588) / 60, // Convert from seconds to minutes
         pools,
         centralizationRisk,
         soloMinersNeeded,
@@ -199,35 +199,35 @@ export function EnhancedMiningCard() {
       setLastUpdated(new Date())
       setError(null)
     } catch (err) {
-      console.error('Erro ao buscar dados de mineração:', err)
+      console.error('Error fetching mining data:', err)
 
-      // Usar dados de fallback em caso de erro
+      // Use fallback data in case of error
       const fallbackData = generateFallbackData()
       setData(fallbackData)
       setLastUpdated(new Date())
-      setError('Usando dados simulados devido a problemas de conexão com a API')
+      setError('Using simulated data due to API connection issues')
     } finally {
       setIsLoading(false)
     }
   }
 
-  // Buscar dados iniciais
+  // Fetch initial data
   useEffect(() => {
-    // Definir um timeout para usar dados de fallback se a API demorar muito
+    // Set a timeout to use fallback data if the API takes too long
     const timeoutId = setTimeout(() => {
       if (isLoading && !data) {
-        console.log('Timeout atingido, usando dados de fallback')
+        console.log('Timeout reached, using fallback data')
         const fallbackData = generateFallbackData()
         setData(fallbackData)
         setLastUpdated(new Date())
-        setError('Usando dados simulados devido a timeout na API')
+        setError('Using simulated data due to API timeout')
         setIsLoading(false)
       }
-    }, 5000) // 5 segundos de timeout
+    }, 5000) // 5 second timeout
 
     fetchMiningData()
 
-    // Configurar atualização a cada 5 minutos
+    // Set up update every 5 minutes
     const intervalId = setInterval(fetchMiningData, 5 * 60 * 1000)
 
     return () => {
@@ -236,7 +236,7 @@ export function EnhancedMiningCard() {
     }
   }, [])
 
-  // Atualizar o tempo desde a última atualização
+  // Update time since last update
   useEffect(() => {
     if (!lastUpdated) return
 
@@ -259,14 +259,14 @@ export function EnhancedMiningCard() {
     return () => clearInterval(intervalId)
   }, [lastUpdated])
 
-  // Evitar problemas de hidratação
+  // Avoid hydration issues
   useEffect(() => {
     setMounted(true)
   }, [])
 
   if (!mounted) return null
 
-  // Mostrar estado de carregamento
+  // Show loading state
   if (isLoading && !data) {
     return (
       <Card className="bg-gradient-to-br from-[#1D2D3D] to-[#2D3D4D] border-none shadow-xl p-6">
@@ -284,7 +284,7 @@ export function EnhancedMiningCard() {
     )
   }
 
-  // Mostrar estado de erro
+  // Show error state
   if (error && !data) {
     return (
       <Card className="bg-gradient-to-br from-[#1D2D3D] to-[#2D3D4D] border-none shadow-xl p-6">
@@ -292,8 +292,8 @@ export function EnhancedMiningCard() {
         <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded-lg mb-4">
           <Text className="text-rose-400">{error}</Text>
           <Text className="text-gray-400 text-sm mt-2">
-            Não foi possível conectar à API do mempool.space. Isso pode ocorrer devido a problemas de CORS,
-            limitações de taxa da API ou problemas de rede.
+            Could not connect to the mempool.space API. This may be due to CORS issues,
+            API rate limits, or network problems.
           </Text>
         </div>
         <button
@@ -304,7 +304,7 @@ export function EnhancedMiningCard() {
           }}
           className="px-4 py-2 bg-blue-500/20 text-blue-300 rounded-lg border border-blue-500/30 hover:bg-blue-500/30 transition-all"
         >
-          Tentar novamente
+          Try again
         </button>
       </Card>
     )
@@ -320,14 +320,14 @@ export function EnhancedMiningCard() {
           <div>
             <Title className="text-white text-2xl font-bold">Bitcoin Mining Analytics</Title>
             <Text className="text-sm text-gray-400">
-              {lastUpdated ? `Última atualização: ${timeAgo}` : 'Dados em tempo real'}
+              {lastUpdated ? `Last updated: ${timeAgo}` : 'Real-time data'}
             </Text>
           </div>
         </div>
         <div className="flex items-center">
           <div className="w-2 h-2 rounded-full bg-[#F7931A] mr-2 animate-ping"></div>
           <span className="px-3 py-1.5 rounded-lg bg-[#F7931A]/20 text-xs font-bold text-[#F7931A] border border-[#F7931A]/30 shadow-md">
-            {error ? 'Dados simulados' : 'mempool.space API'}
+            {error ? 'Simulated Data' : 'mempool.space API'}
           </span>
         </div>
       </div>
@@ -335,7 +335,7 @@ export function EnhancedMiningCard() {
       {error && (
         <div className="mb-6 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl shadow-md">
           <Text className="text-sm text-amber-300">
-            <span className="font-bold">Nota:</span> {error}
+            <span className="font-bold">Note:</span> {error}
           </Text>
           <div className="flex justify-end mt-3">
             <button
@@ -346,7 +346,7 @@ export function EnhancedMiningCard() {
               }}
               className="px-4 py-2 bg-blue-500/20 text-blue-300 rounded-lg border border-blue-500/30 hover:bg-blue-500/30 transition-all text-sm font-medium shadow-md"
             >
-              Tentar novamente
+              Try again
             </button>
           </div>
         </div>
@@ -359,23 +359,23 @@ export function EnhancedMiningCard() {
               <div className="w-8 h-8 rounded-lg bg-[#F7931A]/20 flex items-center justify-center mr-3 border border-[#F7931A]/30">
                 <RiDatabase2Line className="w-4 h-4 text-[#F7931A]" />
               </div>
-              <Text className="text-[#F7931A] font-bold">Hashrate da Rede</Text>
+              <Text className="text-[#F7931A] font-bold">Network Hashrate</Text>
             </div>
             <div className="flex items-center justify-between mb-2">
               <Text className="text-3xl font-bold text-white">{data?.totalHashrate.toFixed(2)} EH/s</Text>
               <div className="px-3 py-1.5 rounded-lg bg-[#F7931A]/20 text-xs font-bold text-[#F7931A] border border-[#F7931A]/30 shadow-md">
-                {data?.blockHeight.toLocaleString()} Blocos
+                {data?.blockHeight.toLocaleString()} Blocks
               </div>
             </div>
             <div className="p-2 bg-gray-800/40 rounded-lg mt-3 border border-gray-700/30">
               <div className="flex justify-between items-center">
-                <Text className="text-gray-400 text-sm">Tempo médio de bloco:</Text>
-                <Text className="text-white font-medium">{data?.blockTime.toFixed(2)} minutos</Text>
+                <Text className="text-gray-400 text-sm">Average block time:</Text>
+                <Text className="text-white font-medium">{data?.blockTime.toFixed(2)} minutes</Text>
               </div>
             </div>
             <div className="p-2 bg-gray-800/40 rounded-lg mt-2 border border-gray-700/30">
               <div className="flex justify-between items-center">
-                <Text className="text-gray-400 text-sm">Blocos nas últimas 24h:</Text>
+                <Text className="text-gray-400 text-sm">Blocks in last 24h:</Text>
                 <Text className="text-white font-medium">{Math.round(1440 / data?.blockTime)}</Text>
               </div>
             </div>
@@ -387,7 +387,7 @@ export function EnhancedMiningCard() {
               <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center mr-3 border border-blue-500/30">
                 <RiTimeLine className="w-4 h-4 text-blue-400" />
               </div>
-              <Text className="text-blue-400 font-bold">Próximo Ajuste de Dificuldade</Text>
+              <Text className="text-blue-400 font-bold">Next Difficulty Adjustment</Text>
             </div>
             <div className="flex items-center justify-between mb-2">
               <Text className="text-3xl font-bold text-white">
@@ -400,13 +400,13 @@ export function EnhancedMiningCard() {
             <ProgressBar value={Math.min(100, (data?.nextDifficultyChangePercent || 0) + 10)} color="blue" className="mt-3 h-2 rounded-full" />
             <div className="p-2 bg-gray-800/40 rounded-lg mt-3 border border-gray-700/30">
               <div className="flex justify-between items-center">
-                <Text className="text-gray-400 text-sm">Dificuldade atual:</Text>
+                <Text className="text-gray-400 text-sm">Current difficulty:</Text>
                 <Text className="text-white font-medium">{(data?.difficulty / 1e12).toFixed(2)} T</Text>
               </div>
             </div>
             <div className="p-2 bg-gray-800/40 rounded-lg mt-2 border border-gray-700/30">
               <div className="flex justify-between items-center">
-                <Text className="text-gray-400 text-sm">Blocos até ajuste:</Text>
+                <Text className="text-gray-400 text-sm">Blocks until adjustment:</Text>
                 <Text className="text-white font-medium">~{Math.round((2016 - (data?.blockHeight % 2016)) || 0)}</Text>
               </div>
             </div>
@@ -420,7 +420,7 @@ export function EnhancedMiningCard() {
             <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center mr-3 border border-emerald-500/30">
               <RiShieldCheckLine className="w-4 h-4 text-emerald-400" />
             </div>
-            <Text className="text-emerald-400 font-bold">Distribuição dos Pools de Mineração</Text>
+            <Text className="text-emerald-400 font-bold">Mining Pool Distribution</Text>
           </div>
           <div className="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-xs font-bold text-emerald-400 border border-emerald-500/30 shadow-md">
             Top 10 Pools
@@ -592,13 +592,9 @@ export function EnhancedMiningCard() {
                 Cada minerador solo ou pool menor contribui para a descentralização da rede Bitcoin. Juntos, podemos tornar o Bitcoin mais forte e resistente!
               </Text>
             </div>
-            <div className="mt-4 flex items-center justify-between p-2 bg-gray-800/60 rounded-lg border border-gray-700/50">
-              <Text className="text-gray-300 text-sm">Taxa da Pool:</Text>
-              <Text className="text-emerald-400 font-medium">Apenas 1%</Text>
-            </div>
-            <div className="flex items-center justify-between p-2 bg-gray-800/60 rounded-lg border border-gray-700/50 mt-2">
-              <Text className="text-gray-300 text-sm">Pagamentos:</Text>
-              <Text className="text-emerald-400 font-medium">A cada 24 horas</Text>
+            <div className="flex items-center justify-between p-2 bg-gray-800/60 rounded-lg border border-gray-700/50 mt-4">
+              <Text className="text-gray-300 text-sm">Payments:</Text>
+              <Text className="text-emerald-400 font-medium">Every 24 hours</Text>
             </div>
           </div>
         </div>

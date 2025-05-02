@@ -112,7 +112,7 @@ export function BitcoinPriceCard() {
                     <p className="text-3xl font-bold text-white opacity-50">
                       {mounted && marketData?.btcPrice
                         ? `$${(marketData.btcPrice).toLocaleString()}`
-                        : "$64,200.00" /* Valor fixo para SSR */
+                        : "$96,583.51" /* Valor atualizado para SSR */
                       }
                     </p>
                     <div className="flex items-center mt-1">
@@ -128,7 +128,7 @@ export function BitcoinPriceCard() {
                   <p className="text-4xl font-bold bg-gradient-to-r from-amber-400 to-orange-400 text-transparent bg-clip-text">
                     {mounted
                       ? `$${(marketData?.btcPrice ?? 0).toLocaleString()}`
-                      : "$64,200.00" /* Valor fixo para SSR */
+                      : "$96,583.51" /* Valor atualizado para SSR */
                     }
                   </p>
                   <div className="flex items-center mt-1">
