@@ -11,10 +11,6 @@ const nextConfig = {
     optimizePackageImports: ['@tremor/react', 'recharts'],
     // Isso ajuda a evitar erros 500 em produção
     serverComponentsExternalPackages: ['axios'],
-    // Ignorar páginas problemáticas durante o build
-    appDir: true,
-    // Desabilitar geração estática para páginas problemáticas
-    disableStaticImages: true,
   },
   // Configuração para o App Router
   output: 'standalone',

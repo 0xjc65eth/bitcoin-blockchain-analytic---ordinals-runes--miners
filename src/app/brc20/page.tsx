@@ -1,8 +1,8 @@
 'use client'
 
-import { Header } from '@/components/header'
-import { DashboardCard } from '@/components/dashboard-card'
-import { useOrdiscanData } from '@/hooks/useOrdiscanData'
+import { Header } from './components/header'
+import { DashboardCard } from './components/dashboard-card'
+import { useOrdiscanData } from './hooks/useOrdiscanData'
 
 export default function BRC20Page() {
   return (
@@ -11,7 +11,7 @@ export default function BRC20Page() {
       <div className="container mx-auto py-8 px-4">
         <h1 className="text-2xl font-bold mb-2">BRC-20</h1>
         <h2 className="text-lg text-muted-foreground mb-6">BRC-20 TOKENS OVERVIEW</h2>
-        
+
         <div className="grid gap-6 md:grid-cols-2">
           <BRC20StatsCard />
           <TopTokensCard />
@@ -53,4 +53,4 @@ function TopTokensCard() {
       </div>
     </DashboardCard>
   )
-} 
+}

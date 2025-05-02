@@ -1,7 +1,7 @@
 'use client'
 
-import { Header } from '@/components/header'
-import { EnhancedArbitrageCard } from '@/components/enhanced-arbitrage-card'
+import { Header } from './components/header'
+import { EnhancedArbitrageCard } from './components/enhanced-arbitrage-card'
 import { Grid, Col } from '@tremor/react'
 
 export default function ArbitragePage() {
