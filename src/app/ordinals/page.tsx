@@ -19,38 +19,35 @@ export default function OrdinalsPage() {
   const isLoading = isLoadingInscriptions || isLoadingCollections
   const error = inscriptionsError
 
-  // Preparar dados para a tabela de inscrições
+  // Usar os dados diretamente da API
   const tableData = useMemo(() => {
-    // Combinar dados de inscrições com coleções para exibição
-    return inscriptionsArray.map((item: any, idx: number) => {
-      // Valores simulados para dados que não estão disponíveis diretamente na API
-      const volume24h = Math.floor(Math.random() * 5000) + 100;
-      const floorPrice = (Math.random() * 0.1).toFixed(4);
-      const marketCap = Math.floor(Math.random() * 1000000) + 10000;
-      const holders = Math.floor(Math.random() * 1000) + 100;
-      const liquidity = Math.floor(Math.random() * 50000) + 5000;
-
-      return {
+    // Se os dados já estiverem formatados corretamente, usá-los diretamente
+    if (Array.isArray(inscriptions) && inscriptions.length > 0 && inscriptions[0].floor_price !== undefined) {
+      return inscriptions.map(item => ({
         ...item,
-        name: item.collection_slug || `Inscription #${item.inscription_number}`,
-        volume_24h: volume24h,
-        buy_price: (parseFloat(floorPrice) * 0.98).toFixed(4),
-        sell_price: (parseFloat(floorPrice) * 1.02).toFixed(4),
-        floor_price: floorPrice,
-        market_cap: marketCap,
-        holders: holders,
-        liquidity: liquidity,
-        riskReturn: ((volume24h / (parseFloat(floorPrice) || 1)) * Math.random() * 0.01).toFixed(2),
-        arbitrage: Math.random() > 0.8 ? `Sim (+${(Math.random()*5).toFixed(2)}%)` : 'Não',
-        rank: idx + 1,
-        exchanges: [
-          { name: "Magic Eden", url: "https://magiceden.io/ordinals", price: parseFloat(floorPrice) * 1.02 },
-          { name: "Gamma.io", url: "https://gamma.io", price: parseFloat(floorPrice) * 0.98 },
-          { name: "Ordinals Market", url: "https://ordinals.market", price: parseFloat(floorPrice) * 1.01 }
-        ]
-      }
-    })
-  }, [inscriptionsArray])
+        // Garantir que todos os campos necessários existam
+        name: item.name || `Inscription #${item.inscription_number}`,
+        volume_24h: item.volume_24h || 0,
+        buy_price: item.buy_price || (parseFloat(item.floor_price) * 0.98).toFixed(4),
+        sell_price: item.sell_price || (parseFloat(item.floor_price) * 1.02).toFixed(4),
+        floor_price: item.floor_price || "0.0000",
+        market_cap: item.market_cap || 0,
+        holders: item.holders || 0,
+        liquidity: item.liquidity || (item.market_cap ? Math.floor(item.market_cap * 0.2) : 0),
+        riskReturn: item.risk_return || "0.00",
+        arbitrage: item.arbitrage || 'Não',
+        exchanges: item.exchanges || [
+          { name: "Magic Eden", url: `https://magiceden.io/ordinals/collection/${item.collection_slug || 'unknown'}`, price: parseFloat(item.floor_price || 0) * 1.02 },
+          { name: "Gamma.io", url: `https://gamma.io/ordinals/collections/${item.collection_slug || 'unknown'}`, price: parseFloat(item.floor_price || 0) * 0.98 }
+        ],
+        collectionLink: item.collectionLink || `https://ordiscan.com/collections/${item.collection_slug || 'unknown'}`
+      }));
+    }
+
+    // Caso contrário, retornar um array vazio
+    console.error("Dados de ordinals inválidos:", inscriptions);
+    return [];
+  }, [inscriptions])
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950">
@@ -102,27 +99,47 @@ export default function OrdinalsPage() {
                     </div>
                     <div className="grid grid-cols-2 gap-3 text-xs mb-4">
                       <div className="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700/30">
-                        <p className="text-gray-300 mb-1">Items</p>
-                        <p className="font-bold text-white text-sm">{collection.item_count?.toLocaleString('en-US')}</p>
+                        <p className="text-gray-300 mb-1">Supply</p>
+                        <p className="font-bold text-white text-sm">{collection.supply?.toLocaleString('en-US') || collection.item_count?.toLocaleString('en-US') || "N/A"}</p>
                       </div>
                       <div className="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700/30">
                         <p className="text-gray-300 mb-1">Volume 24h</p>
-                        <p className="font-bold text-emerald-400 text-sm">${collection.volume_24h?.toLocaleString('en-US')}</p>
+                        <p className="font-bold text-emerald-400 text-sm">${collection.volume_24h?.toLocaleString('en-US') || "0"}</p>
                       </div>
                       <div className="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700/30">
                         <p className="text-gray-300 mb-1">Floor Price</p>
-                        <p className="font-bold text-blue-400 text-sm">${collection.floor_price}</p>
+                        <p className="font-bold text-blue-400 text-sm">${collection.floor_price || "0.0000"}</p>
                       </div>
                       <div className="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700/30">
                         <p className="text-gray-300 mb-1">Market Cap</p>
-                        <p className="font-bold text-purple-400 text-sm">${(collection.market_cap / 1000000).toFixed(2)}M</p>
+                        <p className="font-bold text-purple-400 text-sm">
+                          ${collection.market_cap
+                            ? (collection.market_cap >= 1000000
+                                ? (collection.market_cap / 1000000).toFixed(2) + "M"
+                                : collection.market_cap.toLocaleString('en-US'))
+                            : "N/A"}
+                        </p>
                       </div>
                     </div>
-                    {collection.exchanges && (
-                      <div className="mt-3 border-t border-slate-700/30 pt-3">
-                        <p className="text-xs text-gray-300 mb-2">Exchanges:</p>
-                        <div className="flex flex-wrap gap-2">
-                          {collection.exchanges.map((exchange: any, j: number) => (
+                    <div className="mt-3 border-t border-slate-700/30 pt-3">
+                      <p className="text-xs text-gray-300 mb-2">Exchanges:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {collection.marketplaces ? (
+                          // Use the new marketplaces data if available
+                          collection.marketplaces.map((marketplace: any, j: number) => (
+                            <a
+                              key={j}
+                              href={marketplace.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`text-xs px-2.5 py-1 rounded-lg bg-gradient-to-r ${colorScheme.from} ${colorScheme.to} border ${colorScheme.border} ${colorScheme.text} transition-all hover:shadow-md`}
+                            >
+                              {marketplace.name.replace('.io', '')} (${typeof collection.floor_price === 'number' ? (collection.floor_price * (1 + (j * 0.02 - 0.01))).toFixed(4) : collection.floor_price})
+                            </a>
+                          ))
+                        ) : collection.exchanges ? (
+                          // Fallback to exchanges if marketplaces not available
+                          collection.exchanges.map((exchange: any, j: number) => (
                             <a
                               key={j}
                               href={exchange.url}
@@ -130,12 +147,58 @@ export default function OrdinalsPage() {
                               rel="noopener noreferrer"
                               className={`text-xs px-2.5 py-1 rounded-lg bg-gradient-to-r ${colorScheme.from} ${colorScheme.to} border ${colorScheme.border} ${colorScheme.text} transition-all hover:shadow-md`}
                             >
-                              {exchange.name} (${exchange.price.toFixed(4)})
+                              {exchange.name} (${typeof exchange.price === 'number' ? exchange.price.toFixed(4) : exchange.price})
                             </a>
-                          ))}
-                        </div>
+                          ))
+                        ) : (
+                          // Default links if neither is available
+                          <>
+                            <a
+                              href={`https://magiceden.io/ordinals/collection/${collection.slug || collection.name?.toLowerCase().replace(/\s+/g, '-') || `collection-${i}`}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`text-xs px-2.5 py-1 rounded-lg bg-gradient-to-r ${colorScheme.from} ${colorScheme.to} border ${colorScheme.border} ${colorScheme.text} transition-all hover:shadow-md`}
+                            >
+                              Magic Eden (${typeof collection.floor_price === 'number' ? (collection.floor_price * 1.02).toFixed(4) : collection.floor_price})
+                            </a>
+                            <a
+                              href={`https://gamma.io/ordinals/collections/${collection.slug || collection.name?.toLowerCase().replace(/\s+/g, '-') || `collection-${i}`}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`text-xs px-2.5 py-1 rounded-lg bg-gradient-to-r ${colorScheme.from} ${colorScheme.to} border ${colorScheme.border} ${colorScheme.text} transition-all hover:shadow-md`}
+                            >
+                              Gamma.io (${typeof collection.floor_price === 'number' ? (collection.floor_price * 0.98).toFixed(4) : collection.floor_price})
+                            </a>
+                          </>
+                        )}
                       </div>
-                    )}
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        <a
+                          href={collection.links?.info || collection.detailsLink || collection.collectionLink || `https://ordiscan.com/collection/${collection.slug || collection.name?.toLowerCase().replace(/\s+/g, '-') || `collection-${i}`}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs px-2.5 py-1 rounded-lg bg-gradient-to-r from-blue-600/30 to-purple-600/30 border border-blue-500/30 text-blue-400 hover:border-blue-400 transition-all hover:shadow-md"
+                        >
+                          Details
+                        </a>
+                        <a
+                          href={collection.explorerLink || `https://ordinals.com/collections/${collection.slug || collection.name?.toLowerCase().replace(/\s+/g, '-') || `collection-${i}`}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs px-2.5 py-1 rounded-lg bg-gradient-to-r from-green-600/30 to-emerald-600/30 border border-green-500/30 text-emerald-400 hover:border-emerald-400 transition-all hover:shadow-md"
+                        >
+                          Explorer
+                        </a>
+                        <a
+                          href={`https://ordiscan.com/collection/${collection.slug || collection.name?.toLowerCase().replace(/\s+/g, '-') || `collection-${i}`}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-600/30 to-orange-600/30 border border-amber-500/30 text-amber-400 hover:border-amber-400 transition-all hover:shadow-md"
+                        >
+                          Ordiscan
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 );
               })
@@ -229,27 +292,117 @@ export default function OrdinalsPage() {
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex flex-wrap gap-1.5">
-                          {item.exchanges?.map((exchange: any, j: number) => {
-                            // Different colors for different exchanges
-                            const exchangeColors = [
-                              { bg: 'bg-blue-500/20', border: 'border-blue-500/30', text: 'text-blue-400' },
-                              { bg: 'bg-purple-500/20', border: 'border-purple-500/30', text: 'text-purple-400' },
-                              { bg: 'bg-emerald-500/20', border: 'border-emerald-500/30', text: 'text-emerald-400' }
-                            ];
-                            const color = exchangeColors[j % exchangeColors.length];
+                          {item.marketplaces ? (
+                            // Use the new marketplaces data if available
+                            item.marketplaces.map((marketplace: any, j: number) => {
+                              // Different colors for different exchanges
+                              const exchangeColors = [
+                                { bg: 'bg-blue-500/20', border: 'border-blue-500/30', text: 'text-blue-400' },
+                                { bg: 'bg-purple-500/20', border: 'border-purple-500/30', text: 'text-purple-400' },
+                                { bg: 'bg-emerald-500/20', border: 'border-emerald-500/30', text: 'text-emerald-400' }
+                              ];
+                              const color = exchangeColors[j % exchangeColors.length];
 
-                            return (
+                              return (
+                                <a
+                                  key={j}
+                                  href={marketplace.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={`text-xs px-2 py-1 rounded-lg ${color.bg} ${color.border} border ${color.text} hover:shadow-md transition-all`}
+                                >
+                                  {marketplace.name.replace('.io', '')}
+                                </a>
+                              );
+                            })
+                          ) : item.exchanges ? (
+                            // Fallback to exchanges if marketplaces not available
+                            item.exchanges.map((exchange: any, j: number) => {
+                              // Different colors for different exchanges
+                              const exchangeColors = [
+                                { bg: 'bg-blue-500/20', border: 'border-blue-500/30', text: 'text-blue-400' },
+                                { bg: 'bg-purple-500/20', border: 'border-purple-500/30', text: 'text-purple-400' },
+                                { bg: 'bg-emerald-500/20', border: 'border-emerald-500/30', text: 'text-emerald-400' }
+                              ];
+                              const color = exchangeColors[j % exchangeColors.length];
+
+                              return (
+                                <a
+                                  key={j}
+                                  href={exchange.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={`text-xs px-2 py-1 rounded-lg ${color.bg} ${color.border} border ${color.text} hover:shadow-md transition-all`}
+                                >
+                                  {exchange.name}
+                                </a>
+                              );
+                            })
+                          ) : (
+                            // Default links if neither is available
+                            <>
                               <a
-                                key={j}
-                                href={exchange.url}
+                                href={`https://magiceden.io/ordinals/collection/${item.collection_slug || item.name?.toLowerCase().replace(/\s+/g, '-') || 'unknown'}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={`text-xs px-2 py-1 rounded-lg ${color.bg} ${color.border} border ${color.text} hover:shadow-md transition-all`}
+                                className="text-xs px-2 py-1 rounded-lg bg-blue-500/20 border-blue-500/30 border text-blue-400 hover:shadow-md transition-all"
                               >
-                                {exchange.name}
+                                Magic Eden
                               </a>
-                            );
-                          })}
+                              <a
+                                href={`https://gamma.io/ordinals/collections/${item.collection_slug || item.name?.toLowerCase().replace(/\s+/g, '-') || 'unknown'}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs px-2 py-1 rounded-lg bg-purple-500/20 border-purple-500/30 border text-purple-400 hover:shadow-md transition-all"
+                              >
+                                Gamma.io
+                              </a>
+                            </>
+                          )}
+                          <div className="w-full mt-1 flex gap-1.5">
+                            <a
+                              href={item.inscriptionLink || `https://ordinals.com/inscription/${item.inscription_number}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] px-1.5 py-0.5 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-400 hover:shadow-md transition-all"
+                            >
+                              Item
+                            </a>
+                            <a
+                              href={item.collectionLink || `https://ordiscan.com/collection/${item.collection_slug || item.name?.toLowerCase().replace(/\s+/g, '-') || 'unknown'}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] px-1.5 py-0.5 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:shadow-md transition-all"
+                            >
+                              Coleção
+                            </a>
+                            <a
+                              href={item.links?.info || item.detailsLink || `https://magiceden.io/ordinals/collection/${item.collection_slug || item.name?.toLowerCase().replace(/\s+/g, '-') || 'unknown'}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] px-1.5 py-0.5 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:shadow-md transition-all"
+                            >
+                              Detalhes
+                            </a>
+                          </div>
+                          <div className="w-full mt-1 flex gap-1.5">
+                            <a
+                              href={item.links?.buy || item.exchanges?.[0]?.buyUrl || item.buyLink || `https://magiceden.io/ordinals/collection/${item.collection_slug || item.name?.toLowerCase().replace(/\s+/g, '-') || 'unknown'}?listed=true&sort=price-asc`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] px-1.5 py-0.5 rounded-lg bg-emerald-900/50 border border-emerald-800/50 text-emerald-400 hover:shadow-md transition-all"
+                            >
+                              Comprar
+                            </a>
+                            <a
+                              href={item.marketplaces?.[0]?.url || item.exchanges?.[0]?.sellUrl || item.sellLink || `https://magiceden.io/ordinals/collection/${item.collection_slug || item.name?.toLowerCase().replace(/\s+/g, '-') || 'unknown'}?action=sell`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] px-1.5 py-0.5 rounded-lg bg-rose-900/50 border border-rose-800/50 text-rose-400 hover:shadow-md transition-all"
+                            >
+                              Vender
+                            </a>
+                          </div>
                         </div>
                       </td>
                     </tr>
@@ -339,8 +492,18 @@ export default function OrdinalsPage() {
                           </svg>
                           <p className="text-gray-300">Compra em</p>
                         </div>
-                        <p className="font-bold text-white mb-1">{item.exchanges[1].name}</p>
-                        <p className="font-bold text-emerald-400 text-lg">${item.exchanges[1].price.toFixed(4)}</p>
+                        <a
+                          href={item.marketplaces?.[0]?.url || item.exchanges[1].buyUrl || item.buyLink || `https://magiceden.io/ordinals/collection/${item.collection_slug || item.name?.toLowerCase().replace(/\s+/g, '-') || 'unknown'}?listed=true&sort=price-asc`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-bold text-white mb-1 hover:text-emerald-300 transition-colors"
+                        >
+                          {item.marketplaces?.[0]?.name?.replace('.io', '') || item.exchanges[1].name}
+                        </a>
+                        <div className="flex items-center gap-2">
+                          <p className="font-bold text-emerald-400 text-lg">${item.exchanges[1].price.toFixed(4)}</p>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-900/50 text-emerald-400 border border-emerald-800/50">COMPRAR</span>
+                        </div>
                       </div>
 
                       <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700/30">
@@ -350,8 +513,18 @@ export default function OrdinalsPage() {
                           </svg>
                           <p className="text-gray-300">Venda em</p>
                         </div>
-                        <p className="font-bold text-white mb-1">{item.exchanges[0].name}</p>
-                        <p className="font-bold text-rose-400 text-lg">${item.exchanges[0].price.toFixed(4)}</p>
+                        <a
+                          href={item.marketplaces?.[1]?.url || item.exchanges[0].sellUrl || item.sellLink || `https://magiceden.io/ordinals/collection/${item.collection_slug || item.name?.toLowerCase().replace(/\s+/g, '-') || 'unknown'}?action=sell`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-bold text-white mb-1 hover:text-rose-300 transition-colors"
+                        >
+                          {item.marketplaces?.[1]?.name?.replace('.io', '') || item.exchanges[0].name}
+                        </a>
+                        <div className="flex items-center gap-2">
+                          <p className="font-bold text-rose-400 text-lg">${item.exchanges[0].price.toFixed(4)}</p>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-900/50 text-rose-400 border border-rose-800/50">VENDER</span>
+                        </div>
                       </div>
                     </div>
 
@@ -363,17 +536,27 @@ export default function OrdinalsPage() {
                           </svg>
                           Profit Potencial:
                         </p>
-                        <a
-                          href={`https://magiceden.io/ordinals/item/${item.inscription_number}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs px-2.5 py-1 rounded-lg bg-gradient-to-r from-emerald-500/20 to-blue-500/20 border border-emerald-500/30 text-emerald-400 hover:shadow-md transition-all flex items-center gap-1"
-                        >
-                          Ver Item
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                          </svg>
-                        </a>
+                        <div className="flex gap-1">
+                          <a
+                            href={item.inscriptionLink || `https://ordinals.com/inscription/${item.inscription_number}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs px-2.5 py-1 rounded-lg bg-gradient-to-r from-emerald-500/20 to-blue-500/20 border border-emerald-500/30 text-emerald-400 hover:shadow-md transition-all flex items-center gap-1"
+                          >
+                            Ver Item
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                          </a>
+                          <a
+                            href={item.links?.info || item.collectionLink || `https://ordiscan.com/collection/${item.collection_slug || item.name?.toLowerCase().replace(/\s+/g, '-') || 'unknown'}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs px-2.5 py-1 rounded-lg bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 text-blue-400 hover:shadow-md transition-all flex items-center gap-1"
+                          >
+                            Coleção
+                          </a>
+                        </div>
                       </div>
                       <div className="flex items-center gap-2 mt-2">
                         <div className="flex-grow h-2 bg-slate-800/50 rounded-full overflow-hidden">

@@ -9,7 +9,7 @@ import { DashboardCard } from '@/components/dashboard-card'
 export function NeuralArbitrageCard() {
   const [mounted, setMounted] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
-  
+
   const {
     insights,
     isLearning,
@@ -20,15 +20,15 @@ export function NeuralArbitrageCard() {
     insightTypes: ['arbitrage'],
     refreshInterval: 15000 // 15 segundos
   })
-  
+
   // Obter apenas insights de arbitragem
   const arbitrageInsights = getInsightsByType('arbitrage', 5)
-  
+
   // Evitar problemas de hidratação
   useEffect(() => {
     setMounted(true)
   }, [])
-  
+
   // Simular atualização
   const handleRefresh = () => {
     setIsUpdating(true)
@@ -36,14 +36,14 @@ export function NeuralArbitrageCard() {
       setIsUpdating(false)
     }, 1500)
   }
-  
+
   // Formatar data
   const formatDate = (dateString: string) => {
     if (!dateString) return 'N/A'
     const date = new Date(dateString)
     return date.toLocaleTimeString()
   }
-  
+
   return (
     <DashboardCard title="Neural Arbitrage Opportunities" className="bg-gradient-to-br from-[#181F3A] to-[#2A3A5A] border-none shadow-xl">
       <div className="space-y-4">
@@ -64,7 +64,7 @@ export function NeuralArbitrageCard() {
             <RiRefreshLine className={`w-4 h-4 ${isUpdating ? 'animate-spin' : ''}`} />
           </button>
         </div>
-        
+
         {isLearning && (
           <div className="mb-2">
             <div className="flex justify-between items-center mb-1">
@@ -74,7 +74,7 @@ export function NeuralArbitrageCard() {
             <ProgressBar value={learningProgress} color="amber" className="h-1" />
           </div>
         )}
-        
+
         <div className="space-y-3">
           {isLoading ? (
             <div className="flex justify-center items-center h-40">
@@ -91,17 +91,24 @@ export function NeuralArbitrageCard() {
                     </span>
                   </div>
                   <div className="flex items-center">
-                    <span className="text-xs text-gray-400 mr-1">Profit:</span>
+                    <span className="text-xs text-gray-400 mr-1">Net Profit:</span>
                     <span className="text-sm font-medium text-emerald-400">{insight.prediction.profitPercent}%</span>
+                    <span className="text-xs text-gray-400 ml-1">(after fees)</span>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-2 mb-2">
                   <div className="bg-amber-500/10 p-2 rounded-lg border border-amber-500/20">
                     <p className="text-xs text-amber-300">Buy Price</p>
                     <div className="flex justify-between items-center">
                       <p className="text-sm font-medium text-white">${insight.prediction.sourceBuyPrice.toLocaleString(undefined, {maximumFractionDigits: 2})}</p>
-                      <a href="#" className="text-blue-400 hover:text-blue-300">
+                      <a
+                        href={`https://${insight.prediction.sourceExchange.toLowerCase().replace(' ', '')}.com/trade/BTC`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 hover:text-blue-300"
+                        title={`Buy on ${insight.prediction.sourceExchange}`}
+                      >
                         <RiExternalLinkLine className="w-3.5 h-3.5" />
                       </a>
                     </div>
@@ -110,13 +117,41 @@ export function NeuralArbitrageCard() {
                     <p className="text-xs text-amber-300">Sell Price</p>
                     <div className="flex justify-between items-center">
                       <p className="text-sm font-medium text-white">${insight.prediction.targetSellPrice.toLocaleString(undefined, {maximumFractionDigits: 2})}</p>
-                      <a href="#" className="text-blue-400 hover:text-blue-300">
+                      <a
+                        href={`https://${insight.prediction.targetExchange.toLowerCase().replace(' ', '')}.com/trade/BTC`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 hover:text-blue-300"
+                        title={`Sell on ${insight.prediction.targetExchange}`}
+                      >
                         <RiExternalLinkLine className="w-3.5 h-3.5" />
                       </a>
                     </div>
                   </div>
                 </div>
-                
+
+                <div className="bg-amber-500/10 p-2 rounded-lg border border-amber-500/20 mb-2">
+                  <p className="text-xs text-amber-300 mb-1">Fee Breakdown</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="flex justify-between">
+                      <span className="text-xs text-gray-400">Buy Fee:</span>
+                      <span className="text-xs text-white">{(insight.prediction.sourceFeePercent || 0.1).toFixed(2)}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-xs text-gray-400">Sell Fee:</span>
+                      <span className="text-xs text-white">{(insight.prediction.targetFeePercent || 0.1).toFixed(2)}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-xs text-gray-400">Network Fee:</span>
+                      <span className="text-xs text-white">${(insight.prediction.networkFee || 2.5).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-xs text-gray-400">Total Fees:</span>
+                      <span className="text-xs text-rose-400">${(insight.prediction.totalFees || 8.75).toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="flex justify-between items-center text-xs text-gray-400">
                   <div className="flex items-center">
                     <RiTimeLine className="w-3.5 h-3.5 mr-1" />
@@ -140,11 +175,12 @@ export function NeuralArbitrageCard() {
             </div>
           )}
         </div>
-        
+
         <div className="mt-3 bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
           <p className="text-sm text-white/90">
             <span className="font-bold text-amber-400">Neural Analysis:</span> Our advanced neural engine continuously
-            monitors price differences across exchanges, accounting for fees, slippage, and execution time.
+            monitors price differences across exchanges, accounting for trading fees, network fees, slippage, and execution time.
+            All profit calculations include marketplace fees and transaction costs for accurate net profit estimation.
             Opportunities are ranked by profitability and confidence score.
           </p>
           <div className="flex justify-between items-center mt-2 text-xs text-gray-400">

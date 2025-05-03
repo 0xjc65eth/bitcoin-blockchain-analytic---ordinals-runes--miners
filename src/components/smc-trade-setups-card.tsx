@@ -54,8 +54,10 @@ export function SmcTradeSetupsCard() {
   // Get top 4 setups
   const topSetups = sortedSetups.slice(0, 4)
 
-  const currentDate = new Date()
-  const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`
+  // Usar uma data fixa para evitar problemas de hidratação
+  const formattedDate = mounted
+    ? `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`
+    : "2025-05-03 14:30:00"
 
   return (
     <Card className="bg-gradient-to-br from-[#1A2A3A] to-[#2A3A4A] border-none shadow-xl p-6">
@@ -121,34 +123,34 @@ export function SmcTradeSetupsCard() {
               <div className="bg-gray-800/30 rounded-lg p-3 border border-gray-700/30">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-xs text-gray-400">Entry</span>
-                  <span className="text-sm font-bold text-white">${setup.entry.toLocaleString()}</span>
+                  <span className="text-sm font-bold text-white">${mounted ? setup.entry.toLocaleString() : '65,000'}</span>
                 </div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-xs text-gray-400">Stop Loss</span>
-                  <span className="text-sm font-bold text-rose-400">${setup.stopLoss.toLocaleString()}</span>
+                  <span className="text-sm font-bold text-rose-400">${mounted ? setup.stopLoss.toLocaleString() : '63,500'}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-gray-400">Risk/Reward</span>
-                  <span className="text-sm font-bold text-amber-400">{setup.riskRewardRatio.toFixed(2)}</span>
+                  <span className="text-sm font-bold text-amber-400">{mounted ? setup.riskRewardRatio.toFixed(2) : '3.50'}</span>
                 </div>
               </div>
 
               <div className="bg-gray-800/30 rounded-lg p-3 border border-gray-700/30">
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-xs text-gray-400">TP1</span>
-                  <span className="text-xs font-bold text-emerald-400">${setup.takeProfits.tp1.toLocaleString()}</span>
+                  <span className="text-xs font-bold text-emerald-400">${mounted ? setup.takeProfits.tp1.toLocaleString() : '65,500'}</span>
                 </div>
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-xs text-gray-400">TP2</span>
-                  <span className="text-xs font-bold text-emerald-400">${setup.takeProfits.tp2.toLocaleString()}</span>
+                  <span className="text-xs font-bold text-emerald-400">${mounted ? setup.takeProfits.tp2.toLocaleString() : '66,200'}</span>
                 </div>
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-xs text-gray-400">TP3</span>
-                  <span className="text-xs font-bold text-emerald-400">${setup.takeProfits.tp3.toLocaleString()}</span>
+                  <span className="text-xs font-bold text-emerald-400">${mounted ? setup.takeProfits.tp3.toLocaleString() : '67,100'}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-gray-400">TP4</span>
-                  <span className="text-xs font-bold text-emerald-400">${setup.takeProfits.tp4.toLocaleString()}</span>
+                  <span className="text-xs font-bold text-emerald-400">${mounted ? setup.takeProfits.tp4.toLocaleString() : '68,500'}</span>
                 </div>
               </div>
             </div>
@@ -191,7 +193,7 @@ export function SmcTradeSetupsCard() {
             </div>
 
             <div className="text-xs text-gray-400 mt-1 border-t border-gray-700/30 pt-2">
-              <span className="font-medium">Entry time:</span> {new Date(setup.timestamp).toLocaleString()}
+              <span className="font-medium">Entry time:</span> {mounted ? new Date(setup.timestamp).toLocaleString() : '5/3/2025, 2:30:00 PM'}
             </div>
           </div>
         ))}

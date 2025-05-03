@@ -59,8 +59,10 @@ export function ArbitrageOpportunitiesCard() {
   // Get top 6 opportunities
   const topOpportunities = sortedOpportunities.slice(0, 6)
 
-  const currentDate = new Date()
-  const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`
+  // Usar uma data fixa para evitar problemas de hidratação
+  const formattedDate = mounted
+    ? `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`
+    : "2025-05-03 14:30:00"
 
   return (
     <Card className="bg-gradient-to-br from-[#1D2D3D] to-[#2D3D4D] border-none shadow-xl p-6">
@@ -142,6 +144,42 @@ export function ArbitrageOpportunitiesCard() {
               </div>
             </div>
 
+            {/* Profit calculation details */}
+            <div className="bg-slate-800/50 p-2 rounded-lg border border-slate-700/30 mb-3 text-xs">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-gray-400">Buy price:</span>
+                <span className="text-white font-medium">${(opportunity.priceDifference / (opportunity.percentageDifference / 100)).toFixed(6)}</span>
+              </div>
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-gray-400">Sell price:</span>
+                <span className="text-white font-medium">${(opportunity.priceDifference / (opportunity.percentageDifference / 100) * (1 + opportunity.percentageDifference / 100)).toFixed(6)}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400">After fees:</span>
+                <span className="text-emerald-400 font-medium">${opportunity.estimatedProfit.toFixed(2)}</span>
+              </div>
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex gap-2 mb-3">
+              <a
+                href={`https://${opportunity.sourceExchange.toLowerCase().replace(/\s+/g, '')}.io/market/${opportunity.asset.toLowerCase().replace('/', '-').replace('rune20/', 'rune/')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 text-center px-2 py-1.5 bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-lg text-xs font-medium hover:bg-blue-500/30 transition-colors"
+              >
+                Buy on {opportunity.sourceExchange}
+              </a>
+              <a
+                href={`https://${opportunity.targetExchange.toLowerCase().replace(/\s+/g, '')}.io/market/${opportunity.asset.toLowerCase().replace('/', '-').replace('rune20/', 'rune/')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 text-center px-2 py-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-lg text-xs font-medium hover:bg-emerald-500/30 transition-colors"
+              >
+                Sell on {opportunity.targetExchange}
+              </a>
+            </div>
+
             <div className="flex justify-between items-center text-xs mb-2">
               <span className={`px-2 py-0.5 rounded ${
                 opportunity.status === 'New' ? 'bg-blue-500/20 text-blue-300' :
@@ -157,7 +195,7 @@ export function ArbitrageOpportunitiesCard() {
             </div>
 
             <div className="text-xs text-gray-400 mt-1 border-t border-gray-700/30 pt-2">
-              <span className="font-medium">Entry time:</span> {new Date(opportunity.timestamp).toLocaleString()}
+              <span className="font-medium">Entry time:</span> {mounted ? new Date(opportunity.timestamp).toLocaleString() : '5/3/2025, 2:30:00 PM'}
             </div>
           </div>
         ))}

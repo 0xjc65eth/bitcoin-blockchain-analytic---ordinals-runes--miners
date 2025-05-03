@@ -6,6 +6,8 @@ import { Footer } from "@/components/footer"
 import { Providers } from "@/components/providers/providers"
 import { ThemeProvider } from "@/components/providers/theme-provider"
 import { QueryProvider } from "./providers/query-provider"
+import { NavigationProvider } from "./navigation-provider"
+import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
@@ -25,11 +27,14 @@ export default function RootLayout({
         <QueryProvider>
           <ThemeProvider>
             <Providers>
-              <Header />
-              <main className="flex-grow container mx-auto px-4 py-6">
-                {children}
-              </main>
-              <Footer />
+              <NavigationProvider>
+                <Header />
+                <main className="flex-grow container mx-auto px-4 py-6">
+                  {children}
+                </main>
+                <Footer />
+                <Toaster />
+              </NavigationProvider>
             </Providers>
           </ThemeProvider>
         </QueryProvider>

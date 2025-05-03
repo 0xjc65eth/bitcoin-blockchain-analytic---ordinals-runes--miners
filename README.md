@@ -1,22 +1,23 @@
-# CYPHER ORDI FUTURE - VERSION 2.2.3.3
+# CYPHER ORDI FUTURE - VERSION 2.2.4.0
 
 ![Bitcoin Analytics Dashboard](https://raw.githubusercontent.com/0xjc65eth/bitcoin-blockchain-analytic---ordinals-runes--miners/main/public/dashboard-preview.png)
 
 Uma plataforma avançada de análise da blockchain Bitcoin, focada em Ordinals, Runes e mineração, com recursos de arbitragem em tempo real, análise de descentralização da rede e sistema de aprendizado neural contínuo.
 
-## 🆕 Novidades da Versão 2.2.3.3
+## 🆕 Novidades da Versão 2.2.4.0
 
-Esta versão traz um sistema de aprendizado neural 24/7 com armazenamento em nuvem e melhorias significativas:
+Esta versão traz melhorias significativas na aba de arbitragem com análise neural avançada e dados de múltiplas fontes sociais:
 
-- ✅ Sistema de aprendizado neural contínuo 24/7 para insights mais precisos
-- ✅ Sincronização com armazenamento em nuvem (Supabase) para aprendizado contínuo mesmo com o computador desligado
-- ✅ Análise SMC aprimorada com recomendações de trade e níveis de TP/SL
-- ✅ Detecção de oportunidades de arbitragem com maior precisão
-- ✅ Previsões de mercado para Ordinals e Runes com base em dados históricos
-- ✅ Interface dedicada para monitoramento do sistema neural e sincronização com a nuvem
-- ✅ Modelos especializados para diferentes aspectos do mercado
-- ✅ Insights gerados com níveis de confiança e explicações detalhadas
-- ✅ Aprendizado contínuo que melhora com o tempo e persiste entre sessões
+- ✅ Sistema neural avançado para análise de arbitragem com dados de múltiplas fontes
+- ✅ Análise de sentimento social de Twitter, Reddit, Telegram e portais financeiros
+- ✅ Monitoramento de tendências, hashtags populares e influenciadores relevantes
+- ✅ Cálculos de lucro aprimorados considerando taxas específicas de cada marketplace
+- ✅ Detalhes específicos sobre onde comprar e vender com preços exatos
+- ✅ Janelas de tempo estimadas para cada oportunidade baseadas em análise de volatilidade
+- ✅ Análise de liquidez e volume para garantir viabilidade das operações
+- ✅ Explicações detalhadas sobre cada oportunidade identificada
+- ✅ Interface aprimorada com visualizações mais informativas e atrativas
+- ✅ Integração com serviços de arbitragem de runas para oportunidades específicas
 
 ## ✨ Principais Recursos
 
@@ -66,12 +67,17 @@ Esta versão traz um sistema de aprendizado neural 24/7 com armazenamento em nuv
 
 ### Arbitragem
 
-- Oportunidades de arbitragem em tempo real com análise neural
-- Cálculos precisos de lucro considerando taxas
-- Links diretos para compra e venda
-- Análise de risco para cada oportunidade
-- Detalhes específicos sobre onde comprar e vender
-- Previsão de janelas de oportunidade
+- Oportunidades de arbitragem em tempo real com análise neural avançada
+- Cálculos precisos de lucro considerando taxas específicas de cada marketplace
+- Links diretos para compra e venda em cada plataforma
+- Análise de risco detalhada para cada oportunidade
+- Sistema neural avançado para identificação de oportunidades
+- Análise de sentimento social de múltiplas fontes (Twitter, Reddit, Telegram, Bloomberg)
+- Monitoramento de tendências e hashtags populares
+- Insights detalhados sobre onde comprar e vender com preços específicos
+- Janelas de tempo estimadas para cada oportunidade
+- Análise de liquidez e volume para garantir viabilidade
+- Explicações detalhadas sobre cada oportunidade identificada
 
 ### Ordinals
 

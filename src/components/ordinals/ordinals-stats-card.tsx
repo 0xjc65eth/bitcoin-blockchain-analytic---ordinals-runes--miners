@@ -14,11 +14,11 @@ export function OrdinalsStatsCard() {
     setMounted(true)
   }, [])
 
-  // Calculate a mock growth percentage for demonstration
-  const inscriptionGrowth = 2.8;
-  const volumeGrowth = 5.2;
-  const floorPriceGrowth = -1.3;
-  const collectionsGrowth = 1.5;
+  // Usar dados reais ou valores padrão
+  const inscriptionGrowth = ordinalsData?.inscription_rate_change || 2.8;
+  const volumeGrowth = ordinalsData?.volume_change_24h || 5.2;
+  const floorPriceGrowth = ordinalsData?.price_change_24h || -1.3;
+  const collectionsGrowth = ordinalsData?.collections_growth || 1.5;
 
   if (isLoading) {
     return (
@@ -308,19 +308,67 @@ export function OrdinalsStatsCard() {
                 return (
                   <li
                     key={index}
-                    className={`flex justify-between items-center text-sm ${colorScheme.bg} p-3 rounded-lg border ${colorScheme.border} shadow-sm hover:shadow-md transition-all cursor-pointer`}
+                    className={`flex flex-col text-sm ${colorScheme.bg} p-3 rounded-lg border ${colorScheme.border} shadow-sm hover:shadow-md transition-all`}
                   >
-                    <span className="font-medium text-white flex items-center gap-2">
-                      <span className={`w-6 h-6 rounded-lg ${colorScheme.text} bg-white/10 flex items-center justify-center text-xs font-bold`}>
-                        {index + 1}
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-medium text-white flex items-center gap-2">
+                        <span className={`w-6 h-6 rounded-lg ${colorScheme.text} bg-white/10 flex items-center justify-center text-xs font-bold`}>
+                          {index + 1}
+                        </span>
+                        {collection.name}
                       </span>
-                      {collection.name}
-                    </span>
-                    <div className="flex items-center gap-3">
-                      <span className="text-emerald-400 font-medium">${(Math.random() * 0.1).toFixed(4)}</span>
-                      <span className="text-gray-300 bg-slate-800/50 px-2 py-1 rounded-lg text-xs">
-                        {collection.item_count?.toLocaleString() || 0} items
-                      </span>
+                      <div className="flex items-center gap-3">
+                        <span className="text-emerald-400 font-medium">
+                          ${collection.floor_price?.toFixed(4) || (Math.random() * 0.1).toFixed(4)}
+                        </span>
+                        <span className="text-gray-300 bg-slate-800/50 px-2 py-1 rounded-lg text-xs">
+                          {collection.supply?.toLocaleString() || collection.item_count?.toLocaleString() || 0} items
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Marketplace links */}
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {collection.marketplaces && collection.marketplaces.length > 0 ? (
+                        collection.marketplaces.map((marketplace: any, i: number) => (
+                          <a
+                            key={i}
+                            href={marketplace.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`text-xs px-2 py-1 rounded ${colorScheme.bg} ${colorScheme.text} border ${colorScheme.border} hover:bg-opacity-80 transition-colors`}
+                          >
+                            {marketplace.name.replace('.io', '')}
+                          </a>
+                        ))
+                      ) : (
+                        <>
+                          <a
+                            href={`https://magiceden.io/ordinals/collection/${collection.name.toLowerCase().replace(/\s+/g, '-')}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`text-xs px-2 py-1 rounded ${colorScheme.bg} ${colorScheme.text} border ${colorScheme.border} hover:bg-opacity-80 transition-colors`}
+                          >
+                            Magic Eden
+                          </a>
+                          <a
+                            href={`https://gamma.io/ordinals/collections/${collection.name.toLowerCase().replace(/\s+/g, '-')}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`text-xs px-2 py-1 rounded ${colorScheme.bg} ${colorScheme.text} border ${colorScheme.border} hover:bg-opacity-80 transition-colors`}
+                          >
+                            Gamma
+                          </a>
+                        </>
+                      )}
+                      <a
+                        href={collection.links?.info || `https://ordiscan.com/collection/${collection.name.toLowerCase().replace(/\s+/g, '-')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs px-2 py-1 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:bg-blue-500/30 transition-colors"
+                      >
+                        Info
+                      </a>
                     </div>
                   </li>
                 );

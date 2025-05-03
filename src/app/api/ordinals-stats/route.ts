@@ -51,6 +51,20 @@ export async function GET() {
     // Calcular taxa de inscrição média diária
     const inscriptionRate = Math.round(statsData.total_inscriptions / 365) // Estimativa diária
 
+    // Dados de marketplaces para coleções populares
+    const COLLECTION_MARKETPLACES = {
+      'Bitcoin Puppets': ['magiceden.io', 'gamma.io', 'ordswap.io'],
+      'OCM GENESIS': ['magiceden.io', 'gamma.io', 'ordswap.io'],
+      'SEIZE CTRL': ['magiceden.io', 'gamma.io'],
+      'N0 0RDINARY KIND': ['magiceden.io', 'gamma.io', 'ordswap.io'],
+      'THE WIZARDS OF LORDS': ['magiceden.io', 'gamma.io'],
+      'YIELD HACKER PASS': ['magiceden.io', 'ordswap.io'],
+      'STACK SATS': ['magiceden.io', 'gamma.io'],
+      'OCM KATOSHI PRIME': ['magiceden.io', 'gamma.io', 'ordswap.io'],
+      'OCM KATOSHI CLASSIC': ['magiceden.io', 'gamma.io'],
+      'MULTIVERSO PASS': ['magiceden.io', 'ordswap.io']
+    };
+
     // Formatar os dados
     const formattedData = {
       volume_24h: volume24h || 200000,
@@ -61,13 +75,27 @@ export async function GET() {
       available_supply: statsData.total_inscriptions || 35000000,
       inscription_rate: inscriptionRate || 5000,
       total_collections: statsData.total_collections || 1500,
-      popular_collections: collectionsData.slice(0, 10).map((collection: any) => ({
-        name: collection.name,
-        volume_24h: collection.volume_24h || 0,
-        floor_price: collection.floor_price || 0,
-        unique_holders: collection.holders || 0,
-        supply: collection.supply || 0
-      })) || [
+      popular_collections: collectionsData.slice(0, 10).map((collection: any) => {
+        const collectionName = collection.name;
+        const marketplaces = COLLECTION_MARKETPLACES[collectionName] || ['magiceden.io', 'gamma.io'];
+        const slug = collectionName.toLowerCase().replace(/\s+/g, '-');
+
+        return {
+          name: collectionName,
+          volume_24h: collection.volume_24h || 0,
+          floor_price: collection.floor_price || 0,
+          unique_holders: collection.holders || 0,
+          supply: collection.supply || 0,
+          marketplaces: marketplaces.map(marketplace => ({
+            name: marketplace,
+            url: `https://${marketplace}/ordinals/collection/${slug}`
+          })),
+          links: {
+            buy: `https://${marketplaces[0]}/ordinals/collection/${slug}`,
+            info: `https://ordiscan.com/collection/${slug}`
+          }
+        };
+      }) || [
         {
           name: 'Bitcoin Puppets',
           volume_24h: 25000,
@@ -97,6 +125,20 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching Ordinals stats:', error)
 
+    // Dados de marketplaces para coleções populares
+    const COLLECTION_MARKETPLACES = {
+      'Bitcoin Puppets': ['magiceden.io', 'gamma.io', 'ordswap.io'],
+      'OCM GENESIS': ['magiceden.io', 'gamma.io', 'ordswap.io'],
+      'SEIZE CTRL': ['magiceden.io', 'gamma.io'],
+      'N0 0RDINARY KIND': ['magiceden.io', 'gamma.io', 'ordswap.io'],
+      'THE WIZARDS OF LORDS': ['magiceden.io', 'gamma.io'],
+      'YIELD HACKER PASS': ['magiceden.io', 'ordswap.io'],
+      'STACK SATS': ['magiceden.io', 'gamma.io'],
+      'OCM KATOSHI PRIME': ['magiceden.io', 'gamma.io', 'ordswap.io'],
+      'OCM KATOSHI CLASSIC': ['magiceden.io', 'gamma.io'],
+      'MULTIVERSO PASS': ['magiceden.io', 'ordswap.io']
+    };
+
     // Return fallback data
     const fallbackData = {
       volume_24h: 200000 + Math.random() * 50000,
@@ -113,21 +155,45 @@ export async function GET() {
           volume_24h: 25000,
           floor_price: 0.89,
           unique_holders: 3500,
-          supply: 10000
+          supply: 10000,
+          marketplaces: COLLECTION_MARKETPLACES['Bitcoin Puppets'].map(marketplace => ({
+            name: marketplace,
+            url: `https://${marketplace}/ordinals/collection/bitcoin-puppets`
+          })),
+          links: {
+            buy: `https://${COLLECTION_MARKETPLACES['Bitcoin Puppets'][0]}/ordinals/collection/bitcoin-puppets`,
+            info: `https://ordiscan.com/collection/bitcoin-puppets`
+          }
         },
         {
           name: 'OCM GENESIS',
           volume_24h: 18000,
           floor_price: 1.25,
           unique_holders: 2800,
-          supply: 5000
+          supply: 5000,
+          marketplaces: COLLECTION_MARKETPLACES['OCM GENESIS'].map(marketplace => ({
+            name: marketplace,
+            url: `https://${marketplace}/ordinals/collection/ocm-genesis`
+          })),
+          links: {
+            buy: `https://${COLLECTION_MARKETPLACES['OCM GENESIS'][0]}/ordinals/collection/ocm-genesis`,
+            info: `https://ordiscan.com/collection/ocm-genesis`
+          }
         },
         {
           name: 'SEIZE CTRL',
           volume_24h: 12000,
           floor_price: 0.65,
           unique_holders: 1950,
-          supply: 5000
+          supply: 5000,
+          marketplaces: COLLECTION_MARKETPLACES['SEIZE CTRL'].map(marketplace => ({
+            name: marketplace,
+            url: `https://${marketplace}/ordinals/collection/seize-ctrl`
+          })),
+          links: {
+            buy: `https://${COLLECTION_MARKETPLACES['SEIZE CTRL'][0]}/ordinals/collection/seize-ctrl`,
+            info: `https://ordiscan.com/collection/seize-ctrl`
+          }
         }
       ]
     }

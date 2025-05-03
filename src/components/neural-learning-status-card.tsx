@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Card, Title, Text, ProgressBar, Tab, TabGroup, TabList, TabPanel, TabPanels } from '@tremor/react'
-import { RiBrainLine, RiPulseLine, RiLineChartLine, RiRefreshLine, RiSettings4Line, RiPlayLine, RiPauseLine } from 'react-icons/ri'
+import { RiBrainLine, RiPulseLine, RiLineChartLine, RiRefreshLine, RiSettings4Line, RiPlayLine, RiPauseLine, RiCloudLine } from 'react-icons/ri'
 import { useNeuralLearning } from '@/hooks/useNeuralLearning'
 
 export function NeuralLearningStatusCard() {
@@ -95,7 +95,7 @@ export function NeuralLearningStatusCard() {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-blue-500/10 p-3 rounded-lg border border-blue-500/20">
           <Text className="text-xs text-gray-400">Data Points</Text>
           <div className="flex items-end justify-between">
@@ -106,7 +106,7 @@ export function NeuralLearningStatusCard() {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-blue-500/10 p-3 rounded-lg border border-blue-500/20">
           <Text className="text-xs text-gray-400">Insights Generated</Text>
           <div className="flex items-end justify-between">
@@ -125,7 +125,7 @@ export function NeuralLearningStatusCard() {
           <Tab className="text-sm">Models</Tab>
           <Tab className="text-sm">System Status</Tab>
         </TabList>
-        
+
         <TabPanels>
           <TabPanel>
             <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
@@ -170,7 +170,7 @@ export function NeuralLearningStatusCard() {
               )}
             </div>
           </TabPanel>
-          
+
           <TabPanel>
             <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
               {models?.map((model) => (
@@ -186,7 +186,7 @@ export function NeuralLearningStatusCard() {
                       }`}>{(model.accuracy * 100).toFixed(1)}%</Text>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-2 mt-2">
                     <div className="bg-blue-500/10 p-2 rounded-lg border border-blue-500/20">
                       <Text className="text-xs text-gray-400">Data Points</Text>
@@ -197,7 +197,7 @@ export function NeuralLearningStatusCard() {
                       <Text className="text-sm font-medium text-white">{formatDate(model.lastTraining).split(',')[0]}</Text>
                     </div>
                   </div>
-                  
+
                   <div className="mt-2">
                     <Text className="text-xs text-gray-400 mb-1">Features</Text>
                     <div className="flex flex-wrap gap-1">
@@ -212,7 +212,7 @@ export function NeuralLearningStatusCard() {
               ))}
             </div>
           </TabPanel>
-          
+
           <TabPanel>
             <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
               <div className="bg-blue-500/10 p-3 rounded-lg border border-blue-500/20">
@@ -236,7 +236,7 @@ export function NeuralLearningStatusCard() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="bg-blue-500/10 p-3 rounded-lg border border-blue-500/20">
                 <Text className="text-sm font-medium text-white mb-2">Data Collection Status</Text>
                 <div className="grid grid-cols-3 gap-2">
@@ -266,7 +266,7 @@ export function NeuralLearningStatusCard() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="bg-blue-500/10 p-3 rounded-lg border border-blue-500/20">
                 <Text className="text-sm font-medium text-white mb-2">System Performance</Text>
                 <div className="grid grid-cols-2 gap-2">
@@ -298,10 +298,26 @@ export function NeuralLearningStatusCard() {
           </TabPanel>
         </TabPanels>
       </TabGroup>
-      
-      <div className="mt-3 text-xs text-gray-400 flex justify-between items-center">
-        <span>Neural learning system is running 24/7 to improve insights and predictions</span>
-        <span>v1.0.0</span>
+
+      <div className="mt-3 bg-blue-500/10 p-3 rounded-lg border border-blue-500/20">
+        <div className="flex items-center mb-2">
+          <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mr-2 border border-blue-500/30">
+            <RiCloudLine className="w-4 h-4 text-blue-400" />
+          </div>
+          <div>
+            <p className="text-sm text-blue-300">Degoo Cloud Storage Integration</p>
+            <p className="text-xs text-emerald-400">24/7 Neural Learning Enabled</p>
+          </div>
+        </div>
+        <p className="text-xs text-white/80">
+          Our advanced neural system continuously learns from market data, even when your device is offline,
+          thanks to Degoo cloud storage integration. This ensures you always have the most accurate insights
+          and predictions for Bitcoin, Ordinals, Runes, and arbitrage opportunities.
+        </p>
+        <div className="mt-2 text-xs text-gray-400 flex justify-between items-center">
+          <span>Neural learning system is running 24/7 to improve insights and predictions</span>
+          <span>v1.0.0</span>
+        </div>
       </div>
     </Card>
   )

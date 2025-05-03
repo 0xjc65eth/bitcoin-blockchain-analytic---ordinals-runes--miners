@@ -88,7 +88,8 @@ export class NeuralLearningService extends EventEmitter {
     updateInterval: 3600000, // 1 hora em milissegundos
     dataCollectionInterval: 300000, // 5 minutos em milissegundos
     cloudSyncInterval: 3600000 * 6, // 6 horas em milissegundos
-    useCloudStorage: true // Usar armazenamento em nuvem (Supabase)
+    useCloudStorage: true, // Usar armazenamento em nuvem (Degoo via Supabase)
+    degooCloudEnabled: true // Habilitar sincronização com Degoo Cloud para aprendizado 24/7
   };
   private cloudSyncInterval: NodeJS.Timeout | null = null;
 
