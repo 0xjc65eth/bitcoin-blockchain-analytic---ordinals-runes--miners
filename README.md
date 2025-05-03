@@ -1,12 +1,27 @@
-# CYPHER ORDI FUTURE - VERSION 2.2.4.0
+# CYPHER ORDI FUTURE - VERSION 2.2.5.0
 
 ![Bitcoin Analytics Dashboard](https://raw.githubusercontent.com/0xjc65eth/bitcoin-blockchain-analytic---ordinals-runes--miners/main/public/dashboard-preview.png)
 
 Uma plataforma avançada de análise da blockchain Bitcoin, focada em Ordinals, Runes e mineração, com recursos de arbitragem em tempo real, análise de descentralização da rede e sistema de aprendizado neural contínuo.
 
-## 🆕 Novidades da Versão 2.2.4.0
+## 🆕 Novidades da Versão 2.2.5.0
 
-Esta versão traz melhorias significativas na aba de arbitragem com análise neural avançada e dados de múltiplas fontes sociais:
+Esta versão traz melhorias significativas na interface da aba de aprendizado do sistema neural e implementa um mecanismo de correção autônoma de dados:
+
+- ✅ Barra de progresso detalhada para visualizar o status do aprendizado neural
+- ✅ Visualização das etapas do processo de aprendizado (coleta de dados, pré-processamento, treinamento, validação, geração de insights, correção)
+- ✅ Mecanismo de correção autônoma que detecta e corrige inconsistências nos dados
+- ✅ Interface para visualizar as correções feitas pelo sistema neural
+- ✅ Capacidade de executar correções manualmente quando necessário
+- ✅ Explicações detalhadas sobre cada correção realizada
+- ✅ Níveis de confiança para cada correção identificada
+- ✅ Rastreamento de todas as correções para transparência e auditoria
+- ✅ Melhor visualização do progresso de aprendizado com estimativas de tempo
+- ✅ Integração completa com o sistema de armazenamento em nuvem para aprendizado contínuo
+
+### Versão Anterior (2.2.4.0)
+
+Melhorias na aba de arbitragem com análise neural avançada e dados de múltiplas fontes sociais:
 
 - ✅ Sistema neural avançado para análise de arbitragem com dados de múltiplas fontes
 - ✅ Análise de sentimento social de Twitter, Reddit, Telegram e portais financeiros

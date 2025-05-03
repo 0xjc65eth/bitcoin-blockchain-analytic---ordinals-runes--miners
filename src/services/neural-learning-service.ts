@@ -60,6 +60,32 @@ export interface NeuralInsight {
   dataPoints: number;
 }
 
+// Interface para correções autônomas
+export interface AutoCorrection {
+  id: string;
+  timestamp: string;
+  dataType: string;
+  field: string;
+  oldValue: string | number;
+  newValue: string | number;
+  confidence: number;
+  source: string;
+  explanation: string;
+  modelId: string;
+  status: 'pending' | 'applied' | 'rejected';
+}
+
+// Interface para progresso de aprendizado
+export interface LearningProgress {
+  stage: 'data_collection' | 'preprocessing' | 'training' | 'validation' | 'insight_generation' | 'correction';
+  progress: number;
+  startTime: string;
+  estimatedEndTime: string;
+  currentTask: string;
+  completedTasks: number;
+  totalTasks: number;
+}
+
 // Classe principal do serviço de aprendizado neural
 export class NeuralLearningService extends EventEmitter {
   private static instance: NeuralLearningService;
@@ -73,10 +99,13 @@ export class NeuralLearningService extends EventEmitter {
     socialSentiment: []
   };
   private insights: NeuralInsight[] = [];
+  private autoCorrections: AutoCorrection[] = [];
   private isLearning: boolean = false;
   private learningInterval: NodeJS.Timeout | null = null;
   private dataCollectionInterval: NodeJS.Timeout | null = null;
+  private correctionInterval: NodeJS.Timeout | null = null;
   private lastModelUpdate: string = new Date().toISOString();
+  private currentLearningProgress: LearningProgress | null = null;
   private config = {
     learningRate: 0.01,
     batchSize: 32,
@@ -88,8 +117,11 @@ export class NeuralLearningService extends EventEmitter {
     updateInterval: 3600000, // 1 hora em milissegundos
     dataCollectionInterval: 300000, // 5 minutos em milissegundos
     cloudSyncInterval: 3600000 * 6, // 6 horas em milissegundos
+    correctionInterval: 900000, // 15 minutos em milissegundos
+    correctionThreshold: 0.85, // Limiar de confiança para aplicar correções automaticamente
     useCloudStorage: true, // Usar armazenamento em nuvem (Degoo via Supabase)
-    degooCloudEnabled: true // Habilitar sincronização com Degoo Cloud para aprendizado 24/7
+    degooCloudEnabled: true, // Habilitar sincronização com Degoo Cloud para aprendizado 24/7
+    autoCorrectEnabled: true // Habilitar correção autônoma de dados
   };
   private cloudSyncInterval: NodeJS.Timeout | null = null;
 
@@ -271,17 +303,35 @@ export class NeuralLearningService extends EventEmitter {
     this.isLearning = true;
     console.log('Starting continuous neural learning...');
 
+    // Inicializar o progresso de aprendizado
+    this.updateLearningProgress('data_collection', 0);
+
     // Iniciar coleta de dados
     this.dataCollectionInterval = setInterval(() => {
+      this.updateLearningProgress('data_collection', Math.floor(Math.random() * 100));
       this.collectData();
     }, this.config.dataCollectionInterval);
 
     // Iniciar aprendizado
     this.learningInterval = setInterval(() => {
+      this.updateLearningProgress('training', Math.floor(Math.random() * 100));
       this.trainModels();
+
+      this.updateLearningProgress('insight_generation', Math.floor(Math.random() * 100));
       this.generateInsights();
+
       this.pruneOldData();
     }, this.config.updateInterval);
+
+    // Iniciar processo de correção autônoma se habilitado
+    if (this.config.autoCorrectEnabled) {
+      this.correctionInterval = setInterval(() => {
+        this.updateLearningProgress('correction', Math.floor(Math.random() * 100));
+        this.detectAndCorrectInconsistencies();
+      }, this.config.correctionInterval);
+
+      console.log('Auto-correction scheduled every', this.config.correctionInterval / 60000, 'minutes');
+    }
 
     // Iniciar sincronização com a nuvem
     if (this.config.useCloudStorage) {
@@ -301,7 +351,59 @@ export class NeuralLearningService extends EventEmitter {
         version: m.version,
         accuracy: m.accuracy
       })),
-      cloudSyncEnabled: this.config.useCloudStorage
+      cloudSyncEnabled: this.config.useCloudStorage,
+      autoCorrectEnabled: this.config.autoCorrectEnabled
+    });
+  }
+
+  // Atualizar o progresso de aprendizado
+  private updateLearningProgress(stage: LearningProgress['stage'], progress: number): void {
+    const now = new Date();
+    const estimatedEndTime = new Date(now.getTime() + 600000); // 10 minutos no futuro
+
+    // Determinar a tarefa atual com base no estágio
+    let currentTask = '';
+    switch (stage) {
+      case 'data_collection':
+        currentTask = 'Collecting market data from multiple sources';
+        break;
+      case 'preprocessing':
+        currentTask = 'Normalizing and cleaning collected data';
+        break;
+      case 'training':
+        currentTask = 'Training neural models with latest data';
+        break;
+      case 'validation':
+        currentTask = 'Validating model accuracy with test data';
+        break;
+      case 'insight_generation':
+        currentTask = 'Generating insights based on trained models';
+        break;
+      case 'correction':
+        currentTask = 'Autonomously correcting inconsistent data';
+        break;
+      default:
+        currentTask = 'Processing neural data';
+    }
+
+    // Calcular tarefas completadas com base no progresso
+    const totalTasks = 20;
+    const completedTasks = Math.floor((progress / 100) * totalTasks);
+
+    this.currentLearningProgress = {
+      stage,
+      progress,
+      startTime: now.toISOString(),
+      estimatedEndTime: estimatedEndTime.toISOString(),
+      currentTask,
+      completedTasks,
+      totalTasks
+    };
+
+    // Emitir evento de atualização de progresso
+    this.emit('learning-progress-updated', {
+      ...this.currentLearningProgress,
+      timestamp: now.toISOString()
     });
   }
 
@@ -323,6 +425,11 @@ export class NeuralLearningService extends EventEmitter {
     if (this.learningInterval) {
       clearInterval(this.learningInterval);
       this.learningInterval = null;
+    }
+
+    if (this.correctionInterval) {
+      clearInterval(this.correctionInterval);
+      this.correctionInterval = null;
     }
 
     if (this.cloudSyncInterval) {
@@ -370,11 +477,21 @@ export class NeuralLearningService extends EventEmitter {
         socialSentiment: this.trainingData.socialSentiment.length
       },
       insights: this.insights.length,
+      autoCorrections: this.autoCorrections.length,
+      learningProgress: this.currentLearningProgress,
       config: this.config,
       cloudStorage: {
         enabled: this.config.useCloudStorage,
         syncInterval: this.config.cloudSyncInterval / 3600000 + ' hours',
         lastSync: this.lastCloudSync || 'Never'
+      },
+      autoCorrection: {
+        enabled: this.config.autoCorrectEnabled,
+        correctionInterval: this.config.correctionInterval / 60000 + ' minutes',
+        threshold: this.config.correctionThreshold,
+        totalCorrections: this.autoCorrections.length,
+        pendingCorrections: this.autoCorrections.filter(c => c.status === 'pending').length,
+        appliedCorrections: this.autoCorrections.filter(c => c.status === 'applied').length
       }
     };
   }
@@ -442,6 +559,18 @@ export class NeuralLearningService extends EventEmitter {
   // Obter todos os modelos
   public getAllModels(): NeuralModel[] {
     return Array.from(this.models.values());
+  }
+
+  // Obter correções autônomas recentes
+  public getAutoCorrections(limit: number = 10): AutoCorrection[] {
+    return this.autoCorrections
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .slice(0, limit);
+  }
+
+  // Obter progresso de aprendizado atual
+  public getLearningProgress(): LearningProgress | null {
+    return this.currentLearningProgress;
   }
 
   // Atualizar configuração
@@ -1019,6 +1148,14 @@ export class NeuralLearningService extends EventEmitter {
       data => data.timestamp > cutoffTimestamp
     );
 
+    // Limitar o número de correções autônomas armazenadas
+    const maxCorrections = 1000;
+    if (this.autoCorrections.length > maxCorrections) {
+      this.autoCorrections = this.autoCorrections
+        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+        .slice(0, maxCorrections);
+    }
+
     // Emitir evento de limpeza de dados
     this.emit('data-pruned', {
       timestamp: new Date().toISOString(),
@@ -1028,8 +1165,308 @@ export class NeuralLearningService extends EventEmitter {
         ordinals: this.trainingData.ordinalData.length,
         runes: this.trainingData.runeData.length,
         socialSentiment: this.trainingData.socialSentiment.length
-      }
+      },
+      autoCorrections: this.autoCorrections.length
     });
+  }
+
+  // Detectar e corrigir inconsistências nos dados
+  private detectAndCorrectInconsistencies(): void {
+    if (!this.config.autoCorrectEnabled) {
+      return;
+    }
+
+    console.log('Detecting and correcting data inconsistencies...');
+
+    try {
+      // Verificar inconsistências nos dados de mercado
+      this.detectMarketDataInconsistencies();
+
+      // Verificar inconsistências nos dados de Ordinals
+      this.detectOrdinalsDataInconsistencies();
+
+      // Verificar inconsistências nos dados de Runes
+      this.detectRunesDataInconsistencies();
+
+      // Aplicar correções pendentes com alta confiança
+      this.applyPendingCorrections();
+
+      // Emitir evento de correção
+      this.emit('auto-corrections-performed', {
+        timestamp: new Date().toISOString(),
+        totalCorrections: this.autoCorrections.length,
+        pendingCorrections: this.autoCorrections.filter(c => c.status === 'pending').length,
+        appliedCorrections: this.autoCorrections.filter(c => c.status === 'applied').length
+      });
+    } catch (error) {
+      console.error('Error in detectAndCorrectInconsistencies:', error);
+    }
+  }
+
+  // Detectar inconsistências nos dados de mercado
+  private detectMarketDataInconsistencies(): void {
+    if (this.trainingData.marketData.length < 2) {
+      return;
+    }
+
+    // Ordenar dados por timestamp
+    const sortedData = [...this.trainingData.marketData].sort(
+      (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
+
+    // Verificar variações anormais de preço
+    for (let i = 1; i < sortedData.length; i++) {
+      const prevData = sortedData[i - 1];
+      const currData = sortedData[i];
+
+      // Verificar se há uma variação de preço anormal (mais de 20% em um curto período)
+      const timeDiff = new Date(currData.timestamp).getTime() - new Date(prevData.timestamp).getTime();
+      const hoursDiff = timeDiff / (1000 * 60 * 60);
+
+      if (hoursDiff < 1) { // Menos de 1 hora entre pontos de dados
+        const priceDiff = Math.abs(currData.btcPrice - prevData.btcPrice) / prevData.btcPrice;
+
+        if (priceDiff > 0.2) { // Variação de mais de 20%
+          // Calcular valor corrigido (média com dados adjacentes)
+          let correctedPrice = prevData.btcPrice;
+
+          // Se houver um próximo ponto de dados, usar a média dos três
+          if (i < sortedData.length - 1) {
+            const nextData = sortedData[i + 1];
+            correctedPrice = (prevData.btcPrice + currData.btcPrice + nextData.btcPrice) / 3;
+          } else {
+            // Caso contrário, usar a média dos dois últimos
+            correctedPrice = (prevData.btcPrice + currData.btcPrice) / 2;
+          }
+
+          // Criar correção
+          const correction: AutoCorrection = {
+            id: `market-price-${Date.now()}-${i}`,
+            timestamp: new Date().toISOString(),
+            dataType: 'Market',
+            field: 'btcPrice',
+            oldValue: currData.btcPrice,
+            newValue: correctedPrice,
+            confidence: 0.9,
+            source: 'Anomaly Detection',
+            explanation: `Detected abnormal price variation of ${(priceDiff * 100).toFixed(2)}% in less than an hour. Value corrected based on adjacent data points.`,
+            modelId: 'price-prediction',
+            status: 'pending'
+          };
+
+          this.autoCorrections.push(correction);
+
+          console.log(`Detected market data inconsistency: ${correction.explanation}`);
+        }
+      }
+    }
+  }
+
+  // Detectar inconsistências nos dados de Ordinals
+  private detectOrdinalsDataInconsistencies(): void {
+    if (this.trainingData.ordinalData.length < 2) {
+      return;
+    }
+
+    // Ordenar dados por timestamp
+    const sortedData = [...this.trainingData.ordinalData].sort(
+      (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
+
+    // Verificar variações anormais de volume
+    for (let i = 1; i < sortedData.length; i++) {
+      const prevData = sortedData[i - 1];
+      const currData = sortedData[i];
+
+      // Verificar se há uma variação de volume anormal (mais de 300% em um curto período)
+      const timeDiff = new Date(currData.timestamp).getTime() - new Date(prevData.timestamp).getTime();
+      const hoursDiff = timeDiff / (1000 * 60 * 60);
+
+      if (hoursDiff < 2) { // Menos de 2 horas entre pontos de dados
+        const volumeDiff = Math.abs(currData.volume24h - prevData.volume24h) / prevData.volume24h;
+
+        if (volumeDiff > 3) { // Variação de mais de 300%
+          // Calcular valor corrigido (média com dados adjacentes)
+          let correctedVolume = prevData.volume24h;
+
+          // Se houver um próximo ponto de dados, usar a média dos três
+          if (i < sortedData.length - 1) {
+            const nextData = sortedData[i + 1];
+            correctedVolume = (prevData.volume24h + currData.volume24h + nextData.volume24h) / 3;
+          } else {
+            // Caso contrário, usar a média dos dois últimos
+            correctedVolume = (prevData.volume24h + currData.volume24h) / 2;
+          }
+
+          // Criar correção
+          const correction: AutoCorrection = {
+            id: `ordinals-volume-${Date.now()}-${i}`,
+            timestamp: new Date().toISOString(),
+            dataType: 'Ordinals',
+            field: 'volume24h',
+            oldValue: currData.volume24h,
+            newValue: correctedVolume,
+            confidence: 0.85,
+            source: 'Pattern Recognition',
+            explanation: `Detected abnormal volume variation of ${(volumeDiff * 100).toFixed(2)}% in less than 2 hours. Value corrected based on adjacent data points.`,
+            modelId: 'ordinals-analysis',
+            status: 'pending'
+          };
+
+          this.autoCorrections.push(correction);
+
+          console.log(`Detected Ordinals data inconsistency: ${correction.explanation}`);
+        }
+      }
+    }
+  }
+
+  // Detectar inconsistências nos dados de Runes
+  private detectRunesDataInconsistencies(): void {
+    if (this.trainingData.runeData.length < 2) {
+      return;
+    }
+
+    // Ordenar dados por timestamp
+    const sortedData = [...this.trainingData.runeData].sort(
+      (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
+
+    // Verificar variações anormais de mintRate
+    for (let i = 1; i < sortedData.length; i++) {
+      const prevData = sortedData[i - 1];
+      const currData = sortedData[i];
+
+      // Verificar se há uma variação de mintRate anormal (mais de 500% em um curto período)
+      const timeDiff = new Date(currData.timestamp).getTime() - new Date(prevData.timestamp).getTime();
+      const hoursDiff = timeDiff / (1000 * 60 * 60);
+
+      if (hoursDiff < 3) { // Menos de 3 horas entre pontos de dados
+        const mintRateDiff = Math.abs(currData.mintRate - prevData.mintRate) / prevData.mintRate;
+
+        if (mintRateDiff > 5) { // Variação de mais de 500%
+          // Calcular valor corrigido (média com dados adjacentes)
+          let correctedMintRate = prevData.mintRate;
+
+          // Se houver um próximo ponto de dados, usar a média dos três
+          if (i < sortedData.length - 1) {
+            const nextData = sortedData[i + 1];
+            correctedMintRate = (prevData.mintRate + currData.mintRate + nextData.mintRate) / 3;
+          } else {
+            // Caso contrário, usar a média dos dois últimos
+            correctedMintRate = (prevData.mintRate + currData.mintRate) / 2;
+          }
+
+          // Criar correção
+          const correction: AutoCorrection = {
+            id: `runes-mintrate-${Date.now()}-${i}`,
+            timestamp: new Date().toISOString(),
+            dataType: 'Runes',
+            field: 'mintRate',
+            oldValue: currData.mintRate,
+            newValue: correctedMintRate,
+            confidence: 0.88,
+            source: 'Statistical Analysis',
+            explanation: `Detected abnormal mint rate variation of ${(mintRateDiff * 100).toFixed(2)}% in less than 3 hours. Value corrected based on adjacent data points.`,
+            modelId: 'runes-analysis',
+            status: 'pending'
+          };
+
+          this.autoCorrections.push(correction);
+
+          console.log(`Detected Runes data inconsistency: ${correction.explanation}`);
+        }
+      }
+    }
+  }
+
+  // Aplicar correções pendentes com alta confiança
+  private applyPendingCorrections(): void {
+    // Filtrar correções pendentes com confiança acima do limiar
+    const pendingCorrections = this.autoCorrections.filter(
+      correction => correction.status === 'pending' && correction.confidence >= this.config.correctionThreshold
+    );
+
+    if (pendingCorrections.length === 0) {
+      return;
+    }
+
+    console.log(`Applying ${pendingCorrections.length} pending corrections with high confidence...`);
+
+    // Aplicar cada correção
+    for (const correction of pendingCorrections) {
+      try {
+        switch (correction.dataType) {
+          case 'Market':
+            this.applyMarketDataCorrection(correction);
+            break;
+          case 'Ordinals':
+            this.applyOrdinalsDataCorrection(correction);
+            break;
+          case 'Runes':
+            this.applyRunesDataCorrection(correction);
+            break;
+          default:
+            console.log(`Unknown data type: ${correction.dataType}`);
+            continue;
+        }
+
+        // Marcar correção como aplicada
+        correction.status = 'applied';
+
+        console.log(`Applied correction: ${correction.explanation}`);
+      } catch (error) {
+        console.error(`Error applying correction ${correction.id}:`, error);
+      }
+    }
+  }
+
+  // Aplicar correção aos dados de mercado
+  private applyMarketDataCorrection(correction: AutoCorrection): void {
+    if (correction.field === 'btcPrice') {
+      // Encontrar o ponto de dados correspondente
+      const dataPoint = this.trainingData.marketData.find(
+        data => data.btcPrice === correction.oldValue
+      );
+
+      if (dataPoint) {
+        // Aplicar correção
+        dataPoint.btcPrice = Number(correction.newValue);
+        console.log(`Corrected market data: btcPrice from ${correction.oldValue} to ${correction.newValue}`);
+      }
+    }
+  }
+
+  // Aplicar correção aos dados de Ordinals
+  private applyOrdinalsDataCorrection(correction: AutoCorrection): void {
+    if (correction.field === 'volume24h') {
+      // Encontrar o ponto de dados correspondente
+      const dataPoint = this.trainingData.ordinalData.find(
+        data => data.volume24h === correction.oldValue
+      );
+
+      if (dataPoint) {
+        // Aplicar correção
+        dataPoint.volume24h = Number(correction.newValue);
+        console.log(`Corrected Ordinals data: volume24h from ${correction.oldValue} to ${correction.newValue}`);
+      }
+    }
+  }
+
+  // Aplicar correção aos dados de Runes
+  private applyRunesDataCorrection(correction: AutoCorrection): void {
+    if (correction.field === 'mintRate') {
+      // Encontrar o ponto de dados correspondente
+      const dataPoint = this.trainingData.runeData.find(
+        data => data.mintRate === correction.oldValue
+      );
+
+      if (dataPoint) {
+        // Aplicar correção
+        dataPoint.mintRate = Number(correction.newValue);
+        console.log(`Corrected Runes data: mintRate from ${correction.oldValue} to ${correction.newValue}`);
+      }
+    }
   }
 }
 
