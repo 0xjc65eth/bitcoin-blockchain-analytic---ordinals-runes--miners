@@ -103,7 +103,6 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#0F172A] to-[#1E293B] dashboard-theme">
-      <Header />
       <div className="container mx-auto py-8 px-4">
         <div className={`flex flex-col md:flex-row justify-between items-center mb-8 transition-all duration-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <div className="mb-4 md:mb-0">

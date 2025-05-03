@@ -1,14 +1,11 @@
 import { Header } from '@/components/header'
 import { DashboardCard } from '@/components/dashboard-card'
-
 export default function EventsPage() {
   return (
     <main className="min-h-screen bg-background">
-      <Header />
       <div className="container mx-auto py-8 px-4">
         <h1 className="text-2xl font-bold mb-2">EVENTS</h1>
         <h2 className="text-lg text-muted-foreground mb-6">UPCOMING EVENTS</h2>
-        
         <div className="grid gap-6 md:grid-cols-2">
           <UpcomingEventsCard />
           <PastEventsCard />
@@ -17,7 +14,6 @@ export default function EventsPage() {
     </main>
   )
 }
-
 function UpcomingEventsCard() {
   return (
     <DashboardCard title="Upcoming Events">
@@ -38,7 +34,6 @@ function UpcomingEventsCard() {
     </DashboardCard>
   )
 }
-
 function PastEventsCard() {
   return (
     <DashboardCard title="Past Events">

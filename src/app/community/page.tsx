@@ -1,14 +1,11 @@
 import { Header } from '@/components/header'
 import { DashboardCard } from '@/components/dashboard-card'
-
 export default function CommunityPage() {
   return (
     <main className="min-h-screen bg-background">
-      <Header />
       <div className="container mx-auto py-8 px-4">
         <h1 className="text-2xl font-bold mb-2">COMMUNITY</h1>
         <h2 className="text-lg text-muted-foreground mb-6">JOIN OUR COMMUNITY</h2>
-        
         <div className="grid gap-6 md:grid-cols-2">
           <CommunityPlatformsCard />
           <CommunityEventsCard />
@@ -17,7 +14,6 @@ export default function CommunityPage() {
     </main>
   )
 }
-
 function CommunityPlatformsCard() {
   return (
     <DashboardCard title="Community Platforms">
@@ -38,7 +34,6 @@ function CommunityPlatformsCard() {
     </DashboardCard>
   )
 }
-
 function CommunityEventsCard() {
   return (
     <DashboardCard title="Community Events">

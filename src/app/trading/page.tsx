@@ -13,17 +13,14 @@ import { TradingSignalsCard } from '@/components/trading/TradingSignalsCard'
 import { CryptoPricesCard } from '@/components/trading/CryptoPricesCard'
 import { RiRefreshLine } from 'react-icons/ri'
 import { useTradingData } from '@/hooks/useTradingData'
-
 export default function TradingPage() {
   const [mounted, setMounted] = useState(false)
   const [selectedTab, setSelectedTab] = useState(0)
   const { data, isLoading, error, lastUpdated, refresh } = useTradingData(30000) // Refresh every 30 seconds
-
   // Avoid hydration issues
   useEffect(() => {
     setMounted(true)
   }, [])
-
   // Mock data para gráficos e variáveis (substitua por hooks reais depois)
   const priceData = [
     { time: '09:00', open: 65000, high: 65200, low: 64800, close: 65100, volume: 120 },
@@ -66,15 +63,11 @@ export default function TradingPage() {
     { price: 65490, size: 0.4, side: 'Bid' },
     { price: 65520, size: 0.3, side: 'Ask' },
   ]
-
   if (!mounted) return null
-
   const currentDate = new Date()
   const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`
-
   return (
     <main className="min-h-screen bg-[#181A20]">
-      <Header />
       <div className="container mx-auto py-8 px-4">
         <div className="flex justify-between items-center mb-4">
           <div>
@@ -89,7 +82,6 @@ export default function TradingPage() {
             Refresh Data
           </button>
         </div>
-
         <div className="mb-6 p-3 bg-rose-500/10 border border-rose-500/20 rounded-lg">
           <Text className="text-xs text-rose-300 font-bold">RISK DISCLAIMER:</Text>
           <Text className="text-xs text-gray-400 mt-1">
@@ -103,7 +95,6 @@ export default function TradingPage() {
             Last updated: {formattedDate}
           </Text>
         </div>
-
         <TabGroup onIndexChange={setSelectedTab}>
           <TabList className="mb-6">
             <Tab>Market Overview</Tab>
@@ -112,7 +103,6 @@ export default function TradingPage() {
             <Tab>ETF & Sentiment</Tab>
           </TabList>
         </TabGroup>
-
         {/* Market Overview Tab */}
         {selectedTab === 0 && (
           <>
@@ -160,7 +150,6 @@ export default function TradingPage() {
                 </Card>
               </Col>
             </Grid>
-
             <Grid numItems={1} numItemsLg={2} className="gap-6 mb-6">
               <Col>
                 <Card className="bg-gradient-to-br from-[#181F3A] to-[#2A3A5A] border-none shadow-xl p-6">
@@ -189,7 +178,6 @@ export default function TradingPage() {
                 </Card>
               </Col>
             </Grid>
-
             <Grid numItems={1} numItemsLg={2} className="gap-6 mb-6">
               <Col>
                 <TradingVolumeCard />
@@ -198,7 +186,6 @@ export default function TradingPage() {
                 <MarketSentimentCard />
               </Col>
             </Grid>
-
             <Grid numItems={1} numItemsLg={2} className="gap-6 mb-6">
               <Col>
                 <CryptoPricesCard />
@@ -209,18 +196,15 @@ export default function TradingPage() {
             </Grid>
           </>
         )}
-
         {/* SMC Analysis Tab */}
         {selectedTab === 1 && (
           <>
             <div className="mb-6">
               <TradingSignalsCard />
             </div>
-
             <div className="mb-6">
               <SmcTradeSetupsCard />
             </div>
-
             <Grid numItems={1} numItemsLg={2} className="gap-6 mb-6">
               <Col>
                 <Card className="bg-gradient-to-br from-[#1D2D3D] to-[#2D3D4D] border-none shadow-xl p-6">
@@ -275,20 +259,17 @@ export default function TradingPage() {
                 </Card>
               </Col>
             </Grid>
-
             <div className="mb-6">
               <NeuralMetricsCard />
             </div>
           </>
         )}
-
         {/* Arbitrage Tab */}
         {selectedTab === 2 && (
           <>
             <div className="mb-6">
               <ArbitrageOpportunitiesCard />
             </div>
-
             <Grid numItems={1} numItemsLg={2} className="gap-6 mb-6">
               <Col>
                 <TradingVolumeCard />
@@ -309,22 +290,18 @@ export default function TradingPage() {
             </Grid>
           </>
         )}
-
         {/* ETF & Sentiment Tab */}
         {selectedTab === 3 && (
           <>
             <div className="mb-6">
               <BitcoinEtfCard />
             </div>
-
             <div className="mb-6">
               <MarketSentimentCard />
             </div>
-
             <div className="mb-6">
               <MarketInsightsFallback />
             </div>
-
             <div className="mb-6">
               <NeuralMetricsCard />
             </div>

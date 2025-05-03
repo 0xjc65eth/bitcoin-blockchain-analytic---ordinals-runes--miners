@@ -1,14 +1,11 @@
 import { Header } from '@/components/header'
 import { DashboardCard } from '@/components/dashboard-card'
-
 export default function SecurityPage() {
   return (
     <main className="min-h-screen bg-background">
-      <Header />
       <div className="container mx-auto py-8 px-4">
         <h1 className="text-2xl font-bold mb-2">SECURITY</h1>
         <h2 className="text-lg text-muted-foreground mb-6">SECURITY MEASURES</h2>
-        
         <div className="grid gap-6 md:grid-cols-2">
           <SecurityFeaturesCard />
           <SecurityTipsCard />
@@ -17,7 +14,6 @@ export default function SecurityPage() {
     </main>
   )
 }
-
 function SecurityFeaturesCard() {
   return (
     <DashboardCard title="Security Features">
@@ -38,7 +34,6 @@ function SecurityFeaturesCard() {
     </DashboardCard>
   )
 }
-
 function SecurityTipsCard() {
   return (
     <DashboardCard title="Security Tips">

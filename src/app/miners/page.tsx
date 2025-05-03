@@ -8,7 +8,6 @@ import { Grid, Col } from '@tremor/react'
 export default function MinersPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#0F172A] to-[#1E293B]">
-      <Header />
       <Navbar />
       <div className="container mx-auto py-8 px-4">
         <div className="flex flex-col items-center mb-8">

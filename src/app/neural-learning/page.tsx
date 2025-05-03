@@ -1,5 +1,4 @@
 'use client'
-
 import { useState, useEffect } from 'react'
 import { Header } from './components/header'
 import { Navbar } from './components/navbar'
@@ -11,20 +10,15 @@ import { NeuralOrdinalsRunesCard } from './components/neural-ordinals-runes-card
 import { CloudSyncStatusCard } from './components/cloud-sync-status-card'
 import { NeuralArchitectureCard } from './components/neural-architecture-card'
 import { RiBrainLine, RiDatabase2Line, RiLineChartLine, RiSettings4Line, RiCloudLine, RiFlowChart, RiAiGenerate, RiRobot2Line, RiCodeSSlashLine, RiLightbulbFlashLine } from 'react-icons/ri'
-
 // Verificar se estamos em ambiente de produção para evitar erros com Supabase
 const isDisabled = process.env.NEXT_PUBLIC_DISABLE_NEURAL_LEARNING === 'true'
-
 export default function NeuralLearningPage() {
   const [activeTab, setActiveTab] = useState(0)
-
   // Se a página estiver desabilitada, mostrar mensagem de manutenção
   if (isDisabled) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#0F172A] to-[#1E293B]">
-        <Header />
         <Navbar />
-
         <main className="container mx-auto px-4 py-8">
           <div className="flex flex-col items-center justify-center h-[70vh]">
             <div className="w-16 h-16 bg-gradient-to-br from-[#8B5CF6] to-[#6366F1] rounded-full flex items-center justify-center mb-4 shadow-lg shadow-[#8B5CF6]/20">
@@ -46,12 +40,9 @@ export default function NeuralLearningPage() {
       </div>
     )
   }
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0F172A] to-[#1E293B]">
-      <Header />
       <Navbar />
-
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col items-center mb-8">
           <div className="w-16 h-16 bg-gradient-to-br from-[#8B5CF6] to-[#6366F1] rounded-full flex items-center justify-center mb-4 shadow-lg shadow-[#8B5CF6]/20">
@@ -65,7 +56,6 @@ export default function NeuralLearningPage() {
             24/7 continuous learning for improved insights and predictions on Bitcoin, Ordinals, and Runes
           </h2>
         </div>
-
         <TabGroup index={activeTab} onIndexChange={setActiveTab}>
           <TabList className="mb-6">
             <Tab icon={RiBrainLine}>Overview</Tab>
@@ -73,7 +63,6 @@ export default function NeuralLearningPage() {
             <Tab icon={RiDatabase2Line}>Data</Tab>
             <Tab icon={RiSettings4Line}>Settings</Tab>
           </TabList>
-
           <TabPanels>
             <TabPanel>
               <Grid numItemsMd={1} numItemsLg={3} className="gap-6 mb-6">
@@ -91,7 +80,6 @@ export default function NeuralLearningPage() {
                       </div>
                       <Title className="text-white text-xl">How Neural Learning Works</Title>
                     </div>
-
                     <div className="space-y-4">
                       <div className="bg-[#8B5CF6]/10 p-4 rounded-lg border border-[#8B5CF6]/20 shadow-md">
                         <div className="flex items-center mb-2">
@@ -114,7 +102,6 @@ export default function NeuralLearningPage() {
                           All data is processed, normalized, and prepared for neural network training.
                         </Text>
                       </div>
-
                       <div className="bg-[#8B5CF6]/10 p-4 rounded-lg border border-[#8B5CF6]/20 shadow-md">
                         <div className="flex items-center mb-2">
                           <div className="w-8 h-8 rounded-full bg-[#8B5CF6]/20 flex items-center justify-center mr-3 border border-[#8B5CF6]/30">
@@ -133,7 +120,6 @@ export default function NeuralLearningPage() {
                           <li><span className="text-[#8B5CF6] font-medium">Runes Analysis Network:</span> Tracks Runes adoption and usage patterns</li>
                         </ul>
                       </div>
-
                       <div className="bg-[#8B5CF6]/10 p-4 rounded-lg border border-[#8B5CF6]/20 shadow-md">
                         <div className="flex items-center mb-2">
                           <div className="w-8 h-8 rounded-full bg-[#8B5CF6]/20 flex items-center justify-center mr-3 border border-[#8B5CF6]/30">
@@ -152,7 +138,6 @@ export default function NeuralLearningPage() {
                           <li>Sharing of insights between authorized users</li>
                         </ul>
                       </div>
-
                       <div className="bg-[#8B5CF6]/10 p-4 rounded-lg border border-[#8B5CF6]/20 shadow-md">
                         <div className="flex items-center mb-2">
                           <div className="w-8 h-8 rounded-full bg-[#8B5CF6]/20 flex items-center justify-center mr-3 border border-[#8B5CF6]/30">
@@ -175,7 +160,6 @@ export default function NeuralLearningPage() {
                   </Card>
                 </Col>
               </Grid>
-
               <Grid numItemsMd={1} numItemsLg={3} className="gap-6">
                 <Col>
                   <NeuralSmcCard />
@@ -188,13 +172,11 @@ export default function NeuralLearningPage() {
                 </Col>
               </Grid>
             </TabPanel>
-
             <TabPanel>
               <Grid numItemsMd={1} numItemsLg={2} className="gap-6">
                 <Col numColSpanLg={2}>
                   <Card className="bg-gradient-to-br from-[#181F3A] to-[#2A3A5A] border-none shadow-xl p-6">
                     <Title className="text-white text-xl mb-4">Latest Neural Insights</Title>
-
                     <TabGroup>
                       <TabList className="mb-4">
                         <Tab className="text-sm">All Insights</Tab>
@@ -204,22 +186,18 @@ export default function NeuralLearningPage() {
                         <Tab className="text-sm">Ordinals</Tab>
                         <Tab className="text-sm">Runes</Tab>
                       </TabList>
-
                       <TabPanels>
                         <TabPanel>
                           <div className="text-center py-20">
                             <Text className="text-gray-400">Select a specific insight type to view details</Text>
                           </div>
                         </TabPanel>
-
                         <TabPanel>
                           <NeuralSmcCard />
                         </TabPanel>
-
                         <TabPanel>
                           <NeuralArbitrageCard />
                         </TabPanel>
-
                         <TabPanel>
                           <NeuralOrdinalsRunesCard />
                         </TabPanel>
@@ -229,13 +207,11 @@ export default function NeuralLearningPage() {
                 </Col>
               </Grid>
             </TabPanel>
-
             <TabPanel>
               <Grid numItemsMd={1} numItemsLg={2} className="gap-6">
                 <Col>
                   <NeuralArchitectureCard />
                 </Col>
-
                 <Col>
                   <Card className="bg-gradient-to-br from-[#181F3A] to-[#2A3A5A] border-none shadow-xl p-6">
                     <div className="flex items-center mb-6">
@@ -244,7 +220,6 @@ export default function NeuralLearningPage() {
                       </div>
                       <Title className="text-white text-xl">Data Sources</Title>
                     </div>
-
                     <div className="space-y-4">
                       <div className="bg-[#8B5CF6]/10 p-4 rounded-lg border border-[#8B5CF6]/20 shadow-md">
                         <Text className="text-sm font-medium text-white mb-3">Official Bitcoin Data Sources</Text>
@@ -267,7 +242,6 @@ export default function NeuralLearningPage() {
                           </li>
                         </ul>
                       </div>
-
                       <div className="bg-[#8B5CF6]/10 p-4 rounded-lg border border-[#8B5CF6]/20 shadow-md">
                         <Text className="text-sm font-medium text-white mb-3">Ordinals & Runes Data</Text>
                         <ul className="space-y-2">
@@ -289,7 +263,6 @@ export default function NeuralLearningPage() {
                           </li>
                         </ul>
                       </div>
-
                       <div className="bg-[#8B5CF6]/10 p-4 rounded-lg border border-[#8B5CF6]/20 shadow-md">
                         <Text className="text-sm font-medium text-white mb-3">Social & Market Data</Text>
                         <ul className="space-y-2">
@@ -316,23 +289,19 @@ export default function NeuralLearningPage() {
                 </Col>
               </Grid>
             </TabPanel>
-
             <TabPanel>
               <Grid numItemsMd={1} numItemsLg={2} className="gap-6">
                 <Col>
                   <Card className="bg-gradient-to-br from-[#181F3A] to-[#2A3A5A] border-none shadow-xl p-6">
                     <Title className="text-white text-xl mb-4">Neural Learning Settings</Title>
-
                     <div className="text-center py-20">
                       <Text className="text-gray-400">Settings will be displayed here</Text>
                     </div>
                   </Card>
                 </Col>
-
                 <Col>
                   <Card className="bg-gradient-to-br from-[#181F3A] to-[#2A3A5A] border-none shadow-xl p-6">
                     <Title className="text-white text-xl mb-4">Model Configuration</Title>
-
                     <div className="text-center py-20">
                       <Text className="text-gray-400">Model configuration options will be displayed here</Text>
                     </div>

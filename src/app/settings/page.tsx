@@ -1,14 +1,11 @@
 import { Header } from '@/components/header'
 import { DashboardCard } from '@/components/dashboard-card'
-
 export default function SettingsPage() {
   return (
     <main className="min-h-screen bg-background">
-      <Header />
       <div className="container mx-auto py-8 px-4">
         <h1 className="text-2xl font-bold mb-2">SETTINGS</h1>
         <h2 className="text-lg text-muted-foreground mb-6">ACCOUNT PREFERENCES</h2>
-        
         <div className="grid gap-6 md:grid-cols-2">
           <AccountSettingsCard />
           <NotificationSettingsCard />
@@ -17,7 +14,6 @@ export default function SettingsPage() {
     </main>
   )
 }
-
 function AccountSettingsCard() {
   return (
     <DashboardCard title="Account Settings">
@@ -38,7 +34,6 @@ function AccountSettingsCard() {
     </DashboardCard>
   )
 }
-
 function NotificationSettingsCard() {
   return (
     <DashboardCard title="Notification Settings">

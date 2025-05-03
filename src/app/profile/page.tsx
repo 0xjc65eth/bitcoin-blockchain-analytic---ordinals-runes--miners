@@ -1,14 +1,11 @@
 import { Header } from '@/components/header'
 import { DashboardCard } from '@/components/dashboard-card'
-
 export default function ProfilePage() {
   return (
     <main className="min-h-screen bg-background">
-      <Header />
       <div className="container mx-auto py-8 px-4">
         <h1 className="text-2xl font-bold mb-2">PROFILE</h1>
         <h2 className="text-lg text-muted-foreground mb-6">USER INFORMATION</h2>
-        
         <div className="grid gap-6 md:grid-cols-2">
           <PersonalInfoCard />
           <TradingStatsCard />
@@ -17,7 +14,6 @@ export default function ProfilePage() {
     </main>
   )
 }
-
 function PersonalInfoCard() {
   return (
     <DashboardCard title="Personal Information">
@@ -38,7 +34,6 @@ function PersonalInfoCard() {
     </DashboardCard>
   )
 }
-
 function TradingStatsCard() {
   return (
     <DashboardCard title="Trading Statistics">

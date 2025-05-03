@@ -262,7 +262,6 @@ export default function RunesPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#121212] to-[#1D1D1D]">
-      <Header />
       <div className="container mx-auto py-8 px-4">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
           <div>

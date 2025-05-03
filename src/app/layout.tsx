@@ -29,9 +29,7 @@ export default function RootLayout({
             <Providers>
               <NavigationProvider>
                 <Header />
-                <main className="flex-grow container mx-auto px-4 py-6">
-                  {children}
-                </main>
+                {children}
                 <Footer />
                 <Toaster />
               </NavigationProvider>

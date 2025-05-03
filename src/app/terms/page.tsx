@@ -1,14 +1,11 @@
 import { Header } from '@/components/header'
 import { DashboardCard } from '@/components/dashboard-card'
-
 export default function TermsPage() {
   return (
     <main className="min-h-screen bg-background">
-      <Header />
       <div className="container mx-auto py-8 px-4">
         <h1 className="text-2xl font-bold mb-2">TERMS</h1>
         <h2 className="text-lg text-muted-foreground mb-6">TERMS OF SERVICE</h2>
-        
         <div className="grid gap-6 md:grid-cols-2">
           <TermsOfServiceCard />
           <PrivacyPolicyCard />
@@ -17,7 +14,6 @@ export default function TermsPage() {
     </main>
   )
 }
-
 function TermsOfServiceCard() {
   return (
     <DashboardCard title="Terms of Service">
@@ -38,7 +34,6 @@ function TermsOfServiceCard() {
     </DashboardCard>
   )
 }
-
 function PrivacyPolicyCard() {
   return (
     <DashboardCard title="Privacy Policy">

@@ -1,14 +1,11 @@
 import { Header } from '@/components/header'
 import { DashboardCard } from '@/components/dashboard-card'
-
 export default function BlogPage() {
   return (
     <main className="min-h-screen bg-background">
-      <Header />
       <div className="container mx-auto py-8 px-4">
         <h1 className="text-2xl font-bold mb-2">BLOG</h1>
         <h2 className="text-lg text-muted-foreground mb-6">LATEST UPDATES</h2>
-        
         <div className="grid gap-6 md:grid-cols-2">
           <FeaturedPostsCard />
           <CategoriesCard />
@@ -17,7 +14,6 @@ export default function BlogPage() {
     </main>
   )
 }
-
 function FeaturedPostsCard() {
   return (
     <DashboardCard title="Featured Posts">
@@ -38,7 +34,6 @@ function FeaturedPostsCard() {
     </DashboardCard>
   )
 }
-
 function CategoriesCard() {
   return (
     <DashboardCard title="Categories">

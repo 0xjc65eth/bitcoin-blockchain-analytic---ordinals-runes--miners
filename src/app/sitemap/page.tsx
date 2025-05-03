@@ -1,14 +1,11 @@
 import { Header } from '@/components/header'
 import { DashboardCard } from '@/components/dashboard-card'
-
 export default function SitemapPage() {
   return (
     <main className="min-h-screen bg-background">
-      <Header />
       <div className="container mx-auto py-8 px-4">
         <h1 className="text-2xl font-bold mb-2">SITEMAP</h1>
         <h2 className="text-lg text-muted-foreground mb-6">SITE STRUCTURE</h2>
-        
         <div className="grid gap-6 md:grid-cols-2">
           <MainPagesCard />
           <SupportPagesCard />
@@ -17,7 +14,6 @@ export default function SitemapPage() {
     </main>
   )
 }
-
 function MainPagesCard() {
   return (
     <DashboardCard title="Main Pages">
@@ -38,7 +34,6 @@ function MainPagesCard() {
     </DashboardCard>
   )
 }
-
 function SupportPagesCard() {
   return (
     <DashboardCard title="Support Pages">

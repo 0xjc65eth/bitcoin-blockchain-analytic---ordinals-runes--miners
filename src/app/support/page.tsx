@@ -1,14 +1,11 @@
 import { Header } from '@/components/header'
 import { DashboardCard } from '@/components/dashboard-card'
-
 export default function SupportPage() {
   return (
     <main className="min-h-screen bg-background">
-      <Header />
       <div className="container mx-auto py-8 px-4">
         <h1 className="text-2xl font-bold mb-2">SUPPORT</h1>
         <h2 className="text-lg text-muted-foreground mb-6">HELP CENTER</h2>
-        
         <div className="grid gap-6 md:grid-cols-2">
           <FAQCard />
           <ContactSupportCard />
@@ -17,7 +14,6 @@ export default function SupportPage() {
     </main>
   )
 }
-
 function FAQCard() {
   return (
     <DashboardCard title="Frequently Asked Questions">
@@ -38,7 +34,6 @@ function FAQCard() {
     </DashboardCard>
   )
 }
-
 function ContactSupportCard() {
   return (
     <DashboardCard title="Contact Support">

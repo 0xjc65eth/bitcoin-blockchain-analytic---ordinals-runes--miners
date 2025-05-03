@@ -1,15 +1,12 @@
 'use client'
-
 import { Header } from './components/header'
 import { EnhancedArbitrageCard } from './components/enhanced-arbitrage-card'
 import { NeuralArbitrageInsights } from '@/components/neural-arbitrage-insights'
 import { AdvancedNeuralArbitrage } from '@/components/advanced-neural-arbitrage'
 import { Grid, Col } from '@tremor/react'
-
 export default function ArbitragePage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#0F172A] to-[#1E293B]">
-      <Header />
       <div className="container mx-auto py-8 px-4">
         <div className="flex flex-col items-center mb-8">
           <div className="w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/20">
@@ -25,21 +22,18 @@ export default function ArbitragePage() {
             Oportunidades de arbitragem entre marketplaces com cálculos precisos de lucro, análise neural avançada e dados de múltiplas fontes sociais
           </h2>
         </div>
-
         <div className="max-w-7xl mx-auto">
           <Grid numItemsMd={1} numItemsLg={1} className="gap-6 mb-6">
             <Col>
               <EnhancedArbitrageCard />
             </Col>
           </Grid>
-
           <Grid numItemsMd={1} numItemsLg={1} className="gap-6 mb-6">
             <Col>
               <AdvancedNeuralArbitrage />
             </Col>
           </Grid>
         </div>
-
         <div className="mt-10 text-center">
           <p className="text-gray-400 text-sm max-w-2xl mx-auto">
             Os dados são atualizados em tempo real a partir das APIs do CoinMarketCap, Ordiscan e múltiplas fontes sociais como Twitter, Reddit, Telegram e portais financeiros.

@@ -1,14 +1,11 @@
 import { Header } from '@/components/header'
 import { DashboardCard } from '@/components/dashboard-card'
-
 export default function WalletPage() {
   return (
     <main className="min-h-screen bg-background">
-      <Header />
       <div className="container mx-auto py-8 px-4">
         <h1 className="text-2xl font-bold mb-2">WALLET</h1>
         <h2 className="text-lg text-muted-foreground mb-6">BALANCE & TRANSACTIONS</h2>
-        
         <div className="grid gap-6 md:grid-cols-2">
           <BalanceCard />
           <RecentTransactionsCard />
@@ -17,7 +14,6 @@ export default function WalletPage() {
     </main>
   )
 }
-
 function BalanceCard() {
   return (
     <DashboardCard title="Current Balance">
@@ -38,7 +34,6 @@ function BalanceCard() {
     </DashboardCard>
   )
 }
-
 function RecentTransactionsCard() {
   return (
     <DashboardCard title="Recent Transactions">

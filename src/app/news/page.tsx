@@ -1,14 +1,11 @@
 import { Header } from '@/components/header'
 import { DashboardCard } from '@/components/dashboard-card'
-
 export default function NewsPage() {
   return (
     <main className="min-h-screen bg-background">
-      <Header />
       <div className="container mx-auto py-8 px-4">
         <h1 className="text-2xl font-bold mb-2">NEWS</h1>
         <h2 className="text-lg text-muted-foreground mb-6">MARKET NEWS</h2>
-        
         <div className="grid gap-6 md:grid-cols-2">
           <LatestNewsCard />
           <MarketSentimentCard />
@@ -17,7 +14,6 @@ export default function NewsPage() {
     </main>
   )
 }
-
 function LatestNewsCard() {
   return (
     <DashboardCard title="Latest News">
@@ -38,7 +34,6 @@ function LatestNewsCard() {
     </DashboardCard>
   )
 }
-
 function MarketSentimentCard() {
   return (
     <DashboardCard title="Market Sentiment">
