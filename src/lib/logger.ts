@@ -95,3 +95,9 @@ export class DevelopmentLogger {
 
 // Exportar instância singleton
 export const devLogger = new DevelopmentLogger();
+
+// Compatibilidade com importações existentes
+export const logger = devLogger;
+
+// Export default para compatibilidade
+export default devLogger;

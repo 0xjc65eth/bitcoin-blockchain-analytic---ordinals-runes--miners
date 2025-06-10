@@ -384,7 +384,7 @@ export class SecurityLogger {
     this.logs = [];
     this.logQueue = [];
     
-    if (this.config.enableLocalStorage) {
+    if (this.config.enableLocalStorage && typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       localStorage.removeItem(this.storageKey);
     }
 
@@ -534,6 +534,11 @@ export class SecurityLogger {
   }
 
   private logToLocalStorage(entry: SecurityLogEntry): void {
+    // Check if localStorage is available (browser environment)
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return;
+    }
+    
     try {
       const stored = localStorage.getItem(this.storageKey);
       const logs: SecurityLogEntry[] = stored ? JSON.parse(stored) : [];
@@ -553,6 +558,11 @@ export class SecurityLogger {
 
   private loadLogsFromStorage(): void {
     if (!this.config.enableLocalStorage) return;
+    
+    // Check if localStorage is available (browser environment)
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return;
+    }
     
     try {
       const stored = localStorage.getItem(this.storageKey);
@@ -630,7 +640,7 @@ export class SecurityLogger {
     this.logs = this.logs.filter(log => log.timestamp >= cutoffDate);
     
     // Update localStorage
-    if (this.config.enableLocalStorage) {
+    if (this.config.enableLocalStorage && typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       localStorage.setItem(this.storageKey, JSON.stringify(this.logs));
     }
   }
